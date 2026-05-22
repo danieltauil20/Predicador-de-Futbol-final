@@ -8,7 +8,7 @@ export const TablaPosiciones = ({ ligaId, nombreLiga }) => {
     useEffect(() => {
         const obtenerClasificacion = async () => {
             try {
-                const response = await fetch(`https://v3.football.api-sports.io/standings?league=${ligaId}&season=2023`, {
+                const response = await fetch(`https://v3.football.api-sports.io/standings?league=${ligaId}&season=2024`, {
                     method: "GET",
                     headers: {
                         "x-rapidapi-host": "v3.football.api-sports.io",

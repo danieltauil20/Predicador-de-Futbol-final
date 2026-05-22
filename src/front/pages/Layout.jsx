@@ -22,7 +22,6 @@ export const Layout = () => {
         <div className="comentarios-container">
           <Outlet />
         </div>
-        <TablaPosiciones ligaId="140" nombreLiga="La Liga" />
 
         <Footer />
       </div>

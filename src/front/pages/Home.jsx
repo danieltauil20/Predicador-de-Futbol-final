@@ -12,11 +12,11 @@ import worldcup from "../assets/logos/worldcup.png";
 
 export const Home = () => {
 	const ligas = [
-		{ logo: laliga, title: "La Liga", country: "España", slug: "laliga" },
-		{ logo: premierleague, title: "Premier League", country: "Inglaterra", slug: "premier" },
-		{ logo: seriea, title: "Serie A", country: "Italia", slug: "seriea" },
-		{ logo: bundesliga, title: "Bundesliga", country: "Alemania", slug: "bundesliga" },
-		{ logo: worldcup, title: "Mundial 2026", country: "FIFA", slug: "worldcup" }
+		{ logo: laliga, title: "La Liga", country: "España", slug: "LaLiga" },
+		{ logo: premierleague, title: "Premier League", country: "Inglaterra", slug: "Premier" },
+		{ logo: seriea, title: "Serie A", country: "Italia", slug: "SerieA" },
+		{ logo: bundesliga, title: "Bundesliga", country: "Alemania", slug: "Bundesliga" },
+		{ logo: worldcup, title: "Mundial 2026", country: "FIFA", slug: "WorldCup" }
 	];
 
 	return (
