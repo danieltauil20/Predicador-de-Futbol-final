@@ -10,6 +10,7 @@ function App() {
     <>
       <Navbar openModal={() => setOpen(true)} />
       <AuthModal isOpen={open} onClose={() => setOpen(false)} />
+      <Route path="/partidos" element={<Liga />} />
     </>
   );
 }
