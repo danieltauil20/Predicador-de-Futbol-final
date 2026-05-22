@@ -1,0 +1,41 @@
+export const partidos = [
+  {
+    id: 1,
+    liga: "laliga",
+    local: "Real Madrid",
+    visitante: "Barcelona",
+    resultado: null,
+    fecha: "2026-05-20",
+    estado: "Proximo",
+  },
+
+  {
+    id: 2,
+    liga: "laliga",
+    local: "Atlético de Madrid",
+    visitante: "Sevilla",
+    resultado: "2-1",
+    fecha: "2026-05-22",
+    estado: "Finalizado",
+  },
+
+  {
+    id: 3,
+    liga: "premier-league",
+    local: "Manchester City",
+    visitante: "Liverpool",
+    resultado: null,
+    fecha: "2026-05-21",
+    estado: "Proximo",
+  },
+
+  {
+    id: 4,
+    liga: "worldcup",
+    local: "Argentina",
+    visitante: "Francia",
+    resultado: null,
+    fecha: "2026-06-10",
+    estado: "Proximo",
+  },
+];

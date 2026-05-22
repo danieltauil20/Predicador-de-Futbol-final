@@ -24,17 +24,15 @@ body {
   animation: fadeDown 0.6s ease;
 
   border-radius: 16px;
-  box-shadow: 0 10px 40px
-  rgba(0,0,0,0.4);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .navbar.scrolled {
   padding: 12px 24px;
   background-color: rgba(30, 41, 59, 0.85);
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
-
 
 .logo img {
   height: 190px;
@@ -44,7 +42,6 @@ body {
 .logo {
   margin-left: -24px;
 }
-
 
 .nav-links {
   display: flex;
@@ -56,16 +53,15 @@ body {
   transform: translateX(-50%);
 }
 
-
 .nav-links a {
   text-decoration: none;
-  color: #BFC3CA;
+  color: #bfc3ca;
   position: relative;
   transition: all 0.25s ease;
 }
 
 .nav-links a:hover {
-  color: #FFFFFF;
+  color: #ffffff;
   transform: translateY(-2px);
 }
 
@@ -76,7 +72,7 @@ body {
   left: 50%;
   width: 0%;
   height: 2px;
-  background: linear-gradient(90deg, #0EE7AC, #22c55e);
+  background: linear-gradient(90deg, #0ee7ac, #22c55e);
   transition: all 0.3s ease;
   transform: translateX(-50%);
 }
@@ -86,13 +82,12 @@ body {
 }
 
 .nav-links a.active {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .nav-links a.active::after {
   width: 100%;
 }
-
 
 .navbar-right {
   display: flex;
@@ -103,8 +98,8 @@ body {
 }
 
 .btn-primary {
-  background-color: #0EE7AC;
-  color: #0F172A;
+  background-color: #0ee7ac;
+  color: #0f172a;
   border: none;
   padding: 0 24px;
   height: 44px;
@@ -137,7 +132,7 @@ body {
   position: absolute;
   top: 70px;
   right: 20px;
-  background-color: #1E293B;
+  background-color: #1e293b;
   padding: 20px;
   border-radius: 12px;
   display: flex;
@@ -294,6 +289,16 @@ body,
   margin: 0;
 }
 
+/* Busca esta parte en tu <style> y déjala así: */
+.score-box-center {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fbbf24; /* ESTE ES EL COLOR DE TUS BOTONES */
+  background-color: #08090d;
+  padding: 6px 12px;
+  border-radius: 5px;
+  text-align: center;
+}
 /* 🔥 OVERLAY OSCURO CON BLUR */
 .modal-overlay {
   position: fixed;

@@ -1,7 +1,4 @@
-import React, { useEffect } from "react"
-import rigoImageUrl from "../assets/img/rigo-baby.jpg";
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { Body } from "../components/Body.jsx";
+import { Body } from "../components/Body";
 import { Card } from "../components/Card";
 
 import laliga from "../assets/logos/laliga.png";
@@ -19,26 +16,15 @@ export const Home = () => {
 		{ logo: worldcup, title: "Mundial 2026", country: "FIFA", slug: "WorldCup" }
 	];
 
-	return (
-		<div className="text-center mt-5">
-			<div className="cards-container">
-				{ligas.map((liga, index) => (
-					<Card key={index} {...liga} />
-				))}
-			</div>
-			{Body}
-			<Body />
+  return (
+    <div className="text-center mt-5">
+      <div className="cards-container">
+        {ligas.map((liga, index) => (
+          <Card key={index} {...liga} />
+        ))}
+      </div>
 
-			{/* <div className="alert alert-info mt-4">
-				{store.message ? (
-					<span>{store.message}</span>
-				) : (
-					<span className="text-danger">
-						Conectando con el servidor de la liga... ⚽
-					</span>
-				)}
-			</div> */}
-		</div>
-
-	);
+      <Body />
+    </div>
+  );
 };

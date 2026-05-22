@@ -4,9 +4,14 @@ export const Card = ({ logo, title, country, slug }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="card" onClick={() => navigate(`/liga/${slug}`)}>
+    <div
+      className="card"
+      onClick={() => navigate(`/liga/${slug}`)}
+    >
       <img src={logo} alt={title} className="league-logo" />
-      <p className="title">{title}</p>
+
+      <p>{title}</p>
+
       <span>{country}</span>
     </div>
   );
