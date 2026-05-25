@@ -1,97 +1,54 @@
+import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 CORS(app)
 
-DB_PARTIDOS = {
-    "PD": [ # LIGA ESPAÑOLA
-        {
-            "id": 1, "temporada": "2025-2026", 
-            "homeTeam": {"name": "Real Madrid"}, "awayTeam": {"name": "Barcelona"}, 
-            "score": {"fullTime": {"home": 3, "away": 1}},
-            "events": [
-                {"time": {"elapsed": 12}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "Vinicius Jr"}, "team": {"name": "Real Madrid"}},
-                {"time": {"elapsed": 45}, "type": "Card", "detail": "Yellow Card", "player": {"name": "Gavi"}, "team": {"name": "Barcelona"}},
-                {"time": {"elapsed": 60}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "J. Bellingham"}, "team": {"name": "Real Madrid"}},
-                {"time": {"elapsed": 89}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "K. Mbappé"}, "team": {"name": "Real Madrid"}}
-            ]
-        },
-        {
-            "id": 2, "temporada": "2024-2025", 
-            "homeTeam": {"name": "Atlético de Madrid"}, "awayTeam": {"name": "Sevilla"}, 
-            "score": {"fullTime": {"home": 2, "away": 0}},
-            "events": [
-                {"time": {"elapsed": 33}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "A. Griezmann"}, "team": {"name": "Atlético de Madrid"}},
-                {"time": {"elapsed": 55}, "type": "Card", "detail": "Red Card", "player": {"name": "S. Ramos"}, "team": {"name": "Sevilla"}},
-                {"time": {"elapsed": 80}, "type": "Goal", "detail": "Penalty", "player": {"name": "Á. Morata"}, "team": {"name": "Atlético de Madrid"}}
-            ]
-        }
-    ],
-    "PL": [ # LIGA INGLESA
-        {
-            "id": 3, "temporada": "2025-2026", 
-            "homeTeam": {"name": "Manchester City"}, "awayTeam": {"name": "Arsenal"}, 
-            "score": {"fullTime": {"home": 2, "away": 2}},
-            "events": [
-                {"time": {"elapsed": 15}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "E. Haaland"}, "team": {"name": "Manchester City"}},
-                {"time": {"elapsed": 40}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "B. Saka"}, "team": {"name": "Arsenal"}},
-                {"time": {"elapsed": 90}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "K. De Bruyne"}, "team": {"name": "Manchester City"}}
-            ]
-        },
-        {
-            "id": 4, "temporada": "2024-2025", 
-            "homeTeam": {"name": "Liverpool"}, "awayTeam": {"name": "Chelsea"}, 
-            "score": {"fullTime": {"home": 1, "away": 0}},
-            "events": [
-                {"time": {"elapsed": 20}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "M. Salah"}, "team": {"name": "Liverpool"}},
-                {"time": {"elapsed": 75}, "type": "Card", "detail": "Yellow Card", "player": {"name": "E. Fernández"}, "team": {"name": "Chelsea"}}
-            ]
-        }
-    ],
-    "SA": [ # LIGA ITALIANA
-        {
-            "id": 5, "temporada": "2025-2026", 
-            "homeTeam": {"name": "Inter Milan"}, "awayTeam": {"name": "Juventus"}, 
-            "score": {"fullTime": {"home": 1, "away": 0}},
-            "events": [
-                {"time": {"elapsed": 30}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "L. Martínez"}, "team": {"name": "Inter Milan"}},
-                {"time": {"elapsed": 70}, "type": "Card", "detail": "Yellow Card", "player": {"name": "D. Vlahović"}, "team": {"name": "Juventus"}}
-            ]
-        }
-    ],
-    "BL": [ # LIGA ALEMANA
-        {
-            "id": 7, "temporada": "2025-2026", 
-            "homeTeam": {"name": "Bayern Munich"}, "awayTeam": {"name": "B. Dortmund"}, 
-            "score": {"fullTime": {"home": 2, "away": 1}},
-            "events": [
-                {"time": {"elapsed": 10}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "H. Kane"}, "team": {"name": "Bayern Munich"}},
-                {"time": {"elapsed": 50}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "J. Brandt"}, "team": {"name": "B. Dortmund"}},
-                {"time": {"elapsed": 85}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "J. Musiala"}, "team": {"name": "Bayern Munich"}}
-            ]
-        }
-    ],
-    "WC": [ # MUNDIAL 2026
-        {
-            "id": 9, "temporada": "Mundial 2026", 
-            "homeTeam": {"name": "España"}, "awayTeam": {"name": "Argentina"}, 
-            "score": {"fullTime": {"home": 2, "away": 2}},
-            "events": [
-                {"time": {"elapsed": 25}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "L. Yamal"}, "team": {"name": "España"}},
-                {"time": {"elapsed": 45}, "type": "Goal", "detail": "Penalty", "player": {"name": "L. Messi"}, "team": {"name": "Argentina"}},
-                {"time": {"elapsed": 60}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "J. Álvarez"}, "team": {"name": "Argentina"}},
-                {"time": {"elapsed": 88}, "type": "Goal", "detail": "Normal Goal", "player": {"name": "Pedri"}, "team": {"name": "España"}}
-            ]
-        }
-    ]
-}
+# Ruta absoluta forzada a la raíz
+basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "database.db")}'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+# Modelos
+class Partido(db.Model):
+    __tablename__ = 'partido'
+    id = db.Column(db.Integer, primary_key=True)
+    liga = db.Column(db.String(10))
+    temporada = db.Column(db.String(20))
+    jornada = db.Column(db.Integer)
+    home_team = db.Column(db.String(100))
+    away_team = db.Column(db.String(100))
+    score_home = db.Column(db.Integer)
+    score_away = db.Column(db.Integer)
+    eventos = db.relationship('Evento', backref='partido', lazy=True)
+
+class Evento(db.Model):
+    __tablename__ = 'evento'
+    id = db.Column(db.Integer, primary_key=True)
+    tipo = db.Column(db.String(20))
+    jugador = db.Column(db.String(100))
+    minuto = db.Column(db.String(10))
+    partido_id = db.Column(db.Integer, db.ForeignKey('partido.id'), nullable=False)
 
 @app.route('/api/fixtures/historico', methods=['GET'])
 def get_historico():
-    liga = request.args.get('liga', 'PD')
-    partidos = DB_PARTIDOS.get(liga, [])
-    return jsonify(partidos)
+    liga = request.args.get('liga')
+    temporada = request.args.get('temporada')
+    partidos = Partido.query.filter_by(liga=liga, temporada=temporada).all()
+    
+    output = []
+    for p in partidos:
+        output.append({
+            "id": p.id,
+            "homeTeam": {"name": p.home_team},
+            "awayTeam": {"name": p.away_team},
+            "score": {"home": p.score_home, "away": p.score_away}
+        })
+    return jsonify(output)
 
 if __name__ == '__main__':
     app.run(port=3001, debug=True)
