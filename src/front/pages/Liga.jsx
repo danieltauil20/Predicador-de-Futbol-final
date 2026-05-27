@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 
 export const Liga = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const liga = searchParams.get("liga") || "PD";
+  const liga = searchParams.get("liga") || "La Liga";
   const temp = searchParams.get("temporada") || "2024-2025";
 
   const [partidos, setPartidos] = useState([]);
@@ -14,27 +14,28 @@ export const Liga = () => {
   useEffect(() => {
     setLoading(true);
     const url = `https://literate-memory-97r4gq5rwqxjhx7g4-3001.app.github.dev/api/fixtures/historico?liga=${liga}&temporada=${temp}`;
-
     fetch(url)
-      .then(res => res.json())
+      .then(res => {
+        console.log("Estado de la respuesta:", res.status); // <--- ¿Es 200, 404, 500?
+        return res.json();
+      })
       .then(data => {
-        // Aseguramos que data sea siempre un array
-        const results = Array.isArray(data) ? data : [];
-        setPartidos(results);
-        if (results.length > 0) {
-          const primeraJornada = results[0].jornada ? results[0].jornada.toString() : "1";
-          setSelectedJornada(primeraJornada);
-        }
+        console.log("Respuesta completa del servidor:", data); // <--- VAMOS A VER QUÉ ES REALMENTE
+        setPartidos(Array.isArray(data) ? data : []);
         setLoading(false);
       })
-      .catch(err => { 
-        console.error("Error al cargar:", err); 
-        setLoading(false); 
+      .catch(err => {
+        console.error("Error al cargar:", err);
+        setLoading(false);
       });
   }, [liga, temp]);
 
-  const jornadasDisponibles = [...new Set(partidos.map(p => p.jornada))].sort((a, b) => a - b);
-  const partidosFiltrados = partidos.filter(p => p.jornada?.toString() === selectedJornada);
+  const jornadasDisponibles = partidos.length > 0
+    ? [...new Set(partidos.map(p => p.jornada))].sort((a, b) => a - b)
+    : [];
+  const partidosFiltrados = selectedJornada
+    ? partidos.filter(p => p.jornada?.toString() === selectedJornada)
+    : partidos; // Si no hay jornada, mostramos todos
 
   const getLogoPath = (nombreEquipo) => {
     if (!nombreEquipo) return "";
@@ -43,12 +44,15 @@ export const Liga = () => {
     return `https://images.fotmob.com/image_resources/logo/teamlogo/${nombreLimpio}.png`;
   };
 
+  console.log("Jornada seleccionada actual:", selectedJornada);
+  console.log("Partidos filtrados:", partidosFiltrados);
+
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>KickHub</h1>
 
       <div style={styles.nav}>
-        {["PD", "PL", "SA", "BL"].map(l => (
+        {["La Liga", "Premier League", "Serie A", "Bundesliga"].map(l => (
           <button key={l} onClick={() => setSearchParams({ liga: l, temporada: temp })} style={styles.tab(liga === l)}>{l}</button>
         ))}
       </div>
@@ -64,23 +68,23 @@ export const Liga = () => {
       </div>
 
       <div style={styles.list}>
-        {loading ? <p style={{ color: '#fff', textAlign: 'center' }}>Cargando...</p> : 
-         partidos.length === 0 ? <p style={{ color: '#fff', textAlign: 'center' }}>No hay datos disponibles para esta liga/temporada.</p> :
-         partidosFiltrados.length > 0 ? partidosFiltrados.map(m => (
-            <div key={m.id} style={{ ...styles.card, cursor: 'pointer' }} onClick={() => setPartidoSeleccionado(m)}>
-              <div style={styles.matchHeader}>
-                <div style={styles.teamContainer}>
-                  <img src={getLogoPath(m.homeTeam?.name)} alt="logo" style={styles.logo} onError={(e) => e.target.style.display = 'none'} />
-                  <span style={styles.team}>{m.homeTeam?.name || "Local"}</span>
-                </div>
-                <span style={styles.score}>{m.score?.fullTime?.home ?? "-"} - {m.score?.fullTime?.away ?? "-"}</span>
-                <div style={styles.teamContainer}>
-                  <span style={styles.team}>{m.awayTeam?.name || "Visitante"}</span>
-                  <img src={getLogoPath(m.awayTeam?.name)} alt="logo" style={styles.logo} onError={(e) => e.target.style.display = 'none'} />
+        {loading ? <p style={{ color: '#fff', textAlign: 'center' }}>Cargando...</p> :
+          partidos.length === 0 ? <p style={{ color: '#fff', textAlign: 'center' }}>No hay datos disponibles para esta liga/temporada.</p> :
+            partidosFiltrados.length > 0 ? partidosFiltrados.map(m => (
+              <div key={m.id} style={{ ...styles.card, cursor: 'pointer' }} onClick={() => setPartidoSeleccionado(m)}>
+                <div style={styles.matchHeader}>
+                  <div style={styles.teamContainer}>
+                    <img src={getLogoPath(m.homeTeam?.name)} alt="logo" style={styles.logo} onError={(e) => e.target.style.display = 'none'} />
+                    <span style={styles.team}>{m.homeTeam?.name || "Local"}</span>
+                  </div>
+                  <span style={styles.score}>{m.score?.fullTime?.home ?? "-"} - {m.score?.fullTime?.away ?? "-"}</span>
+                  <div style={styles.teamContainer}>
+                    <span style={styles.team}>{m.awayTeam?.name || "Visitante"}</span>
+                    <img src={getLogoPath(m.awayTeam?.name)} alt="logo" style={styles.logo} onError={(e) => e.target.style.display = 'none'} />
+                  </div>
                 </div>
               </div>
-            </div>
-          )) : <p style={{ color: '#fff', textAlign: 'center' }}>No hay partidos para esta jornada.</p>
+            )) : <p style={{ color: '#fff', textAlign: 'center' }}>No hay partidos para esta jornada.</p>
         }
       </div>
 
@@ -106,7 +110,7 @@ export const Liga = () => {
 };
 
 const styles = {
-  container: { padding: "40px 20px", maxWidth: "600px", margin: "0 auto", fontFamily: "sans-serif", backgroundColor: "#26753c", minHeight: "100vh" },
+  container: { padding: "40px 20px", maxWidth: "600px", margin: "0 auto", fontFamily: "sans-serif",backgroundColor: "#26753c", minHeight: "100vh" }, 
   title: { color: "#fff", textAlign: "center", marginBottom: "20px" },
   nav: { display: "flex", justifyContent: "center", gap: "10px", marginBottom: "20px" },
   tab: (active) => ({ padding: "10px 20px", borderRadius: "8px", border: "none", cursor: "pointer", backgroundColor: active ? "#fff" : "rgba(255,255,255,0.2)", color: active ? "#26753c" : "#fff", fontWeight: "bold" }),

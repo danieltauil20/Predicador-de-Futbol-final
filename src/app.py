@@ -45,15 +45,12 @@ class Evento(db.Model):
 @app.route('/api/fixtures/historico', methods=['GET'])
 def get_historico():
     liga = request.args.get('liga', 'La Liga')
-    jornada = request.args.get('jornada')
     temporada = request.args.get('temporada', '2024-2025')
 
-    # Debug: Esto nos dirá en la terminal si la consulta encuentra algo
     print(f"Buscando en BD: liga={liga}, temporada={temporada}")
 
     partidos = Partido.query.filter_by(liga=liga, temporada=temporada).all()
 
-    # Debug: Ver cuántos resultados obtuvimos
     print(f"Resultados encontrados: {len(partidos)}")
 
     resultado = [{

@@ -1,9 +1,10 @@
 body {
   overflow-x: hidden;
   margin: 0;
-  padding: 0 20px;
-  background-color: #0F172A;
-  font-family: 'Poppins', sans-serif;
+  padding: 0; /* Quitamos el padding lateral de aquí */
+  background-color: #0f172a;
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh; /* Asegura que el fondo ocupe toda la pantalla */
 }
 
 .navbar {
@@ -11,8 +12,8 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 10px 28px;
-  background-color: #1E293B;
-  color: #FFFFFF;
+  background-color: #1e293b;
+  color: #ffffff;
   position: static;
   top: 20px;
 
@@ -164,23 +165,22 @@ body {
     margin-left: 0;
   }
 
- .logo img {
-  height: 125px;
+  .logo img {
+    height: 125px;
+  }
 
- }
-
- .btn-primary{
-  height: 30px;
- }
- .navbar-right{
-  margin-left: auto;
-  margin-right: -1px;
- }
-.mobile-menu {
+  .btn-primary {
+    height: 30px;
+  }
+  .navbar-right {
+    margin-left: auto;
+    margin-right: -1px;
+  }
+  .mobile-menu {
     position: absolute;
     top: 70px;
     right: 20px;
-    background-color: #1E293B;
+    background-color: #1e293b;
     padding: 20px;
     border-radius: 12px;
 
@@ -190,7 +190,7 @@ body {
 
     z-index: 999;
   }
-.navbar {
+  .navbar {
     max-width: none;
     width: 90%;
     margin: 0 auto -12px auto;
@@ -324,7 +324,7 @@ body,
 
   border-radius: 20px;
 
-  background: linear-gradient(160deg, #1E293B, #0F172A);
+  background: linear-gradient(160deg, #1e293b, #0f172a);
   border: 1px solid rgba(255, 255, 255, 0.08);
 
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
@@ -359,7 +359,7 @@ body,
   border-radius: 12px;
 
   background: #334155;
-  color: #BFC3CA;
+  color: #bfc3ca;
 
   cursor: pointer;
   transition: all 0.3s ease;
@@ -367,8 +367,8 @@ body,
 
 /* ACTIVO (VERDE BONITO) */
 .tabs button.active {
-  background: linear-gradient(90deg, #0EE7AC, #22c55e);
-  color: #0F172A;
+  background: linear-gradient(90deg, #0ee7ac, #22c55e);
+  color: #0f172a;
   font-weight: 600;
 
   box-shadow: 0 5px 20px rgba(14, 231, 172, 0.4);
@@ -386,7 +386,7 @@ body,
   border-radius: 12px;
 
   border: 1px solid #334155;
-  background: #0F172A;
+  background: #0f172a;
   color: #fff;
 
   outline: none;
@@ -395,7 +395,7 @@ body,
 
 /* INPUT FOCUS */
 .form input:focus {
-  border-color: #0EE7AC;
+  border-color: #0ee7ac;
   box-shadow: 0 0 10px rgba(14, 231, 172, 0.3);
 }
 
@@ -433,8 +433,8 @@ body,
   border-radius: 12px;
   border: none;
 
-  background: linear-gradient(90deg, #0EE7AC, #22c55e);
-  color: #0F172A;
+  background: linear-gradient(90deg, #0ee7ac, #22c55e);
+  color: #0f172a;
 
   font-weight: 600;
   cursor: pointer;
@@ -511,11 +511,11 @@ body,
 /* CARD PRODUCTO */
 /* ========================= */
 .product-card {
-  background:  rgba(30, 41, 59, 0.85);
+  background: rgba(30, 41, 59, 0.85);
   border-radius: 12px;
   padding: 30px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   transition: 0.3s;
 }
 
@@ -539,7 +539,7 @@ body,
 
 /* PRECIO */
 .price {
-  color: #0EE7AC;
+  color: #0ee7ac;
   font-weight: bold;
   margin-bottom: 10px;
   font-size: 14px;
@@ -551,7 +551,7 @@ body,
   padding: 10px;
   border: none;
   border-radius: 8px;
-  background: #0EE7AC;
+  background: #0ee7ac;
   color: black;
   font-weight: bold;
   cursor: pointer;
@@ -602,7 +602,7 @@ body,
   border-radius: 20px 0 0 20px;
   overflow: hidden;
 }
- 
+
 .cart-sidebar.open {
   right: 0;
 }
@@ -641,7 +641,7 @@ body,
 
 .cart-item span {
   font-size: 13px;
-  color: #0EE7AC;
+  color: #0ee7ac;
 }
 
 .cart-item button {
@@ -658,7 +658,7 @@ body,
 .pay-button {
   width: 100%;
   padding: 10px;
-  background: #0EE7AC;
+  background: #0ee7ac;
   border: none;
   border-radius: 8px;
   color: white;
@@ -703,7 +703,6 @@ body,
 /* ========================= */
 
 @media (max-width: 768px) {
-
   /* GRID */
   .tienda-grid {
     grid-template-columns: 1fr;
@@ -987,7 +986,6 @@ body,
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  
 }
 
 .input-box button:hover {
@@ -1005,7 +1003,6 @@ body,
 /* TOP */
 .top-badge {
   color: orange;
-
 }
 
 .normas-lateral {
@@ -1022,7 +1019,6 @@ body,
   font-size: 13px;
   backdrop-filter: blur(6px);
   line-height: 1.5;
-
 }
 
 .normas-lateral li {
