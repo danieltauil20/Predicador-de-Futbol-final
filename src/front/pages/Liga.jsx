@@ -9,7 +9,6 @@ export const Liga = () => {
   const [partidos, setPartidos] = useState([]);
   const [selectedJornada, setSelectedJornada] = useState("");
   const [loading, setLoading] = useState(true);
-  const [partidoSeleccionado, setPartidoSeleccionado] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -19,17 +18,11 @@ export const Liga = () => {
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          // --- PONLO AQUÍ ---
-          console.log("Estructura real del equipo:", data[0].homeTeam);
-          // ------------------
-
           const dataConJornadas = data.map((partido, index) => ({
             ...partido,
             jornada: Math.floor(index / 10) + 1
           }));
           setPartidos(dataConJornadas);
-        } else {
-          setPartidos([]);
         }
         setLoading(false);
       })
@@ -39,20 +32,63 @@ export const Liga = () => {
       });
   }, [liga, temp]);
 
+  // Función para obtener ruta local (public/logos/nombre-equipo.png)
+  // Reemplaza SOLO esta función dentro de tu componente Liga
+  const getLogoPath = (nombreEquipo) => {
+    if (!nombreEquipo) return "/logos/default.png";
+
+    const nombreLimpio = nombreEquipo.toLowerCase().trim();
+
+    // El diccionario que conecta la API con tus archivos
+    const mapaEquipos = {
+      "real madrid": "realmadrid",
+      "barcelona": "barcelona",
+      "fc barcelona": "barcelona",
+      "atletico madrid": "atlmadrid",
+      "atlético madrid": "atlmadrid",
+      "atletico de madrid": "atlmadrid",
+      "athletic club": "athletic",
+      "athletic bilbao": "athletic",
+      "real betis": "betis",
+      "betis": "betis",
+      "celta vigo": "celta",
+      "celta de vigo": "celta",
+      "espanyol": "espanyol",
+      "getafe": "getafe",
+      "girona": "girona",
+      "girona fc": "girona",
+      "mallorca": "mallorca",
+      "rcd mallorca": "mallorca",
+      "osasuna": "osasuna",
+      "ca osasuna": "osasuna",
+      "rayo vallecano": "rayovallecano",
+      "real sociedad": "realsociedad",
+      "sevilla": "sevilla",
+      "sevilla fc": "sevilla",
+      "valencia": "valencia",
+      "valencia cf": "valencia",
+      "villarreal": "villarreal",
+      "alaves": "alaves",
+      "alavés": "alaves",
+      "deportivo alavés": "alaves",
+      "elche": "elche",
+      "levante": "levante",
+      "real oviedo": "realoviedo"
+    };
+
+    const nombreArchivo = mapaEquipos[nombreLimpio];
+
+    if (nombreArchivo) {
+      return `/logos/${nombreArchivo}.png`;
+    } else {
+      console.warn(`🚨 Falta mapear el equipo: "${nombreEquipo}". Agrega "${nombreLimpio}" al diccionario.`);
+      return "/logos/default.png";
+    }
+  };
 
   const partidosFiltrados = selectedJornada
     ? partidos.filter(p => p.jornada.toString() === selectedJornada)
     : partidos;
-
-  const getLogoPath = (nombreEquipo) => {
-    if (!nombreEquipo) return "";
-    // Busca el logo oficial en Wikipedia (la fuente más grande de escudos)
-    const encodedName = encodeURIComponent(nombreEquipo);
-    return `https://en.wikipedia.org/wiki/${encodedName}#/media/File:FC_Barcelona_(crest).svg`; // Esto es un ejemplo, no es dinámico
-
-    // MEJOR OPCIÓN: Usa este servicio de búsqueda de logos por nombre:
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(nombreEquipo)}&background=0EE7AC&color=fff&size=128`;
-  };
 
   return (
     <div style={styles.container}>
@@ -66,41 +102,28 @@ export const Liga = () => {
         ))}
       </div>
 
-      <div style={styles.selectors}>
-        <select value={temp} onChange={(e) => setSearchParams({ liga: liga, temporada: e.target.value })} style={styles.select}>
-          <option value="2024-2025">2024-2025</option>
-          <option value="2025-2026">2025-2026</option>
-        </select>
-
-        <select value={selectedJornada} onChange={(e) => setSelectedJornada(e.target.value)} style={styles.select}>
-          <option value="">Todas las jornadas</option>
-          {[...Array(38)].map((_, i) => (
-            <option key={i + 1} value={i + 1}>Jornada {i + 1}</option>
-          ))}
-        </select>
-      </div>
-
       <div style={styles.list}>
         {loading ? (
           <p style={{ color: '#fff', textAlign: 'center' }}>Cargando...</p>
-        ) : partidosFiltrados.length > 0 ? (
+        ) : (
           partidosFiltrados.map(m => (
-            <div key={m.id} style={styles.card} onClick={() => setPartidoSeleccionado(m)}>
+            <div key={m.id} style={styles.card}>
               <div style={styles.matchHeader}>
+
                 <div style={styles.teamContainer}>
-                  <img src={getLogoPath(m.homeTeam?.name)} alt="logo" style={styles.logo} onError={(e) => e.target.style.display = 'none'} />
-                  <span style={styles.team}>{m.homeTeam?.name || "Local"}</span>
+                  <img src={getLogoPath(m.homeTeam?.name)} alt="local" style={styles.logo} onError={(e) => e.target.src = "/logos/default.png"} />
+                  <span style={styles.team}>{m.homeTeam?.name}</span>
                 </div>
+
                 <span style={styles.score}>{m.score?.fullTime?.home ?? "-"} - {m.score?.fullTime?.away ?? "-"}</span>
+
                 <div style={styles.teamContainer}>
-                  <span style={styles.team}>{m.awayTeam?.name || "Visitante"}</span>
-                  <img src={getLogoPath(m.awayTeam?.name)} alt="logo" style={styles.logo} onError={(e) => e.target.style.display = 'none'} />
+                  <span style={styles.team}>{m.awayTeam?.name}</span>
+                  <img src={getLogoPath(m.awayTeam?.name)} alt="visitante" style={styles.logo} onError={(e) => e.target.src = "/logos/default.png"} />
                 </div>
               </div>
             </div>
           ))
-        ) : (
-          <p style={{ color: '#fff', textAlign: 'center' }}>No hay partidos para esta selección.</p>
         )}
       </div>
     </div>
