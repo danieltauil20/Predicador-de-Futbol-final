@@ -13,19 +13,18 @@ export const Liga = () => {
 
   useEffect(() => {
     setLoading(true);
-    const ligaEncoded = encodeURIComponent(liga);
-    const tempEncoded = encodeURIComponent(temp);
-
-    const url = `https://literate-memory-97r4gq5rwqxjhx7g4-3001.app.github.dev/api/fixtures/historico?liga=${ligaEncoded}&temporada=${tempEncoded}`;
+    const url = `https://literate-memory-97r4gq5rwqxjhx7g4-3001.app.github.dev/api/fixtures/historico?liga=${encodeURIComponent(liga)}&temporada=${encodeURIComponent(temp)}`;
 
     fetch(url)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          // FORZAMOS la asignación de jornada aquí:
+          // --- PONLO AQUÍ ---
+          console.log("Estructura real del equipo:", data[0].homeTeam);
+          // ------------------
+
           const dataConJornadas = data.map((partido, index) => ({
             ...partido,
-            // Asignamos jornada de 1 a 38
             jornada: Math.floor(index / 10) + 1
           }));
           setPartidos(dataConJornadas);
@@ -40,16 +39,19 @@ export const Liga = () => {
       });
   }, [liga, temp]);
 
-  // Filtramos usando la propiedad 'jornada' que acabamos de inyectar
+
   const partidosFiltrados = selectedJornada
     ? partidos.filter(p => p.jornada.toString() === selectedJornada)
     : partidos;
 
   const getLogoPath = (nombreEquipo) => {
     if (!nombreEquipo) return "";
-    const mapeo = { "real madrid": "real-madrid", "fc barcelona": "barcelona", "atlético de madrid": "atletico-madrid" };
-    const nombreLimpio = mapeo[nombreEquipo.toLowerCase()] || nombreEquipo.toLowerCase().replace(/\s+/g, '-');
-    return `https://images.fotmob.com/image_resources/logo/teamlogo/${nombreLimpio}.png`;
+    // Busca el logo oficial en Wikipedia (la fuente más grande de escudos)
+    const encodedName = encodeURIComponent(nombreEquipo);
+    return `https://en.wikipedia.org/wiki/${encodedName}#/media/File:FC_Barcelona_(crest).svg`; // Esto es un ejemplo, no es dinámico
+
+    // MEJOR OPCIÓN: Usa este servicio de búsqueda de logos por nombre:
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(nombreEquipo)}&background=0EE7AC&color=fff&size=128`;
   };
 
   return (
@@ -83,20 +85,13 @@ export const Liga = () => {
           <p style={{ color: '#fff', textAlign: 'center' }}>Cargando...</p>
         ) : partidosFiltrados.length > 0 ? (
           partidosFiltrados.map(m => (
-            <div key={m.id} style={{ ...styles.card, cursor: 'pointer' }} onClick={() => setPartidoSeleccionado(m)}>
+            <div key={m.id} style={styles.card} onClick={() => setPartidoSeleccionado(m)}>
               <div style={styles.matchHeader}>
-                {/* Nombre equipo local */}
                 <div style={styles.teamContainer}>
                   <img src={getLogoPath(m.homeTeam?.name)} alt="logo" style={styles.logo} onError={(e) => e.target.style.display = 'none'} />
                   <span style={styles.team}>{m.homeTeam?.name || "Local"}</span>
                 </div>
-
-                {/* Marcador */}
-                <span style={styles.score}>
-                  {m.score?.fullTime?.home ?? "-"} - {m.score?.fullTime?.away ?? "-"}
-                </span>
-
-                {/* Nombre equipo visitante */}
+                <span style={styles.score}>{m.score?.fullTime?.home ?? "-"} - {m.score?.fullTime?.away ?? "-"}</span>
                 <div style={styles.teamContainer}>
                   <span style={styles.team}>{m.awayTeam?.name || "Visitante"}</span>
                   <img src={getLogoPath(m.awayTeam?.name)} alt="logo" style={styles.logo} onError={(e) => e.target.style.display = 'none'} />
@@ -120,26 +115,27 @@ const styles = {
   selectors: { display: "flex", justifyContent: "center", gap: "10px", marginBottom: "30px" },
   select: { padding: "10px 20px", borderRadius: "8px", border: "none", backgroundColor: "#fff", cursor: "pointer" },
   list: { display: "flex", flexDirection: "column", gap: "10px" },
+
+  // TARJETAS NEÓN
   card: {
-    backgroundColor: "#333", // Gris oscuro elegante
-    color: "#fff",           // Texto blanco
+    backgroundColor: "white",
     padding: "15px",
-    borderRadius: "10px",
-    border: "1px solid #444" // Borde suave
+    borderRadius: "12px",
+    border: "2px solid #black",
+    marginBottom: "10px",
+    cursor: 'pointer'
   },
+
   matchHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", fontWeight: "bold" },
-  team: { flex: 1, textAlign: "center", fontSize: "0.9rem", color: "#fff" }, // Texto blanco
-  score: { fontSize: "1.2rem", color: "#fff", margin: "0 15px", minWidth: "50px", textAlign: "center" }, // Texto blanco
+  team: { flex: 1, textAlign: "center", fontSize: "0.95rem", color: "black" },
+  score: { fontSize: "1.3rem", color: "black", margin: "0 15px", minWidth: "50px", textAlign: "center", fontWeight: "bold" },
   teamContainer: { display: "flex", alignItems: "center", gap: "8px", flex: 1, justifyContent: "center" },
-  logo: { width: "30px", height: "30px", objectFit: "contain" },
-  team: { flex: 1, textAlign: "center", fontSize: "0.9rem" },
-  score: { fontSize: "1.5rem", color: "#26753c", margin: "0 10px", minWidth: "50px", textAlign: "center" },
-  teamContainer: { display: "flex", alignItems: "center", gap: "8px", flex: 1, justifyContent: "center" },
-  logo: { width: "30px", height: "30px", objectFit: "contain" },
-  modalOverlay: { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.8)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000, backdropFilter: "blur(5px)" },
-  modalContent: { backgroundColor: "#ffffff", padding: "0", borderRadius: "20px", width: "90%", maxWidth: "450px", overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.4)" },
-  modalHeader: { backgroundColor: "#26753c", color: "#fff", padding: "20px", textAlign: "center", fontSize: "1.2rem", fontWeight: "bold" },
-  modalBody: { padding: "20px" },
-  eventLine: { display: "flex", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #f0f0f0" },
-  closeButton: { width: "100%", marginTop: "20px", padding: "12px", borderRadius: "8px", border: "none", backgroundColor: "#26753c", color: "#fff", cursor: "pointer", fontWeight: "bold" }
+  logo: {
+    width: "35px",
+    height: "35px",
+    objectFit: "contain",
+    backgroundColor: "rgba(255,255,255,0.1)", // Fondo translúcido para ver si el contenedor existe
+    borderRadius: "50%", // Un toque redondo queda mejor
+    padding: "2px"
+  },
 };
