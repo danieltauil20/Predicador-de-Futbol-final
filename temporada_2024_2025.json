@@ -1,0 +1,24 @@
+{
+  "temporada": "2024-2025",
+  "liga": "PD",
+  "jornadas": [
+    {
+      "jornada": 1,
+      "partidos": [
+        {
+          "home": "Real Madrid", "away": "Real Sociedad", "score_h": 2, "score_a": 0,
+          "eventos": [{"tipo": "gol", "jugador": "Mbappe", "minuto": "68'"}, {"tipo": "tarjeta", "jugador": "Vinicius", "minuto": "80'"}]
+        }
+      ]
+    },
+    {
+      "jornada": 2,
+      "partidos": [
+        {
+          "home": "FC Barcelona", "away": "Athletic Club", "score_h": 2, "score_a": 1,
+          "eventos": [{"tipo": "gol", "jugador": "Lewandowski", "minuto": "75'"}]
+        }
+      ]
+    }
+  ]
+}

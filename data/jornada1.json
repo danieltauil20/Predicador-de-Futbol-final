@@ -1,0 +1,72 @@
+[
+  {
+    "home": "Athletic Club",
+    "away": "Getafe CF",
+    "score_h": 1,
+    "score_a": 1,
+    "eventos": []
+  },
+  {
+    "home": "Real Betis",
+    "away": "Girona FC",
+    "score_h": 1,
+    "score_a": 1,
+    "eventos": []
+  },
+  {
+    "home": "Celta de Vigo",
+    "away": "Deportivo Alavés",
+    "score_h": 2,
+    "score_a": 1,
+    "eventos": []
+  },
+  {
+    "home": "UD Las Palmas",
+    "away": "Sevilla FC",
+    "score_h": 2,
+    "score_a": 2,
+    "eventos": []
+  },
+  {
+    "home": "CA Osasuna",
+    "away": "CD Leganés",
+    "score_h": 1,
+    "score_a": 1,
+    "eventos": []
+  },
+  {
+    "home": "Valencia CF",
+    "away": "FC Barcelona",
+    "score_h": 1,
+    "score_a": 2,
+    "eventos": []
+  },
+  {
+    "home": "Real Sociedad",
+    "away": "Rayo Vallecano",
+    "score_h": 1,
+    "score_a": 2,
+    "eventos": []
+  },
+  {
+    "home": "RCD Mallorca",
+    "away": "Real Madrid",
+    "score_h": 1,
+    "score_a": 1,
+    "eventos": []
+  },
+  {
+    "home": "Real Valladolid",
+    "away": "RCD Espanyol",
+    "score_h": 1,
+    "score_a": 0,
+    "eventos": []
+  },
+  {
+    "home": "Villarreal CF",
+    "away": "Atlético de Madrid",
+    "score_h": 2,
+    "score_a": 2,
+    "eventos": []
+  }
+]
