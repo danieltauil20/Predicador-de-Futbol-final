@@ -24,7 +24,7 @@ const MAPPING_EQUIPOS = {
   // --- ITALIA (Serie A) ---
   "Atalanta": "atalanta", "Bologna": "bologna", "Cagliari": "cagliari", "Como": "como", "Empoli": "empoli", "Fiorentina": "fiorentina", "Genoa": "genoa", "Inter": "inter-milan", "Juventus": "juventus", "Lazio": "lazio", "Lecce": "lecce", "Milan": "ac-milan", "Monza": "monza", "Napoli": "napoli", "Parma": "parma", "Roma": "as-roma", "Torino": "torino", "Udinese": "udinese", "Venezia": "venezia", "Verona": "hellas-verona",
   // --- ALEMANIA (Bundesliga) ---
-  "Augsburg": "augsburg", "Leverkusen": "bayer-leverkusen", "Bayern Munich": "bayern-munich", "Bochum": "bochum", "Dortmund": "borussia-dortmund", "M'gladbach": "borussia-monchengladbach", "Eintracht Frankfurt": "eintracht-frankfurt", "Freiburg": "freiburg", "Heidenheim": "heidenheim", "Hoffenheim": "hoffenheim", "Holstein Kiel": "holstein-kiel", "RB Leipzig": "rb-leipzig", "Mainz": "mainz", "St Pauli": "st-pauli", "Stuttgart": "stuttgart", "Werder Bremen": "werder-bremen", "Wolfsburg": "wolfsburg", "Union Berlin": "union-berlin"
+  "Augsburg": "augsburg", "Leverkusen": "bayer-leverkusen", "Bayern Munich": "bayern-munich", "Bochum": "bochum", "Dortmund": "borussia-dortmund", "M'gladbach": "borussia-monchengladbach", "Eintracht Frankfurt": "eintracht-frankfurt", "Freiburg": "freiburg", "Heidenheim": "heidenheim", "Hoffenheim": "hoffenheim", "Holstein Kiel": "holstein-kiel", "RB Leipzig": "rb-leipzig", "Mainz": "mainz", "St Pauli": "st-pauli", "Stuttgart": "stuttgart", "Werder Bremen": "werder-bremen", "Wolfsburg": "wolfsburg", "Union Berlin": "union-berlin", "Nott'm Forest": "nottingham-forest", "Holstein Kiel": "holstein-kiel", "Bochum": "bochum", "Ein Frankfurt": "eintracht-frankfurt",
 };
 
 export const Liga = () => {
@@ -150,7 +150,7 @@ const styles = {
   container: { padding: "40px 20px", maxWidth: "650px", margin: "0 auto", fontFamily: "'Poppins', sans-serif", backgroundColor: "#26753c", minHeight: "100vh" },
   title: { color: "#FFFFFF", textAlign: "center", marginBottom: "25px", fontWeight: "700", fontSize: "2.2rem" },
   nav: { display: "flex", justifyContent: "center", gap: "28px", marginBottom: "25px", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "10px" },
-  tab: (active) => ({ padding: "10px 4px", border: "none", borderBottom: active ? "3px solid #0EE7AC" : "3px solid transparent", cursor: "pointer", backgroundColor: "transparent", color: active ? "#FFFFFF" : "#BFC3CA", fontWeight: active ? "600" : "400", fontSize: "1rem", fontFamily: "'Poppins', sans-serif", transition: "all 0.2s ease", minWidth: "44px" }),
+  tab: (active) => ({ padding: "12px 20px", border: "none", borderBottom: active ? "3px solid #0EE7AC" : "3px solid transparent", cursor: "pointer", backgroundColor: "transparent", color: active ? "#FFFFFF" : "#BFC3CA", fontWeight: active ? "600" : "400", fontSize: "1rem", fontFamily: "'Poppins', sans-serif", transition: "all 0.2s ease", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "44px" }),
   filterContainer: { display: "flex", justifyContent: "center", alignItems: "center", gap: "12px", marginBottom: "30px", color: "#FFFFFF", fontWeight: "500", fontFamily: "'Poppins', sans-serif" },
   label: { fontSize: "1rem" },
   select: { padding: "8px 16px", borderRadius: "8px", border: "none", backgroundColor: "#1E293B", color: "#FFFFFF", fontWeight: "500", cursor: "pointer", fontSize: "0.95rem", fontFamily: "'Poppins', sans-serif", boxShadow: "0px 2px 4px rgba(0,0,0,0.1)" },
