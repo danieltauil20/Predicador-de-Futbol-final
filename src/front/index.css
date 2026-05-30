@@ -600,7 +600,6 @@ body,
   overflow-y: auto;
   z-index: 1000;
   border-radius: 20px 0 0 20px;
-  overflow: hidden;
 }
 
 .cart-sidebar.open {

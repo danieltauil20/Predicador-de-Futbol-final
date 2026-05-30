@@ -7,6 +7,9 @@ export const Navbar = ({ openModal }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  const LIGAS = ["LaLiga", "Premier League", "Serie A", "Bundesliga"];
+
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
@@ -25,36 +28,56 @@ export const Navbar = ({ openModal }) => {
   ];
 
   const leagueLinks = [
-    { name: "La Liga", path: "/partidos?liga=PD" },
-    { name: "Premier League", path: "/partidos?liga=PL" },
-    { name: "Serie A", path: "/partidos?liga=SA" },
-    { name: "Bundesliga", path: "/partidos?liga=BL" },
-    { name: "Mundial 2026", path: "/partidos?liga=WC" },
-  ];
+  { name: "La Liga", path: "/partidos?liga=España&temp=2024-2025&jornada=1" },
+  { name: "Premier League", path: "/partidos?liga=Inglaterra&temp=2024-2025&jornada=1" },
+  { name: "Serie A", path: "/partidos?liga=Italia&temp=2024-2025&jornada=1" },
+  { name: "Bundesliga", path: "/partidos?liga=Alemania&temp=2024-2025&jornada=1" },
+];
 
   return (
     <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <style>{`
-  .navbar { position: relative; z-index: 999; } /* Asegura que la nav sea superior */
-  .nav-item-container { position: relative; display: flex; align-items: center; }
-  
+  /* Aseguramos que el nav no limite el contenido */
+  .navbar { 
+    position: relative; 
+    z-index: 999; 
+    overflow: visible; /* CRUCIAL: Esto permite que el dropdown salga fuera */
+  } 
+
+  .nav-item-container { 
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    overflow: visible; /* Importante para el contenedor del menú */
+  }
+ 
   /* Menú flotante moderno */
   .leagues-dropdown-menu { 
     position: absolute; 
     top: 100%; 
     left: 0; 
+    margin-top: 10px; /* Separación para que no sea un "corte" seco */
     background: #151824; 
     border: 1px solid #293047; 
     padding: 10px 0; 
     border-radius: 12px; 
     min-width: 180px; 
-    z-index: 9999; /* PRIORIDAD MÁXIMA */
+    z-index: 9999; 
     box-shadow: 0 15px 30px rgba(0,0,0,0.4); 
     
-    /* Animación */
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
+    transition: all 0.25s ease-in-out;
+  }
+  
+  /* El hover ahora activa la visibilidad sin clips */
+  .nav-item-container:hover .leagues-dropdown-menu { 
+    display: block; 
+    opacity: 1; 
+    visibility: visible; 
+    transform: translateY(0); 
+  }
     transition: all 0.25s ease-in-out;
   }
   
