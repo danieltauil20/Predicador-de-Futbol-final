@@ -28,10 +28,10 @@ export const Navbar = ({ openModal }) => {
   ];
 
   const leagueLinks = [
-  { name: "La Liga", path: "/partidos?liga=España&temp=2024-2025&jornada=1" },
-  { name: "Premier League", path: "/partidos?liga=Inglaterra&temp=2024-2025&jornada=1" },
-  { name: "Serie A", path: "/partidos?liga=Italia&temp=2024-2025&jornada=1" },
-  { name: "Bundesliga", path: "/partidos?liga=Alemania&temp=2024-2025&jornada=1" },
+  { name: "La Liga", path: "/liga/la-liga" },
+  { name: "Premier League", path: "/liga/premier-league" },
+  { name: "Serie A", path: "/liga/serie-a" },
+  { name: "Bundesliga", path: "/liga/bundesliga" },
 ];
 
   return (

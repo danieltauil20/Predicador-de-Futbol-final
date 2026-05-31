@@ -13,16 +13,15 @@ export const Layout = () => {
   return (
     <ScrollToTop>
       <div style={{ background: "#26753c", minHeight: "100vh" }}>
-
         <Navbar openModal={() => setOpen(true)} />
-
         <AuthModal isOpen={open} onClose={() => setOpen(false)} />
 
-
         <div className="comentarios-container">
-          <Outlet />
+          <Outlet /> {/* Aquí debería aparecer tu página de Liga */}
         </div>
-        <TablaPosiciones ligaId="140" nombreLiga="La Liga" />
+
+        {/* COMENTAMOS ESTA LÍNEA PARA PROBAR */}
+        {/* <TablaPosiciones ligaId="140" nombreLiga="La Liga" /> */}
 
         <Footer />
       </div>

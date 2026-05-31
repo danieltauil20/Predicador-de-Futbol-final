@@ -2,20 +2,19 @@ import { useState } from "react";
 import PartidosTop from "../components/PartidosTop";
 import ComentariosPartido from "../components/ComentariosPartido";
 import ForoMini from "../components/ForoMini";
-import Normas from "../components/Normas"; // 🔥 AÑADIDO
+import Normas from "../components/Normas";
 
-export default function Comentarios() {
+// Cambiado: quitamos el 'export default' y ponemos 'export const'
+export const Comentarios = () => {
   const [partido, setPartido] = useState(null);
 
   return (
     <div className="pagina">
-
       <h1 className="titulo">🔥 Partidos TOP</h1>
 
       <PartidosTop setPartido={setPartido} />
 
       <div className="zona-inferior">
-
         <div className="foro-grande">
           <ForoMini />
         </div>
@@ -23,12 +22,9 @@ export default function Comentarios() {
         <div className="comentarios-grande">
           <ComentariosPartido partido={partido} />
         </div>
-
       </div>
 
-      {/* 🔥 AQUÍ VA EL LATERAL */}
       <Normas />
-
     </div>
   );
-}
+};
