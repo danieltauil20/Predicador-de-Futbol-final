@@ -1,3 +1,11 @@
+/* 1. Importación de la fuente (Debe ser la primera línea) */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+
+/* 2. Reset y Aplicación Global de la fuente */
+* {
+  box-sizing: border-box;
+}
+
 body {
   overflow-x: hidden;
   margin: 0;
