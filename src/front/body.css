@@ -168,3 +168,9 @@ body {
   background: #0ee7ac;
   border-radius: 10px;
 }
+
+.match-card:hover {
+    transform: translateY(-5px);
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+}
