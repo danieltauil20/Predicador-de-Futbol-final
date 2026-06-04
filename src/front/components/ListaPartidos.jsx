@@ -62,6 +62,7 @@ export const ListaPartidos = ({ ligaId }) => {
 
     return (
         <div style={pageStyle}>
+            {/* Solo dejamos este título para que quede centrado encima de los filtros */}
             <h2 style={h2Style}>{ligaId.toUpperCase()}</h2>
 
             <div style={filterContainerStyle}>
@@ -81,31 +82,30 @@ export const ListaPartidos = ({ ligaId }) => {
                 {partidosFiltrados.map((p, i) => (
                     <div
                         key={i}
-                        style={{ ...matchRowStyle, transition: "transform 0.2s ease, box-shadow 0.2s ease" }}
+                        style={{ ...matchRowStyle, transition: "transform 0.2s ease" }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = "scale(1.02)";
-                            e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
                         }}
                         onMouseLeave={(e) => {
                             e.currentTarget.style.transform = "scale(1)";
-                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
                         }}
                         onClick={() => setPartidoSeleccionado(p)}
                     >
-                        {/* Aquí va todo el contenido que ya tienes dentro de la fila */}
+                        {/* EQUIPO LOCAL */}
                         <div style={teamLocalWrapperStyle}>
-                            <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#26753c", marginRight: "8px" }}></div>
-
+                            {/* Eliminado el punto rojo */}
                             <img src={getLogoPath(p.HomeTeam)} alt={p.HomeTeam} style={logoStyle} />
                             <span style={teamNameStyle}>{p.HomeTeam}</span>
                         </div>
 
+                        {/* MARCADOR CENTRAL */}
                         <div style={scoreBoxStyle}>
                             <div style={numberCardStyle}>{p.FTHG}</div>
-                            <div style={{ fontWeight: "800", color: "#FFFFFF", margin: "0 8px" }}>-</div>
+                            <div style={scoreDividerStyle}>-</div>
                             <div style={numberCardStyle}>{p.FTAG}</div>
                         </div>
 
+                        {/* EQUIPO VISITANTE */}
                         <div style={teamAwayWrapperStyle}>
                             <span style={teamNameStyle}>{p.AwayTeam}</span>
                             <img src={getLogoPath(p.AwayTeam)} alt={p.AwayTeam} style={logoStyle} onError={(e) => { e.target.style.display = 'none'; }} />
@@ -114,7 +114,7 @@ export const ListaPartidos = ({ ligaId }) => {
                 ))}
             </div>
 
-            {/* MODAL ESTRUCTURADO Y VERDE */}
+            {/* MODAL (SIN CAMBIOS) */}
             {partidoSeleccionado && (
                 <div style={modalOverlayStyle} onClick={() => setPartidoSeleccionado(null)}>
                     <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
@@ -166,52 +166,66 @@ export const ListaPartidos = ({ ligaId }) => {
     );
 };
 
-// --- ESTILOS DE LA PANTALLA PRINCIPAL (VERDE ORIGINAL) ---
+// --- ESTILOS DE LA PANTALLA PRINCIPAL ---
 const pageStyle = { fontFamily: "'Poppins', sans-serif", backgroundColor: "transparent", minHeight: "100vh", padding: "20px", display: "flex", flexDirection: "column", alignItems: "center" };
 const h2Style = { color: "#FFFFFF", fontWeight: "700", fontSize: "28px", marginBottom: "20px" };
 const filterContainerStyle = { display: "flex", gap: "12px", marginBottom: "20px" };
-const pillSelectStyle = { backgroundColor: "#1E293B", color: "#FFFFFF", border: "none", padding: "12px 28px", borderRadius: "24px", fontWeight: "500", fontSize: "15px", cursor: "pointer", outline: "none" };
+const pillSelectStyle = {
+    background: "#1F2A44",
+    color: "#FFFFFF",
+    border: "1px solid rgba(255,255,255,0.08)",
+    padding: "12px 28px",
+    borderRadius: "24px",
+    fontWeight: "600",
+    fontSize: "15px",
+    cursor: "pointer",
+    outline: "none"
+};
 const listContainerStyle = { width: "100%", maxWidth: "1100px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(480px, 1fr))", gap: "15px", padding: "12px" };
+
+// AJUSTES APLICADOS AQUÍ PARA DISEÑO PLANO
 const matchRowStyle = {
     display: "grid",
     gridTemplateColumns: "1fr auto 1fr",
     alignItems: "center",
     padding: "20px 24px",
-    // Usamos un tono verde ligeramente más claro que el fondo, con una opacidad para integrar
-    backgroundColor: "#1E293B",
-    // Un borde sutil de 1px que le da definición sin ser un "marco" pesado
-    border: "1px solid rgba(255, 255, 255, 0.15)",
-    borderRadius: "10px",
-    boxShadow: "none",
+    backgroundColor: "#E2E8F0",
+    backdropFilter: "blur(8px)",
+    border: "1px solid rgba(255,255,255,0.25)",
+    borderRadius: "16px",
     cursor: "pointer",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
-    marginBottom: "12px",
-    transition: "all 0.3s ease"
+    marginBottom: "12px"
+    // Eliminado el box-shadow negro
 };
+
 const teamLocalWrapperStyle = { display: "flex", alignItems: "center", gap: "14px", justifyContent: "flex-start" };
 const teamAwayWrapperStyle = { display: "flex", alignItems: "center", gap: "14px", justifyContent: "flex-end" };
-const logoStyle = { width: "50px", height: "50px", objectFit: "contain", flexShrink: 0 };
+const logoStyle = {
+    width: "50px",
+    height: "50px",
+    objectFit: "contain",
+    flexShrink: 0,
+};
 const teamNameStyle = {
-    color: "#FFFFFF",
+    color: "#1F2A44",
     fontWeight: "600",
     fontSize: "15px"
 };
 const scoreBoxStyle = { display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", padding: "0 20px" };
-const scoreNumberStyle = { fontWeight: "800", fontSize: "16px", color: "white" };
-const scoreDividerStyle = { margin: "0 8px", fontWeight: "800", fontSize: "16px", color: "white" };
+const scoreDividerStyle = { margin: "0 8px", fontWeight: "800", fontSize: "16px", color: "#1F2A44" }; // Color unificado al navy
+
+// AJUSTE DE CONTRASTE APLICADO AQUÍ
 const numberCardStyle = {
-    backgroundColor: "white", // Un rojo intenso pero profesional
-    color: "#2A394E",
+    backgroundColor: "#A5D6A7",
+    color: "#1F2A44", // Cambiado a Azul Oscuro/Navy para mejorar la lectura
     padding: "6px 16px",
     borderRadius: "8px",
     fontWeight: "800",
     fontSize: "17px",
-    textAlign: "center",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+    textAlign: "center"
 };
 
-
-// --- ESTILOS DEL MODAL (VERDE ORIGINAL) ---
+// --- ESTILOS DEL MODAL (VERDE ORIGINAL MANTENIDO) ---
 const modalOverlayStyle = { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000, padding: "20px" };
 const modalContentStyle = { backgroundColor: "#1B4326", borderRadius: "12px", width: "100%", maxWidth: "540px", maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 20px 50px rgba(0,0,0,0.5)", overflow: "hidden", border: "1px solid #26753c" };
 const modalTopBarStyle = { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 24px", backgroundColor: "#26753c", borderBottom: "1px solid rgba(255,255,255,0.1)" };

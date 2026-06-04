@@ -28,11 +28,11 @@ export const Navbar = ({ openModal }) => {
   ];
 
   const leagueLinks = [
-  { name: "La Liga", path: "/liga/la-liga" },
-  { name: "Premier League", path: "/liga/premier-league" },
-  { name: "Serie A", path: "/liga/serie-a" },
-  { name: "Bundesliga", path: "/liga/bundesliga" },
-];
+    { name: "La Liga", path: "/liga/la-liga" },
+    { name: "Premier League", path: "/liga/premier-league" },
+    { name: "Serie A", path: "/liga/serie-a" },
+    { name: "Bundesliga", path: "/liga/bundesliga" },
+  ];
 
   return (
     <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
@@ -168,3 +168,13 @@ export const Navbar = ({ openModal }) => {
     </nav>
   );
 };
+
+function App() {
+  return (
+    <div>
+      <Navbar />
+      <WorldCupCarousel /> {/* Justo aquí */}
+      <ListaPartidos ligaId="serie-a" />
+    </div>
+  );
+}

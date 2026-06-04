@@ -1,27 +1,29 @@
 import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom"; // IMPORTANTE
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import AuthModal from "./components/AuthModal";
-import { Home } from "./pages/Home"; // <- AÑADIDA: Tu página principal con las tarjetas
-import { Liga } from "./pages/Liga"; // Asegúrate de tener este archivo
-import { DetallePartido } from "./pages/DetallePartido"; // Tu nueva página
+import { Home } from "./pages/Home";
+import { Liga } from "./pages/Liga";
+import { DetallePartido } from "./pages/DetallePartido";
+import { WorldCupCarousel } from "./components/WorldCupCarousel";
 
 function App() {
   const [open, setOpen] = useState(false);
 
   return (
     <BrowserRouter>
-      {/* El Navbar está fuera de <Routes>, lo que significa que siempre será visible */}
+      {/* El Navbar siempre visible */}
       <Navbar openModal={() => setOpen(true)} />
+
+      {/* --- AÑADE ESTO AQUÍ --- */}
+      <WorldCupCarousel />
+      {/* ------------------------ */}
 
       {/* El modal centralizado */}
       <AuthModal isOpen={open} onClose={() => setOpen(false)} />
 
       <Routes>
-        {/* NUEVO: Ruta principal que mostrará las tarjetas al entrar a la web */}
         <Route path="/" element={<Home />} />
-
-        {/* Aquí tus rutas existentes */}
         <Route path="/partidos" element={<Liga />} />
         <Route path="/partido/:id" element={<DetallePartido />} />
       </Routes>
