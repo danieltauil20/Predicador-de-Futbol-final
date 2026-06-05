@@ -6,9 +6,9 @@ export const Navbar = ({ openModal }) => {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  const LIGAS = ["LaLiga", "Premier League", "Serie A", "Bundesliga"];
-
+  
+  // Estado para controlar la apertura del modal de ligas
+  const [ligasModalOpen, setLigasModalOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -16,7 +16,6 @@ export const Navbar = ({ openModal }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lista exacta que pediste
   const navItems = [
     { name: "Inicio", path: "/" },
     { name: "Partidos", path: "/partidos" },
@@ -35,146 +34,126 @@ export const Navbar = ({ openModal }) => {
   ];
 
   return (
-    <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
-      <style>{`
-  /* Aseguramos que el nav no limite el contenido */
-  .navbar { 
-    position: relative; 
-    z-index: 999; 
-    overflow: visible; /* CRUCIAL: Esto permite que el dropdown salga fuera */
-  } 
-
-  .nav-item-container { 
-    position: relative; 
-    display: flex; 
-    align-items: center; 
-    overflow: visible; /* Importante para el contenedor del menú */
-  }
- 
-  /* Menú flotante moderno */
-  .leagues-dropdown-menu { 
-    position: absolute; 
-    top: 100%; 
-    left: 0; 
-    margin-top: 10px; /* Separación para que no sea un "corte" seco */
-    background: #151824; 
-    border: 1px solid #293047; 
-    padding: 10px 0; 
-    border-radius: 12px; 
-    min-width: 180px; 
-    z-index: 9999; 
-    box-shadow: 0 15px 30px rgba(0,0,0,0.4); 
-    
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.25s ease-in-out;
-  }
-  
-  /* El hover ahora activa la visibilidad sin clips */
-  .nav-item-container:hover .leagues-dropdown-menu { 
-    display: block; 
-    opacity: 1; 
-    visibility: visible; 
-    transform: translateY(0); 
-  }
-    transition: all 0.25s ease-in-out;
-  }
-  
-  /* Mostrar al pasar el ratón */
-  .nav-item-container:hover .leagues-dropdown-menu { 
-    display: block; 
-    opacity: 1; 
-    visibility: visible; 
-    transform: translateY(0); 
-  }
-  
-  .leagues-dropdown-menu a { 
-    display: block; 
-    padding: 12px 20px; 
-    color: #b2bdcd; 
-    text-decoration: none; 
-    font-size: 0.95rem; 
-    transition: 0.2s; 
-  }
-  
-  .leagues-dropdown-menu a:hover { 
-    color: #0ee7ac; 
-    background: #1a1e2d; 
-    padding-left: 25px; /* Efecto movimiento moderno */
-  }
-`}</style>
-
-      <Link to="/" className="logo">
-        <img src={logo} alt="GolHub Logo" />
-      </Link>
-
-      <ul className="nav-links">
-        {navItems.map((item) =>
-          item.name === "Partidos" ? (
-            <li key={item.path} className="nav-item-container">
-              <Link
-                to={item.path}
-                className={location.pathname === item.path ? "active" : ""}
+    <>
+      {/* ========================================================
+          MODAL CENTRADO DE LIGAS (Reutiliza tus estilos globales)
+          ======================================================== */}
+      {ligasModalOpen && (
+        <div className="modal-overlay" onClick={() => setLigasModalOpen(false)}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()} style={{ width: "420px" }}>
+            
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <h3 style={{ margin: 0, color: "#ffffff", fontSize: "1.3rem", fontWeight: "700" }}>
+                Selecciona una Competición
+              </h3>
+              <button 
+                onClick={() => setLigasModalOpen(false)} 
+                style={{ background: "transparent", border: "none", color: "#bfc3ca", fontSize: "1.2rem", cursor: "pointer" }}
               >
-                {item.name}
-              </Link>
-              {/* Desplegable de Ligas */}
-              <div className="leagues-dropdown-menu">
-                {leagueLinks.map((l) => (
-                  <Link key={l.path} to={l.path}>
-                    {l.name}
-                  </Link>
-                ))}
-              </div>
-            </li>
-          ) : (
-            <li key={item.path}>
-              <Link
-                to={item.path}
-                className={location.pathname === item.path ? "active" : ""}
-              >
-                {item.name}
-              </Link>
-            </li>
-          )
-        )}
-      </ul>
-
-      <div className="navbar-right">
-        <button className="btn-primary" onClick={openModal}>Unirme</button>
-        <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? "✖" : "☰"}</div>
-      </div>
-
-      {menuOpen && (
-        <div className="mobile-menu">
-          {navItems.map((item) => (
-            <div key={item.path}>
-              <Link to={item.path} onClick={() => setMenuOpen(false)}>{item.name}</Link>
-              {item.name === "Partidos" && (
-                <div style={{ paddingLeft: '20px', borderLeft: '2px solid #0ee7ac', marginBottom: '10px' }}>
-                  {leagueLinks.map(l => (
-                    <Link key={l.path} to={l.path} onClick={() => setMenuOpen(false)} style={{ fontSize: '0.8rem', display: 'block', padding: '5px 0' }}>
-                      {l.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
+                ✖
+              </button>
             </div>
-          ))}
-          <button className="btn-primary" onClick={() => { setMenuOpen(false); openModal(); }}>Unirme</button>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {leagueLinks.map((l) => (
+                <Link 
+                  key={l.path} 
+                  to={l.path} 
+                  onClick={() => setLigasModalOpen(false)}
+                  className="continue"
+                  style={{ 
+                    textDecoration: "none", 
+                    display: "flex", 
+                    alignItems: "center", 
+                    justifyContent: "center",
+                    gap: "10px",
+                    padding: "14px",
+                    height: "auto",
+                    fontSize: "1rem"
+                  }}
+                >
+                  <span>⚽</span> {l.name}
+                </Link>
+              ))}
+            </div>
+
+            <div className="actions" style={{ marginTop: "20px" }}>
+              <button className="cancel" onClick={() => setLigasModalOpen(false)}>
+                Cerrar
+              </button>
+            </div>
+
+          </div>
         </div>
       )}
-    </nav>
+
+      {/* ========================================================
+          NAVBAR PRINCIPAL
+          ======================================================== */}
+      <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
+        <style>{`
+          .navbar { 
+            position: static !important; 
+            z-index: 999; 
+            overflow: visible !important;
+          } 
+        `}</style>
+
+        <Link to="/" className="logo">
+          <img src={logo} alt="GolHub Logo" />
+        </Link>
+
+        <ul className="nav-links">
+          {navItems.map((item) =>
+            item.name === "Partidos" ? (
+              <li key={item.path}>
+                <a
+                  href="#ligas"
+                  className={location.pathname === item.path ? "active" : ""}
+                  onClick={(e) => { e.preventDefault(); setLigasModalOpen(true); }}
+                  style={{ cursor: "pointer" }}
+                >
+                  {item.name} <span style={{ fontSize: "10px", marginLeft: "2px" }}>▼</span>
+                </a>
+              </li>
+            ) : (
+              <li key={item.path}>
+                <Link
+                  to={item.path}
+                  className={location.pathname === item.path ? "active" : ""}
+                >
+                  {item.name}
+                </Link>
+              </li>
+            )
+          )}
+        </ul>
+
+        <div className="navbar-right">
+          <button className="btn-primary" onClick={openModal}>Unirme</button>
+          <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? "✖" : "☰"}</div>
+        </div>
+
+        {menuOpen && (
+          <div className="mobile-menu">
+            {navItems.map((item) => (
+              <div key={item.path}>
+                <Link to={item.path} onClick={() => setMenuOpen(false)}>{item.name}</Link>
+                {item.name === "Partidos" && (
+                  <div style={{ paddingLeft: '20px', borderLeft: '2px solid #0ee7ac', marginBottom: '10px' }}>
+                    {leagueLinks.map(l => (
+                      <Link key={l.path} to={l.path} onClick={() => setMenuOpen(false)} style={{ fontSize: '0.8rem', display: 'block', padding: '5px 0' }}>
+                        {l.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+            <button className="btn-primary" onClick={() => { setMenuOpen(false); openModal(); }}>Unirme</button>
+          </div>
+        )}
+      </nav>
+    </>
   );
 };
-
-function App() {
-  return (
-    <div>
-      <Navbar />
-      <WorldCupCarousel /> {/* Justo aquí */}
-      <ListaPartidos ligaId="serie-a" />
-    </div>
-  );
-}

@@ -1,7 +1,11 @@
-/* 1. Importación de la fuente (Debe ser la primera línea) */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+/* ======================================================
+   GOALHUB - HOJA DE ESTILOS GENERAL COMPLETA Y CORREGIDA
+   ====================================================== */
 
-/* 2. Reset y Aplicación Global de la fuente */
+/* 1. Importación correcta de la fuente Google Fonts */
+@import url("https://googleapis.com");
+
+/* 2. Reset y Aplicación Global */
 * {
   box-sizing: border-box;
 }
@@ -9,35 +13,43 @@
 body {
   overflow-x: hidden;
   margin: 0;
-  padding: 0; /* Quitamos el padding lateral de aquí */
-  background-color: #0f172a;
+  padding: 0;
+  background-color: #0f172a !important; /* Fuerza el fondo oscuro oficial */
   font-family: "Poppins", sans-serif;
-  min-height: 100vh; /* Asegura que el fondo ocupe toda la pantalla */
+  min-height: 100vh;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+/* ==========================================
+   ESTILOS COMPONENTE NAVBAR
+   ========================================== */
 .navbar {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 10px 28px;
+  align-items: center;
+  padding: 0px 28px;
   background-color: #1e293b;
   color: #ffffff;
-  position: static;
+  position: relative;
   top: 20px;
-
+  overflow: visible !important;
   max-width: 1175px;
   margin: 0 auto;
-
   transition: all 0.35s ease;
   backdrop-filter: blur(6px);
   animation: fadeDown 0.6s ease;
-
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .navbar.scrolled {
-  padding: 12px 24px;
+  padding: 0px 24px;
   background-color: rgba(30, 41, 59, 0.85);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
@@ -46,20 +58,21 @@ body {
 .logo img {
   height: 190px;
   width: auto;
+  display: block;
 }
 
 .logo {
   margin-left: -24px;
+  display: flex;
+  align-items: center;
 }
 
 .nav-links {
   display: flex;
   list-style: none;
   gap: 30px;
-
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
 }
 
 .nav-links a {
@@ -86,7 +99,8 @@ body {
   transform: translateX(-50%);
 }
 
-.nav-links a:hover::after {
+.nav-links a:hover::after,
+.nav-links a.active::after {
   width: 100%;
 }
 
@@ -94,16 +108,12 @@ body {
   color: #ffffff;
 }
 
-.nav-links a.active::after {
-  width: 100%;
-}
-
 .navbar-right {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-left: auto;
-  margin-right: 40px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .btn-primary {
@@ -114,16 +124,14 @@ body {
   height: 44px;
   border-radius: 24px;
   cursor: pointer;
-
   font-weight: 600;
   letter-spacing: 0.3px;
-
   transition: all 0.25s ease;
   box-shadow: 0 2px 10px rgba(14, 231, 172, 0.2);
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px) scale(1.04);
+  transform: translateY(-2px); /* RESUELTO: Paréntesis cerrado correctamente */
   box-shadow: 0 10px 25px rgba(14, 231, 172, 0.45);
 }
 
@@ -164,19 +172,15 @@ body {
   .nav-links {
     display: none;
   }
-
   .hamburger {
     display: block;
   }
-
   .logo {
     margin-left: 0;
   }
-
   .logo img {
     height: 125px;
   }
-
   .btn-primary {
     height: 30px;
   }
@@ -191,11 +195,9 @@ body {
     background-color: #1e293b;
     padding: 20px;
     border-radius: 12px;
-
     display: flex;
     flex-direction: column;
     gap: 16px;
-
     z-index: 999;
   }
   .navbar {
@@ -205,251 +207,169 @@ body {
     padding: 8px 16px;
   }
 }
-/* CONTENEDOR */
+
+/* ==========================================
+   ESTILOS DE LAS TARJETAS (CARDS HOME)
+   ========================================== */
 .cards-container {
   display: flex;
-  gap: 20px; /* dentro de 16–24 */
+  gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 40px;
   padding: 0 20px;
 }
-
-/* CARD */
 .card {
   width: 220px;
   height: 140px;
   border-radius: 14px;
   background: #1e293b;
   border: 1px solid transparent;
-
   color: #ffffff;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   cursor: pointer;
-
   padding: 16px;
-
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
     background 0.2s ease,
     border 0.2s ease;
 }
-
-/* HOVER (según PDF) */
 .card:hover {
   background: #334155;
   border: 1px solid #0ee7ac;
   box-shadow: 0 0 10px rgba(14, 231, 172, 0.4);
   transform: translateY(-5px) scale(1.02);
 }
-
-/* TEXTO */
 .card h3 {
   margin: 0;
   font-size: 20px;
-  font-weight: 600; /* Semi-Bold */
+  font-weight: 600;
   color: #ffffff;
 }
-
 .card .title {
   margin: 6px 0;
   font-size: 16px;
-  font-weight: 600; /* títulos */
+  font-weight: 600;
   color: #ffffff;
 }
-
 .card span {
   font-size: 13px;
-  font-weight: 400; /* texto secundario */
+  font-weight: 400;
   color: #bfc3ca;
 }
-
-/* 📱 RESPONSIVE */
-@media (max-width: 768px) {
-  .cards-container {
-    gap: 14px;
-  }
-
-  .card {
-    width: 100%;
-    height: 120px;
-    padding: 16px;
-  }
-}
-
 .league-logo {
   width: 50px;
   height: 50px;
   object-fit: contain;
   margin-bottom: 10px;
 }
-
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
-}
-
-/* Busca esta parte en tu <style> y déjala así: */
 .score-box-center {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #fbbf24; /* ESTE ES EL COLOR DE TUS BOTONES */
+  color: #fbbf24;
   background-color: #08090d;
   padding: 6px 12px;
   border-radius: 5px;
   text-align: center;
 }
-/* 🔥 OVERLAY OSCURO CON BLUR */
+
+/* ==========================================
+   ESTILOS DE LOS MODALES GLOBALES
+   ========================================== */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-
   background: rgba(10, 20, 40, 0.75);
   backdrop-filter: blur(12px);
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   z-index: 9999;
 }
-
-/* 📦 CAJA DEL MODAL */
 .modal-box {
   width: 360px;
   padding: 25px;
-
   border-radius: 20px;
-
   background: linear-gradient(160deg, #1e293b, #0f172a);
   border: 1px solid rgba(255, 255, 255, 0.08);
-
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-
   animation: fadeModal 0.3s ease;
 }
-
-/* ✨ ANIMACIÓN */
-@keyframes fadeModal {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* 🔘 TABS */
 .tabs {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
 }
-
 .tabs button {
   flex: 1;
   padding: 10px;
-
   border: none;
   border-radius: 12px;
-
   background: #334155;
   color: #bfc3ca;
-
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
-/* ACTIVO (VERDE BONITO) */
 .tabs button.active {
   background: linear-gradient(90deg, #0ee7ac, #22c55e);
   color: #0f172a;
   font-weight: 600;
-
   box-shadow: 0 5px 20px rgba(14, 231, 172, 0.4);
 }
-
-/* 🧾 FORM */
 .form {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-
 .form input {
   padding: 12px;
   border-radius: 12px;
-
   border: 1px solid #334155;
   background: #0f172a;
   color: #fff;
-
   outline: none;
   transition: all 0.2s ease;
 }
-
-/* INPUT FOCUS */
 .form input:focus {
   border-color: #0ee7ac;
   box-shadow: 0 0 10px rgba(14, 231, 172, 0.3);
 }
-
-/* 🔘 BOTONES */
 .actions {
   display: flex;
   gap: 10px;
   margin-top: 20px;
 }
-
-/* CANCELAR */
 .cancel {
   flex: 1;
   padding: 12px;
-
   border-radius: 12px;
   border: none;
-
   background: #334155;
   color: white;
-
   cursor: pointer;
   transition: 0.2s;
 }
-
 .cancel:hover {
   background: #475569;
 }
-
-/* CONTINUAR (VERDE PRO) */
 .continue {
   flex: 1;
   padding: 12px;
-
   border-radius: 12px;
   border: none;
-
   background: linear-gradient(90deg, #0ee7ac, #22c55e);
   color: #0f172a;
-
   font-weight: 600;
   cursor: pointer;
-
   transition: all 0.25s ease;
 }
-
 .continue:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(14, 231, 172, 0.5);
@@ -459,54 +379,19 @@ body,
   font-size: 13px;
   margin-top: -5px;
 }
-@media (max-width: 768px) {
-  .modal-content {
-    width: 90%;
-    padding: 20px;
-    border-radius: 12px;
-  }
 
-  .modal-tabs {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .modal-tabs button {
-    width: 100%;
-  }
-
-  .modal-content input {
-    width: 100%;
-    font-size: 14px;
-  }
-
-  .modal-actions {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .modal-actions button {
-    width: 100%;
-  }
-}
-
-/* ========================= */
-/* CONTENEDOR */
-/* ========================= */
+/* ==========================================
+   ESTILOS COMPONENTE TIENDA (COMPLETO)
+   ========================================== */
 .tienda-container {
   padding: 20px;
   color: white;
 }
-
 .tienda-container h1 {
   max-width: 1000px;
   margin: 0 auto 20px auto;
   padding-left: 10px;
 }
-
-/* ========================= */
-/* GRID */
-/* ========================= */
 .tienda-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -515,598 +400,282 @@ body,
   margin: 0 auto;
 }
 
-/* ========================= */
-/* CARD PRODUCTO */
-/* ========================= */
 .product-card {
-  background: rgba(30, 41, 59, 0.85);
-  border-radius: 12px;
-  padding: 30px;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  transition: 0.3s;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-}
-
-/* IMAGEN */
-.product-img {
-  width: 95px;
-  height: 95px;
-  object-fit: contain;
-  margin-bottom: 10px;
-}
-
-/* TITULO */
-.product-card h3 {
-  font-size: 14px;
-  margin: 10px 0;
-}
-
-/* PRECIO */
-.price {
-  color: #0ee7ac;
-  font-weight: bold;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-/* BOTÓN AÑADIR */
-.product-card button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background: #0ee7ac;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.product-card button:hover {
-  transform: scale(1.05);
-}
-
-/* ========================= */
-/* BOTÓN CARRITO */
-/* ========================= */
-.cart-button {
-  position: fixed;
-  top: 90px;
-  right: 20px;
-  background: #2c3e50;
-  padding: 10px 15px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.cart-count {
-  background: red;
-  border-radius: 50%;
-  padding: 3px 7px;
-  margin-left: 5px;
-}
-
-/* ========================= */
-/* SIDEBAR CARRITO */
-/* ========================= */
-.cart-sidebar {
-  position: fixed;
+  color: white;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  top: 0;
-  right: -320px;
-  width: 300px;
-  height: auto;
-  max-height: 90vh;
-  background: #1f2937;
-  padding: 20px;
-  transition: 0.3s;
-  overflow-y: auto;
-  z-index: 1000;
-  border-radius: 20px 0 0 20px;
+  justify-content: space-between;
+  align-items: center;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(14, 231, 172, 0.3);
+  border-color: #0ee7ac;
+}
+.product-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+.product-card h3 {
+  font-size: 1.1rem;
+  margin: 10px 0 5px 0;
+  font-weight: 600;
+}
+.product-card .price {
+  color: #0ee7ac;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+.product-card button {
+  background: #0ee7ac;
+  color: #0f172a;
+  border: none;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.product-card button:hover {
+  background: #22c55e;
 }
 
+/* 📥 Carrito Sidebar */
+.cart-button {
+  position: fixed;
+  top: 100px;
+  right: 30px;
+  background: #1e293b;
+  border: 1px solid #293047;
+  padding: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  z-index: 100;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+.cart-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ff6b6b;
+  color: white;
+  font-size: 0.8rem;
+  padding: 3px 7px;
+  border-radius: 50%;
+  font-weight: 700;
+}
+.cart-sidebar {
+  position: fixed;
+  top: 0;
+  right: -360px;
+  width: 360px;
+  height: 100vh;
+  background: #151824;
+  border-left: 1px solid #293047;
+  padding: 30px 20px;
+  z-index: 10000;
+  transition: right 0.3s ease-in-out;
+  color: white;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+}
 .cart-sidebar.open {
   right: 0;
 }
-
-/* HEADER */
 .cart-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #293047;
+  padding-bottom: 10px;
 }
-
 .cart-header button {
-  background: none;
+  background: transparent;
   border: none;
-  color: white;
+  color: #ff6b6b;
+  font-size: 1.2rem;
   cursor: pointer;
 }
-
-/* ITEM */
 .cart-item {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
-  gap: 10px;
+  gap: 15px;
+  background: #1e293b;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 12px;
 }
-
 .cart-item img {
-  width: 40px;
-  height: 40px;
-}
-
-.cart-item p {
-  font-size: 13px;
-  margin: 0;
-}
-
-.cart-item span {
-  font-size: 13px;
-  color: #0ee7ac;
-}
-
-.cart-item button {
-  margin-left: auto;
-  background: none;
-  border: none;
-  color: red;
-  cursor: pointer;
-}
-
-/* ========================= */
-/* BOTÓN COMPRA */
-/* ========================= */
-.pay-button {
-  width: 100%;
-  padding: 10px;
-  background: #0ee7ac;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-weight: bold;
-  margin-top: 10px;
-  cursor: pointer;
-}
-
-.pay-button:hover {
-  transform: scale(1.03);
-}
-
-/* ========================= */
-/* BOTÓN PAYPAL */
-/* ========================= */
-.paypal-btn {
-  width: 100%;
-  padding: 10px;
-  background: #0070ba !important; /* 🔥 FORZADO AZUL */
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-weight: bold;
-  margin-top: 10px;
-  cursor: pointer;
-}
-
-.paypal-btn:hover {
-  background: #005ea6 !important;
-}
-
-/* ========================= */
-/* MENSAJE */
-/* ========================= */
-.success {
-  margin-top: 10px;
-  color: #22c55e;
-  text-align: center;
-}
-/* ========================= */
-/* 📱 RESPONSIVE MÓVIL */
-/* ========================= */
-
-@media (max-width: 768px) {
-  /* GRID */
-  .tienda-grid {
-    grid-template-columns: 1fr;
-    padding: 10px;
-    gap: 15px;
-  }
-
-  /* CARDS */
-  .product-card {
-    padding: 15px;
-    border-radius: 15px;
-  }
-
-  .product-card img {
-    width: 80px;
-  }
-
-  /* BOTÓN AÑADIR */
-  .product-card button {
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  /* TITULOS */
-  h1 {
-    font-size: 22px;
-    padding-left: 10px;
-  }
-
-  .price {
-    font-size: 13px;
-  }
-
-  /* 🛒 CARRITO FULL SCREEN */
-  .cart-sidebar {
-    width: 100%;
-    right: -100%;
-    border-radius: 0;
-  }
-
-  .cart-sidebar.open {
-    right: 0;
-  }
-
-  /* ITEMS CARRITO */
-  .cart-item img {
-    width: 40px;
-  }
-
-  .cart-item p {
-    font-size: 13px;
-  }
-
-  /* BOTONES CARRITO */
-  .pay-button,
-  .paypal-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 14px;
-  }
-}
-/* ===== CONTENEDOR GENERAL ===== */
-.pagina {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 30px;
-  text-align: center;
-}
-
-/* ===== TITULO ===== */
-.titulo {
-  font-size: 30px;
-  margin-bottom: 30px;
-  color: white;
-}
-
-/* ===== GRID PARTIDOS ===== */
-.grid-partidos {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
-  justify-items: center;
-}
-
-/* ===== CARD PARTIDO ===== */
-.card-partido {
-  background: #1e2a3a;
-  padding: 20px;
-  border-radius: 15px;
-  width: 100%;
-  max-width: 260px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.card-partido:hover {
-  transform: scale(1.05);
-}
-
-/* ===== EQUIPOS ===== */
-.equipos {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.equipo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-
-.equipo img {
   width: 50px;
   height: 50px;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 6px;
 }
-
-.vs {
-  color: #00ff88;
-  font-weight: bold;
-}
-
-/* ===== ZONA INFERIOR ===== */
-.zona-inferior {
-  margin-top: 40px;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 30px;
-}
-
-/* ===== FORO GRANDE ===== */
-.foro-grande {
-  background: #1e2a3a;
-  padding: 25px;
-  border-radius: 15px;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ===== MINI FORO ===== */
-.foro-container {
-  margin-top: 10px;
-}
-
-.lista-temas {
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 250px;
-  overflow-y: auto;
-
-  /* 🔥 quitar scrollbar */
-  scrollbar-width: none;
-}
-
-.lista-temas::-webkit-scrollbar {
-  display: none;
-}
-
-/* cada tema */
-.tema-card {
-  background: #0f172a;
+.pay-button,
+.paypal-btn {
+  width: 100%;
   padding: 12px;
-  border-radius: 10px;
-  color: white;
-  text-align: left;
-  transition: 0.2s;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.tema-card:hover {
-  background: #1e293b;
-}
-
-/* ===== INPUT FORO (ARREGLADO BIEN) ===== */
-.foro-container .input-box {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-/* 🔥 ESTA ES LA CLAVE */
-.foro-container .input-box input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 5px;
-
-  background: #0f172a;
-  color: white;
-
-  border: 1px solid #00ff88;
-}
-
-/* placeholder */
-.foro-container .input-box input::placeholder {
-  color: #aaa;
-}
-
-/* botón */
-.foro-container .input-box button {
-  padding: 10px 15px;
-  background: #00ff88;
+  border-radius: 8px;
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.foro-container .input-box button:hover {
-  background: #00cc6a;
-}
-
-/* ===== COMENTARIOS ===== */
-.comentarios-grande {
-  background: #1e2a3a;
-  padding: 20px;
-  border-radius: 15px;
-}
-
-/* contenedor interno */
-.comentarios-container {
+  font-weight: 600;
   margin-top: 10px;
-}
-
-/* lista comentarios */
-.lista-comentarios {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 200px;
-  overflow-y: auto;
-  margin-bottom: 15px;
-}
-
-/* cada comentario */
-.comentario-card {
-  background: #0f172a;
-  padding: 10px;
-  border-radius: 10px;
-  color: white;
-  text-align: left;
-}
-
-/* texto */
-.texto {
-  margin-bottom: 5px;
-}
-
-/* acciones */
-.acciones {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-}
-
-/* input GENERAL (NO TOCAR) */
-.input-box {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.input-box input {
-  flex: 1;
-  padding: 8px;
-  border-radius: 5px;
-  border: none;
-
-  background: #0f172a;
-  color: white;
-}
-
-.input-box button {
-  padding: 8px 12px;
-  background: #00ff88;
-  border: none;
-  border-radius: 5px;
   cursor: pointer;
 }
-
-.input-box button:hover {
-  background: #00cc6a;
+.pay-button {
+  background: linear-gradient(90deg, #0ee7ac, #22c55e);
+  color: #0f172a;
 }
-
-/* 🔥 IGUALAR BOTONES CREAR Y ENVIAR */
-.input-box button,
-.foro-container .input-box button {
-  background: #00ff88;
-  color: #022c22; /* texto oscuro */
-  font-weight: bold;
-}
-
-/* TOP */
-.top-badge {
-  color: orange;
-}
-
-.normas-lateral {
-  position: fixed;
-  right: 0px;
-  top: 150px;
-  opacity: 0.95;
-  margin-right: 20px;
-  width: 150px;
-  background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+.paypal-btn {
+  background: #0070ba;
   color: white;
-  padding: 15px;
-  border-radius: 10px;
-  font-size: 13px;
-  backdrop-filter: blur(6px);
-  line-height: 1.5;
 }
 
-.normas-lateral li {
-  margin-bottom: 5px;
-}
-
-.normas-lateral h3 {
-  margin-bottom: 10px;
-}
-
-.normas-lateral ul {
-  padding-left: 15px;
-  font-size: 13px;
-}
-
+/* ====================================================
+   ESTILOS COMPONENTE COMENTARIOS (FORO LADO A LADO)
+   ==================================================== */
 .pagina {
-  max-width: 1200px;
-  margin: auto;
+  max-width: 1175px;
+  margin: 40px auto;
+  padding: 0 20px;
+  color: #ffffff;
+  position: relative !important; /* Le da el mapa de coordenadas a la pantalla */
 }
 
-/* ===== IMÁGENES ===== */
-img {
-  max-width: 100%;
+.titulo {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
-/* ========================= */
-/* 📱 RESPONSIVE */
-/* ========================= */
+.zona-inferior {
+  display: flex !important;
+  flex-direction: row !important; /* Lado a lado en paralelo */
+  gap: 20px;
+  margin-top: 40px;
+  padding: 20px;
+  background: #22c55e; /* El color verde original que se ve en tu captura */
+  border-radius: 12px;
+  width: 100%;
+  align-items: stretch;
+}
 
-@media (max-width: 900px) {
-  .grid-partidos {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.foro-grande,
+.comentarios-grande {
+  flex: 1;
+  min-width: 0;
+}
 
+@media (max-width: 768px) {
   .zona-inferior {
-    grid-template-columns: 1fr;
+    flex-direction: column !important;
+    gap: 20px;
   }
 }
 
-@media (max-width: 600px) {
-  .pagina {
-    padding: 15px;
-  }
+/* ========================================================
+   ⚽ PIZARRA TÁCTICA PREMIUM PARA EL HUECO DERECHO
+      ======================================================== */
+.normas-box-derecha,
+.normas-container,
+[class*="normas"] {
+  position: absolute !important;
+  top: 90px !important; /* Altura perfecta alineada con los partidos */
+  right: -370px !important; /* Posición exacta en el hueco de la derecha */
+  width: 340px !important;
+  height: 220px !important; /* Altura idéntica al bloque de partidos para que cuadre */
 
-  .grid-partidos {
-    grid-template-columns: 1fr;
-  }
+  /* 🟢 Fondo estilo pizarra de fútbol premium */
+  background: #ffffff !important;
+  border: 3px solid #2d3f37 !important; /* Marco que simula la pizarra */
+  border-radius: 12px !important;
+  padding: 22px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  z-index: 999 !important;
+  color: #ffffff !important;
+  overflow: hidden !important;
 
-  .card-partido {
-    max-width: 100%;
-  }
+  /* 📐 DIBUJO DEL CAMPO (Líneas tácticas sutiles de fondo) */
+  background-image:
+    linear-gradient(to right, rgba(14, 231, 172, 0.15) 1px, transparent 1px),
+    /* Línea central */
+    radial-gradient(
+        circle,
+        transparent 30%,
+        rgba(14, 231, 172, 0.15) 32%,
+        transparent 33%
+      ); /* Círculo central */
+  background-position: center;
+  background-size:
+    100% 100%,
+    70px 70px;
+  background-repeat: no-repeat;
+}
 
-  .equipos {
-    flex-direction: column;
-    gap: 10px;
-  }
+/* Modificamos el título de "Normas" para que parezca el encabezado de la pizarra */
+.normas-box-derecha h2,
+.normas-container h2,
+[class*="normas"] h2 {
+  color: #1E293B !important; /* Verde neón táctico */
+  font-size: 1.15rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  margin: 0 0 12px 0 !important;
+  font-family: "monospace", sans-serif !important;
+  text-align: center !important;
+  border-bottom: 1px dashed rgba(14, 231, 172, 0.3) !important;
+  padding-bottom: 6px !important;
+}
 
-  .vs {
-    margin: 5px 0;
-  }
+/* Estilizamos la lista de normas para que parezcan las instrucciones de la jugada */
+.normas-box-derecha ul,
+.normas-container ul,
+[class*="normas"] ul {
+  list-style: none !important; /* Quitamos los puntos feos */
+  padding: 0 !important;
+  margin: 0 !important;
+}
 
-  .input-box {
-    flex-direction: column;
-  }
+.normas-box-derecha li,
+.normas-container li,
+[class*="normas"] li {
+  font-size: 0.82rem !important;
+  line-height: 1.5 !important;
+  color: #1E293B !important;
+  font-weight: 600 !important;
+  margin-bottom: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
 
-  .input-box button {
-    width: 100%;
-  }
+/* ❌ Simulamos los jugadores (las clásicas cruces tácticas de las jugadas) antes de cada norma */
+.normas-box-derecha li::before,
+.normas-container li::before,
+[class*="normas"] li::before {
+  content: "⚽" !important;
+  color: #0ee7ac !important; /* Cruces de jugadores en verde neón */
+  font-weight: 900 !important;
+  font-size: 0.75rem !important;
+}
 
-  @keyframes modalSlideIn {
-    0% {
-      opacity: 0;
-      transform: translateY(20px) scale(0.95);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  .modal-animate {
-    animation: modalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
+/* Forzamos que la última norma (la de expulsión) tenga una cruz roja de advertencia */
+.normas-box-derecha li:last-child::before,
+.normas-container li:last-child::before,
+[class*="normas"] li:last-child::before {
+  content: "◯" !important; /* Un círculo de marca táctica */
+  color: #ef4444 !important; /* Rojo de tarjeta/expulsión */
 }

@@ -75,11 +75,88 @@ export default function PartidosTop({ setPartido }) {
   }, []);
 
   if (loading) {
-    return <p style={{ textAlign: "center" }}>Cargando partidos...</p>;
+    return <p style={{ textAlign: "center", color: "white" }}>Cargando partidos...</p>;
   }
 
   return (
     <div className="grid-partidos">
+      <style>{`
+        /* 🔴 REJILLA CORREGIDA: Fuerza a que se pongan uno al lado del otro */
+        .grid-partidos {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr); /* 🟢 Dos columnas fijas en PC */
+          gap: 16px;
+          margin-bottom: 5px;
+          width: 100%;
+        }
+
+        /* Tarjeta individual de cada partido */
+        .card-partido {
+          background: #1e293b;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 12px;
+          padding: 16px;
+          cursor: pointer;
+          transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-partido:hover {
+          transform: translateY(-3px);
+          border-color: #0ee7ac;
+          box-shadow: 0 8px 20px rgba(14, 231, 172, 0.15);
+        }
+
+        /* Contenedor Flex de los equipos */
+        .equipos {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+        }
+
+        /* Caja de cada equipo (Logo + Nombre) */
+        .equipo {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          flex: 1;
+        }
+
+        /* CONTROL DE LOGOS */
+        .equipo img {
+          width: 38px;
+          height: 38px;
+          object-fit: contain;
+          filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.15));
+        }
+
+        .equipo span {
+          font-size: 0.85rem;
+          color: #e2e8f0;
+          font-weight: 600;
+          text-align: center;
+          /* 🟢 Quitamos white-space para que si el nombre es largo baje de línea y no rompa la caja */
+          white-space: normal; 
+        }
+
+        /* Separador VS central */
+        .vs {
+          font-size: 0.8rem;
+          font-weight: 800;
+          color: #0ee7ac;
+          padding: 0 10px;
+          letter-spacing: 1px;
+        }
+
+        /* 📱 RESPONSIVO PARA MÓVILES EXTREMOS */
+        @media (max-width: 480px) {
+          .grid-partidos {
+            grid-template-columns: 1fr; /* En móviles muy pequeños pasa a una sola fila */
+          }
+        }
+      `}</style>
+
       {partidos.map((p, i) => {
         const homeName = p.teams ? p.teams.home.name : p.home;
         const awayName = p.teams ? p.teams.away.name : p.away;
@@ -113,4 +190,4 @@ export default function PartidosTop({ setPartido }) {
       })}
     </div>
   );
-}                                                                                                                
+}
