@@ -547,11 +547,11 @@ body,
    ESTILOS COMPONENTE COMENTARIOS (FORO LADO A LADO)
    ==================================================== */
 .pagina {
-  max-width: 1175px;
+  max-width: 1250px; /* 🟢 Un pelín más ancho para que respiren las 3 columnas holgadamente */
   margin: 40px auto;
   padding: 0 20px;
   color: #ffffff;
-  position: relative !important; /* Le da el mapa de coordenadas a la pantalla */
+  position: relative !important;
 }
 
 .titulo {
@@ -560,122 +560,271 @@ body,
   margin-bottom: 20px;
 }
 
+/* 🟢 CONTENEDOR FLUIDO: Configuración limpia de 3 columnas de espejo */
 .zona-inferior {
-  display: flex !important;
-  flex-direction: row !important; /* Lado a lado en paralelo */
-  gap: 20px;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 20px !important;
   margin-top: 40px;
-  padding: 20px;
-  background: #22c55e; /* El color verde original que se ve en tu captura */
-  border-radius: 12px;
-  width: 100%;
-  align-items: stretch;
+  padding: 0 20px;
+  align-items: stretch !important; /* IMPORTANTE: Hace que todas midan lo mismo */
 }
 
+/* Forzamos a que los bloques internos oscuros hereden la misma altura de contención */
 .foro-grande,
 .comentarios-grande {
   flex: 1;
   min-width: 0;
+  height: 360px !important; /* 🟢 Sincronizado con los 360px de la pizarra de normas */
+  box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
-  .zona-inferior {
-    flex-direction: column !important;
+/* RESPONSIVO COMPACTO PARA TABLETS Y MÓVILES */
+@media (max-width: 1024px) {
+  .zona-inferior { /* <--- CORREGIDO AQUÍ */
+    grid-template-columns: 1fr !important; /* Se apilan verticalmente si la pantalla es estrecha */
     gap: 20px;
+  }
+  .foro-grande,
+  .comentarios-grande {
+    height: auto !important; /* Se liberan del tamaño fijo en móviles */
   }
 }
 
 /* ========================================================
    ⚽ PIZARRA TÁCTICA PREMIUM PARA EL HUECO DERECHO
-      ======================================================== */
+   ======================================================== */
 .normas-box-derecha,
-.normas-container,
+.zon .normas-container,
 [class*="normas"] {
-  position: absolute !important;
-  top: 90px !important; /* Altura perfecta alineada con los partidos */
-  right: -370px !important; /* Posición exacta en el hueco de la derecha */
-  width: 340px !important;
-  height: 220px !important; /* Altura idéntica al bloque de partidos para que cuadre */
+  position: relative !important;
+  width: 100% !important;
+  height: 360px !important; /* Equilibrio de suelo milimétrico con Foro y Comentarios */
+  box-sizing: border-box !important;
 
-  /* 🟢 Fondo estilo pizarra de fútbol premium */
+  /* Fondo estilo pizarra de fútbol premium intacto */
   background: #ffffff !important;
-  border: 3px solid #2d3f37 !important; /* Marco que simula la pizarra */
+  border: 3px solid #2d3f37 !important;
   border-radius: 12px !important;
   padding: 22px !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-  z-index: 999 !important;
+  z-index: 10 !important;
   color: #ffffff !important;
   overflow: hidden !important;
 
-  /* 📐 DIBUJO DEL CAMPO (Líneas tácticas sutiles de fondo) */
+  /* Dibujo original del campo táctico de fondo */
   background-image:
     linear-gradient(to right, rgba(14, 231, 172, 0.15) 1px, transparent 1px),
-    /* Línea central */
     radial-gradient(
-        circle,
-        transparent 30%,
-        rgba(14, 231, 172, 0.15) 32%,
-        transparent 33%
-      ); /* Círculo central */
+      circle,
+      transparent 30%,
+      rgba(14, 231, 172, 0.15) 32%,
+      transparent 33%
+    );
   background-position: center;
   background-size:
     100% 100%,
     70px 70px;
   background-repeat: no-repeat;
+
+  display: flex !important;
+  flex-direction: column !important;
 }
 
-/* Modificamos el título de "Normas" para que parezca el encabezado de la pizarra */
+/* Encabezado de tu pizarra táctica original */
 .normas-box-derecha h2,
 .normas-container h2,
 [class*="normas"] h2 {
-  color: #1E293B !important; /* Verde neón táctico */
+  color: #1e293b !important;
   font-size: 1.15rem !important;
   font-weight: 800 !important;
   letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
-  margin: 0 0 12px 0 !important;
+  margin: 0 0 15px 0 !important;
   font-family: "monospace", sans-serif !important;
   text-align: center !important;
   border-bottom: 1px dashed rgba(14, 231, 172, 0.3) !important;
   padding-bottom: 6px !important;
 }
 
-/* Estilizamos la lista de normas para que parezcan las instrucciones de la jugada */
+/* Lista interna */
 .normas-box-derecha ul,
 .normas-container ul,
 [class*="normas"] ul {
-  list-style: none !important; /* Quitamos los puntos feos */
+  list-style: none !important;
   padding: 0 !important;
   margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
 }
 
+/* Tus normas e iconos de jugadores originales */
 .normas-box-derecha li,
 .normas-container li,
 [class*="normas"] li {
-  font-size: 0.82rem !important;
+  font-size: 0.85rem !important;
   line-height: 1.5 !important;
-  color: #1E293B !important;
+  color: #1e293b !important;
   font-weight: 600 !important;
-  margin-bottom: 6px !important;
+  margin-bottom: 0px !important;
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
 }
 
-/* ❌ Simulamos los jugadores (las clásicas cruces tácticas de las jugadas) antes de cada norma */
+/* Tus balones e iconos tácticos originales */
 .normas-box-derecha li::before,
 .normas-container li::before,
 [class*="normas"] li::before {
   content: "⚽" !important;
-  color: #0ee7ac !important; /* Cruces de jugadores en verde neón */
+  color: #0ee7ac !important;
   font-weight: 900 !important;
   font-size: 0.75rem !important;
 }
 
-/* Forzamos que la última norma (la de expulsión) tenga una cruz roja de advertencia */
+/* Tu marca táctica de advertencia final */
 .normas-box-derecha li:last-child::before,
 .normas-container li:last-child::before,
 [class*="normas"] li:last-child::before {
-  content: "◯" !important; /* Un círculo de marca táctica */
-  color: #ef4444 !important; /* Rojo de tarjeta/expulsión */
+  content: "◯" !important;
+  color: #ef4444 !important;
+}
+
+.card-partido {
+  background-color: #1e293b; /* Color oscuro de fondo */
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #334155;
+}
+
+.card-partido:hover {
+  transform: scale(1.03); /* Efecto al pasar el mouse */
+}
+
+.equipos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.equipo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 40%;
+}
+
+.equipo img {
+  width: 50px; /* Ajusta el tamaño de los logos */
+  height: 50px;
+  object-fit: contain;
+}
+
+.vs {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #10b981; /* Color verde que se ve en tu imagen */
+}
+
+/* Contenedor principal del foro */
+.foro-container {
+  background-color: #1e293b;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  color: white;
+}
+
+.foro-container h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+/* Caja de input (Crear tema) */
+.input-box {
+  display: flex;
+  gap: 8px;
+}
+
+.input-box input {
+  flex: 1;
+  background: #0f172a;
+  border: 1px solid #334155;
+  padding: 8px;
+  border-radius: 6px;
+  color: white;
+}
+
+.input-box button {
+  background-color: #10b981; /* Verde característico */
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Tarjetas individuales de cada tema */
+.tema-card {
+  background-color: #334155;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.tema-card strong {
+  color: #10b981; /* Resalta el nombre del usuario */
+}
+
+/* Ajuste del scroll para que se vea limpio */
+.lista-temas::-webkit-scrollbar {
+  width: 6px;
+}
+.lista-temas::-webkit-scrollbar-thumb {
+  background-color: #475569;
+  border-radius: 4px;
+}
+
+/* Estilo simple para el modal */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.modal-box {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  text-align: center;
+}
+
+.comentarios-grande .comentarios-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.comentarios-grande .lista-comentarios {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
 }
