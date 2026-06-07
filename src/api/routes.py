@@ -3,6 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from flask import Flask, request, jsonify, url_for, Blueprint
+from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, Prediction
 from api.utils import generate_sitemap, APIException
 from sqlalchemy import func
@@ -123,10 +124,10 @@ def get_fixtures():
 
 
 # =========================================================
-# NUEVO ENDPOINT: RECIBIR Y GUARDAR PREDICCIONES
+# ENDPOINT: RECIBIR Y GUARDAR PREDICCIONES
 # =========================================================
 @api.route('/predictions', methods=['POST'])
-@jwt_required()  # 🔥 CANDADO: Nadie entra aquí sin un Token JWT
+@jwt_required()
 def save_prediction():
     body = request.get_json()
 
@@ -135,33 +136,45 @@ def save_prediction():
 
     predictions_data = body['predictions']
 
-    # 🔥 Magia JWT: Extraemos el ID del usuario directamente del token de forma segura
-    user_id = get_jwt_identity()
-
+    # 🔥 AHORA SÍ OBTENEMOS EL ID DEL USUARIO REALMENTE LOGUEADO
+    current_user_id = get_jwt_identity()
     saved_predictions = []
 
     for pred in predictions_data:
         fixture_id = pred.get("fixture_id")
         home_goals = pred.get("home_goals")
         away_goals = pred.get("away_goals")
+        
+        # 🔥 Nuevos datos visuales para el historial
+        home_team_name = pred.get("home_team_name", "Local")
+        away_team_name = pred.get("away_team_name", "Visitante")
+        home_team_logo = pred.get("home_team_logo", "")
+        away_team_logo = pred.get("away_team_logo", "")
 
         if fixture_id is None or home_goals is None or away_goals is None:
             continue
 
-        # Buscamos si el usuario ya había hecho una predicción para este mismo partido
         existing_prediction = Prediction.query.filter_by(
-            user_id=user_id, fixture_id=fixture_id).first()
+            user_id=current_user_id, fixture_id=fixture_id).first()
 
         if existing_prediction:
             existing_prediction.home_goals = home_goals
             existing_prediction.away_goals = away_goals
+            existing_prediction.home_team_name = home_team_name
+            existing_prediction.away_team_name = away_team_name
+            existing_prediction.home_team_logo = home_team_logo
+            existing_prediction.away_team_logo = away_team_logo
             saved_predictions.append(existing_prediction)
         else:
             new_prediction = Prediction(
-                user_id=user_id,
+                user_id=current_user_id,
                 fixture_id=fixture_id,
                 home_goals=home_goals,
-                away_goals=away_goals
+                away_goals=away_goals,
+                home_team_name=home_team_name,
+                away_team_name=away_team_name,
+                home_team_logo=home_team_logo,
+                away_team_logo=away_team_logo
             )
             db.session.add(new_prediction)
             saved_predictions.append(new_prediction)
@@ -171,9 +184,21 @@ def save_prediction():
     return jsonify({"msg": "Predicciones guardadas con éxito", "predictions": result}), 201
 
 # =========================================================
-# NUEVO ENDPOINT: OBTENER EL RANKING GLOBAL
+# NUEVO ENDPOINT: OBTENER HISTORIAL DE PREDICCIONES
 # =========================================================
 
+@api.route('/predictions/me', methods=['GET'])
+@jwt_required()
+def get_my_predictions():
+    current_user_id = get_jwt_identity()
+    # Traemos las predicciones del usuario ordenadas de la más nueva a la más vieja
+    my_preds = Prediction.query.filter_by(user_id=current_user_id).order_by(Prediction.id.desc()).all()
+    
+    return jsonify([p.serialize() for p in my_preds]), 200
+
+# =========================================================
+# NUEVO ENDPOINT: OBTENER EL RANKING GLOBAL
+# =========================================================
 
 @api.route('/ranking', methods=['GET'])
 def get_ranking():

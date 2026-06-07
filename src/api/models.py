@@ -10,34 +10,29 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
 
-    # NUEVO: Relación de 1 a Muchos (Un usuario -> Muchas predicciones)
+    # Relación de 1 a Muchos (Un usuario -> Muchas predicciones)
     predictions = relationship("Prediction", back_populates="user", cascade="all, delete-orphan")
 
     def serialize(self):
         return {
             "id": self.id,
             "email": self.email,
-            # NOTA: No serializamos la contraseña por seguridad
         }
 
-# NUEVO MODELO: Tabla para guardar las quinielas de los usuarios
 class Prediction(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    
-    # Llave foránea: ¿De qué usuario es esta predicción?
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.id'), nullable=False)
-    
-    # ID del partido (el mismo que viene de la API de football-data)
     fixture_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    
-    # Goles predichos
     home_goals: Mapped[int] = mapped_column(Integer, nullable=False)
     away_goals: Mapped[int] = mapped_column(Integer, nullable=False)
-    
-    # Puntos ganados (Inicia vacío, se llena cuando el partido termina en la vida real)
     points_earned: Mapped[int] = mapped_column(Integer, nullable=True)
 
-    # Relación inversa para poder acceder al usuario desde la predicción
+    # 🔥 NUEVO: Columnas visuales para el Historial
+    home_team_name: Mapped[str] = mapped_column(String(120), nullable=True)
+    away_team_name: Mapped[str] = mapped_column(String(120), nullable=True)
+    home_team_logo: Mapped[str] = mapped_column(String(250), nullable=True)
+    away_team_logo: Mapped[str] = mapped_column(String(250), nullable=True)
+
     user = relationship("User", back_populates="predictions")
 
     def serialize(self):
@@ -47,5 +42,9 @@ class Prediction(db.Model):
             "fixture_id": self.fixture_id,
             "home_goals": self.home_goals,
             "away_goals": self.away_goals,
-            "points_earned": self.points_earned
+            "points_earned": self.points_earned,
+            "home_team_name": self.home_team_name,
+            "away_team_name": self.away_team_name,
+            "home_team_logo": self.home_team_logo,
+            "away_team_logo": self.away_team_logo
         }

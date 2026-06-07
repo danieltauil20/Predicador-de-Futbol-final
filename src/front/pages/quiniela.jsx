@@ -20,20 +20,33 @@ export const Quiniela = () => {
 
   // === EFECTOS SECUNDARIOS ===
   useEffect(() => {
-    const loadWeeklyFixtures = async () => {
+    const loadData = async () => {
       try {
         setLoading(true); // Encendemos la pantalla de "Cargando..."
         const { matches, forms } = await footballService.getWeeklyEliteFixtures();
         setFixtures(matches || []);
         setTeamForms(forms || {});
+
+        // 🔥 NUEVO: Cargar Historial del Usuario para evitar "infinitas" predicciones
+        const history = await predictionService.getHistory();
+        if (history && history.length > 0) {
+          const loadedPredictions = {};
+          const loadedStatus = {};
+          history.forEach(p => {
+            loadedPredictions[p.fixture_id] = { home: p.home_goals, away: p.away_goals, points: p.points_earned };
+            loadedStatus[p.fixture_id] = 'success'; // Bloquea permanentemente los inputs
+          });
+          setPredictions(loadedPredictions);
+          setSubmittingStatus(loadedStatus);
+        }
+
       } catch (err) {
-        setError("No se pudieron sincronizar los partidos de la jornada semanal.");
+        setError("No se pudieron sincronizar los datos de la jornada semanal.");
       } finally {
-        setLoading(false); // Apagamos el "Cargando..." pase lo que pase
+        setLoading(false);
       }
     };
-
-    loadWeeklyFixtures();
+    loadData();
   }, []);
 
   // === FUNCIONES DE ACCIÓN (Interacción del usuario) ===
@@ -56,50 +69,38 @@ export const Quiniela = () => {
 
   const handlePredictionChange = useCallback((fixtureId, type, value) => {
     const parsedValue = value === "" ? "" : parseInt(value, 10);
-    
+
     setPredictions(prev => {
-      // 1. Tomamos lo que ya existía, o si es nuevo, inicializamos ambos en vacío
       const current = prev[fixtureId] || { home: "", away: "" };
-      
       return {
         ...prev,
-        [fixtureId]: { 
-           ...current, 
-           [type]: parsedValue 
+        [fixtureId]: {
+          ...current,
+          [type]: parsedValue
         }
       };
     });
   }, []);
 
-  const handleSendSinglePrediction = async (fixtureId) => {
+  const handleSendSinglePrediction = async (fixtureId, match) => {
     const matchPrediction = predictions[fixtureId];
 
-    // Validación 1: Que el usuario haya escrito los dos números
     if (!matchPrediction || matchPrediction.home === undefined || matchPrediction.away === undefined) {
       alert("Por favor, introduce ambos marcadores antes de enviar.");
       return;
     }
 
     setSubmittingStatus(prev => ({ ...prev, [fixtureId]: 'loading' }));
-    
     try {
-      // Intentamos enviar a Flask
       await predictionService.submit({
         fixtureId,
         homeGoals: matchPrediction.home,
-        awayGoals: matchPrediction.away
+        awayGoals: matchPrediction.away,
+        matchData: match // 🔥 Pasamos los datos visuales al servicio
       });
-      
-      // Si todo sale bien, mostramos el check verde
       setSubmittingStatus(prev => ({ ...prev, [fixtureId]: 'success' }));
-      setTimeout(() => setSubmittingStatus(prev => ({ ...prev, [fixtureId]: null })), 3000);
-      
+      // 🔥 Le quitamos el Timeout para que el botón diga "✓ Guardado" por siempre y no deje re-enviar
     } catch (err) {
-      // 🔥 Validación 2: Verificamos si Flask nos rechazó por no tener Token
-      if (err.message === 'Debes iniciar sesión para poder predecir') {
-          alert(err.message);
-      }
-      // Mostramos la luz roja de error en el botón
       setSubmittingStatus(prev => ({ ...prev, [fixtureId]: 'error' }));
     }
   };
@@ -137,7 +138,7 @@ export const Quiniela = () => {
       <header className="gt-header">
         <h1 className="gt-title">GOAL <span>HUB</span></h1>
         <p className="gt-subtitle">La Quiniela Inteligente</p>
-        <RulesCard /> 
+        <RulesCard />
         <div className="gt-header-actions">
           <Link to="/ranking" className="gt-btn-ranking">
             🏆 Ver Ranking Global
@@ -284,7 +285,6 @@ export const Quiniela = () => {
                             </button>
                           </div>
 
-                          {/* PANEL DE ESTADÍSTICAS (Oculto por defecto) */}
                           {/* PANEL DE ESTADÍSTICAS CON BARRA DE PROBABILIDAD */}
                           {activeStats[fId] && (() => {
                             // Algoritmo matemático para sacar las probabilidades basado en el historial
@@ -341,7 +341,7 @@ export const Quiniela = () => {
                             {!isFinished && (
                               <button
                                 className={getButtonClass(status)}
-                                onClick={() => handleSendSinglePrediction(fId)}
+                                onClick={() => handleSendSinglePrediction(fId, match)}
                                 disabled={status === 'loading' || status === 'success'}
                               >
                                 {status === 'loading' && 'Guardando...'}

@@ -16,7 +16,13 @@ export const Layout = () => {
     <ScrollToTop>
       <div style={{ background: "#26753c", minHeight: "100vh" }}>
 
-        <Navbar openModal={() => setOpen(true)} />
+                <Navbar openModal={() => {
+          if (localStorage.getItem("token")) {
+            setProfileOpen(true); // Abre el Perfil si ya inició sesión
+          } else {
+            setOpen(true); // Abre Registro/Login si es visitante
+          }
+        }} />
 
         {/* 🔥 AUTH MODAL */}
         <AuthModal

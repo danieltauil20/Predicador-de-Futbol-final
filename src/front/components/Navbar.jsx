@@ -13,9 +13,9 @@ export const Navbar = ({ openModal }) => {
       setScrolled(window.scrollY > 20);
     };
 
-    const checkSession = () => {
-      const session = localStorage.getItem("session");
-      setIsLogged(!!session);
+        const checkSession = () => {
+      const token = localStorage.getItem("token");
+      setIsLogged(!!token);
     };
 
     checkSession();
