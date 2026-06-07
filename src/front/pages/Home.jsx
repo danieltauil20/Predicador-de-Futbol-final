@@ -24,8 +24,6 @@ export const Home = () => {
 				))}
 			</div>
 			<Body />
-
-      <Body />
     </div>
   );
 };
