@@ -4,9 +4,8 @@ import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import AuthModal from "../components/AuthModal";
 import { Outlet } from "react-router-dom";
-import { TablaPosiciones } from "../components/TablaPosiciones"
+import { TablaPosiciones } from "../components/TablaPosiciones";
 import { WorldCupCarousel } from "../components/WorldCupCarousel";
-
 
 export const Layout = () => {
   const [open, setOpen] = useState(false);
@@ -17,12 +16,12 @@ export const Layout = () => {
         <Navbar openModal={() => setOpen(true)} />
         <AuthModal isOpen={open} onClose={() => setOpen(false)} />
 
-
         {/* COLOCA EL CARRUSEL AQUÍ */}
         <WorldCupCarousel />
 
         <div className="comentarios-container">
-          <Outlet /> {/* Aquí debería aparecer tu página de Liga */}
+          {/* 🔑 SOLUCIÓN: Pasamos la función a través del context del Outlet */}
+          <Outlet context={() => setOpen(true)} /> 
         </div>
 
         {/* COMENTAMOS ESTA LÍNEA PARA PROBAR */}

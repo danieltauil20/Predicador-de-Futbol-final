@@ -25,7 +25,6 @@ const LigaViewer = () => {
 };
 
 // 🏠 COMPONENTE DE LA PÁGINA DE INICIO (HOME)
-// ¡EL CARRUSEL SOLO SE QUEDA AQUÍ ADENTRO!
 const Home = () => {
   return (
     <>
@@ -57,7 +56,10 @@ export default function App() {
           <Route path="/categoria" element={<Categoria />} />
           <Route path="/noticias" element={<Noticias />} />
           <Route path="/tienda" element={<Tienda />} />
-          <Route path="/comentarios" element={<Comentarios />} />
+          
+          {/* 💥 EL CAMBIO ESTÁ AQUÍ: Ahora le pasamos openModal a tu página de Comentarios */}
+          <Route path="/comentarios" element={<Comentarios openModal={openModal} />} />
+          
           <Route path="/liga/:id" element={<LigaViewer />} />
         </Routes>
 

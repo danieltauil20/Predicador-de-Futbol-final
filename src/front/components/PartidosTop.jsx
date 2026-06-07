@@ -81,8 +81,8 @@ export default function PartidosTop({ setPartido }) {
   return (
     <div className="grid-partidos">
       {/* 🟢 CONTROL DE GRID INLINE: 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              Forzamos la cuadrícula de 3 columnas de tu boceto original en pantallas grandes */}
-      <style>{`
+      
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              Forzamos la cuadrícula de 3 columnas de tu boceto original en pantallas grandes */}<style>{`
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             .grid-partidos {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       display: grid;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 grid-template-columns: repeat(3, 1fr);
@@ -103,6 +103,8 @@ export default function PartidosTop({ setPartido }) {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       `}</style>
 
+
+
       {partidos.map((p, i) => {
         const homeName = p.teams ? p.teams.home.name : p.home;
         const awayName = p.teams ? p.teams.away.name : p.away;
@@ -111,11 +113,15 @@ export default function PartidosTop({ setPartido }) {
         const awayLogo = p.teams ? p.teams.away.logo : p.awayLogo;
 
         return (
+
+
           <div
             key={i}
             className="card-partido"
             onClick={() => setPartido(p)}
+
           >
+
             <div className="equipos">
 
               <div className="equipo">
