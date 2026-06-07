@@ -74,21 +74,32 @@ export const Quiniela = () => {
   const handleSendSinglePrediction = async (fixtureId) => {
     const matchPrediction = predictions[fixtureId];
 
+    // Validación 1: Que el usuario haya escrito los dos números
     if (!matchPrediction || matchPrediction.home === undefined || matchPrediction.away === undefined) {
       alert("Por favor, introduce ambos marcadores antes de enviar.");
       return;
     }
 
     setSubmittingStatus(prev => ({ ...prev, [fixtureId]: 'loading' }));
+    
     try {
+      // Intentamos enviar a Flask
       await predictionService.submit({
         fixtureId,
         homeGoals: matchPrediction.home,
         awayGoals: matchPrediction.away
       });
+      
+      // Si todo sale bien, mostramos el check verde
       setSubmittingStatus(prev => ({ ...prev, [fixtureId]: 'success' }));
       setTimeout(() => setSubmittingStatus(prev => ({ ...prev, [fixtureId]: null })), 3000);
+      
     } catch (err) {
+      // 🔥 Validación 2: Verificamos si Flask nos rechazó por no tener Token
+      if (err.message === 'Debes iniciar sesión para poder predecir') {
+          alert(err.message);
+      }
+      // Mostramos la luz roja de error en el botón
       setSubmittingStatus(prev => ({ ...prev, [fixtureId]: 'error' }));
     }
   };

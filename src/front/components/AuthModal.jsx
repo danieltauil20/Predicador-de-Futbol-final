@@ -1,17 +1,21 @@
 import { useState } from "react";
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
+  // 🔥 Traemos el despachador de acciones (store global)
+  const { dispatch } = useGlobalReducer();
+  
   const [isLogin, setIsLogin] = useState(true);
-
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setError("");
 
     if (!password || (!isLogin && (!username || !email))) {
@@ -24,69 +28,75 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
       return;
     }
 
-    if (!isLogin) {
-      // 🔥 REGISTRO
-      const newUser = {
-        username,
-        email,
-        password,
-        teams: [],
-        points: 30,
-        predictions: []
-      };
+    setLoading(true);
 
-      localStorage.setItem("user", JSON.stringify(newUser));
-      localStorage.setItem("session", "true");
+    // 🔥 URL Dinámica del Backend
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
 
-      // 🔥 GUARDAR EN RANKING
-      let users = JSON.parse(localStorage.getItem("users")) || [];
-
-      const index = users.findIndex(u => u.username === newUser.username);
-
-      if (index !== -1) {
-        users[index] = newUser;
-      } else {
-        users.push(newUser);
-      }
-
-      localStorage.setItem("users", JSON.stringify(users));
-
-      // 🔥 CLAVE PARA EL MENSAJE (NO TOCAR)
-      localStorage.setItem("justRegistered", "true");
-
-      onClose();
-
-      if (onLoginSuccess) {
-        onLoginSuccess();
-      }
-
-    } else {
-      // 🔥 LOGIN
-      const savedUser = JSON.parse(localStorage.getItem("user"));
-
-      if (
-        savedUser &&
-        savedUser.email === email &&
-        savedUser.password === password
-      ) {
-        localStorage.setItem("session", "true");
-
-        onClose();
-
-        if (onLoginSuccess) {
-          onLoginSuccess();
+    try {
+      if (!isLogin) {
+        // ==========================================
+        // 🔥 PETICIÓN DE REGISTRO (SIGNUP)
+        // ==========================================
+        const response = await fetch(`${backendUrl}/api/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          setError(data.msg || "Error en el registro");
+          setLoading(false);
+          return;
         }
 
-      } else {
-        setError("Email o contraseña incorrectos");
-        return;
-      }
-    }
+        // ¡Éxito! Lo mandamos a la pestaña de Iniciar Sesión automáticamente
+        setIsLogin(true);
+        setError("✅ ¡Cuenta creada! Ahora inicia sesión.");
+        setUsername("");
+        setPassword("");
+        setLoading(false);
 
-    // 🔥 LIMPIAR CAMPOS
-    setUsername("");
-    setEmail("");
-    setPassword("");
+      } else {
+        // ==========================================
+        // 🔥 PETICIÓN DE LOGIN (INICIAR SESIÓN)
+        // ==========================================
+        const response = await fetch(`${backendUrl}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(data.msg || "Error al iniciar sesión");
+          setLoading(false);
+          return;
+        }
+
+        // ¡Éxito! Inyectamos el Token JWT y el Usuario a tu Bóveda Central (store.js)
+        dispatch({
+          type: "login",
+          payload: {
+            token: data.access_token,
+            user: data.user
+          }
+        });
+
+        onClose();
+        if (onLoginSuccess) onLoginSuccess();
+        
+        setEmail("");
+        setPassword("");
+        setLoading(false);
+      }
+    } catch (err) {
+      setError("Error de conexión con el servidor");
+      setLoading(false);
+    }
   };
 
   return (
@@ -96,20 +106,13 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
         <div className="tabs">
           <button
             className={!isLogin ? "active" : ""}
-            onClick={() => {
-              setIsLogin(false);
-              setError("");
-            }}
+            onClick={() => { setIsLogin(false); setError(""); }}
           >
             Registro
           </button>
-
           <button
             className={isLogin ? "active" : ""}
-            onClick={() => {
-              setIsLogin(true);
-              setError("");
-            }}
+            onClick={() => { setIsLogin(true); setError(""); }}
           >
             Iniciar sesión
           </button>
@@ -122,6 +125,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
               placeholder="Nombre de usuario"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              disabled={loading}
             />
           )}
 
@@ -130,6 +134,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
           />
 
           <input
@@ -137,18 +142,23 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
             placeholder="Contraseña (6+ caracteres)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
           />
 
-          {error && <p className="error">{error}</p>}
+          {error && (
+            <p className="error" style={{ color: error.includes("✅") ? "var(--neon-green)" : "var(--error-red)" }}>
+              {error}
+            </p>
+          )}
         </div>
 
         <div className="actions">
-          <button className="cancel" onClick={onClose}>
+          <button className="cancel" onClick={onClose} disabled={loading}>
             Cancelar
           </button>
 
-          <button className="continue" onClick={handleSubmit}>
-            Continuar
+          <button className="continue" onClick={handleSubmit} disabled={loading}>
+            {loading ? "Procesando..." : "Continuar"}
           </button>
         </div>
 

@@ -1,13 +1,14 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-# NUEVO: Asegúrate de importar Prediction además de User
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Prediction
 from api.utils import generate_sitemap, APIException
 from sqlalchemy import func
 from flask_cors import CORS
 api = Blueprint('api', __name__)
+CORS(api)  
 
 FOOTBALL_API_BASE_URL = "https://api.football-data.org/v4/competitions"
 API_TOKEN = "7fc4c822095b45d590fa0cd500eb3d5f"  # 🔑 REEMPLAZA CON TU TOKEN REAL
@@ -125,6 +126,7 @@ def get_fixtures():
 # NUEVO ENDPOINT: RECIBIR Y GUARDAR PREDICCIONES
 # =========================================================
 @api.route('/predictions', methods=['POST'])
+@jwt_required()  # 🔥 CANDADO: Nadie entra aquí sin un Token JWT
 def save_prediction():
     body = request.get_json()
 
@@ -133,7 +135,8 @@ def save_prediction():
 
     predictions_data = body['predictions']
 
-    user_id = 1
+    # 🔥 Magia JWT: Extraemos el ID del usuario directamente del token de forma segura
+    user_id = get_jwt_identity()
 
     saved_predictions = []
 
@@ -143,19 +146,17 @@ def save_prediction():
         away_goals = pred.get("away_goals")
 
         if fixture_id is None or home_goals is None or away_goals is None:
-            continue  # Saltamos las predicciones que estén incompletas
+            continue
 
-        # 2. Buscamos si el usuario ya había hecho una predicción para este mismo partido
+        # Buscamos si el usuario ya había hecho una predicción para este mismo partido
         existing_prediction = Prediction.query.filter_by(
             user_id=user_id, fixture_id=fixture_id).first()
 
         if existing_prediction:
-            # Si ya existía, la sobrescribimos (Actualiza su predicción)
             existing_prediction.home_goals = home_goals
             existing_prediction.away_goals = away_goals
             saved_predictions.append(existing_prediction)
         else:
-            # 3. Si no existía, creamos un registro completamente nuevo
             new_prediction = Prediction(
                 user_id=user_id,
                 fixture_id=fixture_id,
@@ -165,10 +166,7 @@ def save_prediction():
             db.session.add(new_prediction)
             saved_predictions.append(new_prediction)
 
-    # 4. Guardamos los cambios físicamente en la Base de Datos
     db.session.commit()
-
-    # 5. Le respondemos a React con los datos guardados
     result = [p.serialize() for p in saved_predictions]
     return jsonify({"msg": "Predicciones guardadas con éxito", "predictions": result}), 201
 
@@ -322,3 +320,62 @@ def get_stats():
         }), 200
     except Exception as e:
         return jsonify({"msg": "Error al cargar las estadísticas", "error": str(e)}), 500
+
+# =========================================================
+# RUTAS DE SEGURIDAD JWT (REGISTRO Y LOGIN)
+# =========================================================
+
+
+@api.route('/signup', methods=['POST'])
+def signup():
+    body = request.get_json()
+
+    # Extraemos los datos que envía React
+    email = body.get('email', None)
+    password = body.get('password', None)
+
+    if not email or not password:
+        return jsonify({"msg": "Debes enviar un email y una contraseña"}), 400
+
+    # Verificamos que el usuario no exista previamente
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({"msg": "El correo ya está registrado"}), 400
+
+    # 🔥 ENCRIPTAMOS LA CONTRASEÑA (¡Nunca se guarda en texto plano!)
+    hashed_password = generate_password_hash(
+        str(password), method='pbkdf2:sha256')
+
+    # Creamos el usuario en la base de datos
+    new_user = User(email=email, password=hashed_password, is_active=True)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"msg": "Usuario creado exitosamente"}), 201
+
+
+@api.route('/login', methods=['POST'])
+def login():
+    body = request.get_json()
+    email = body.get('email', None)
+    password = body.get('password', None)
+
+    if not email or not password:
+        return jsonify({"msg": "Debes enviar email y contraseña"}), 400
+
+    # Buscamos al usuario en la base de datos
+    user = User.query.filter_by(email=email).first()
+
+    # Verificamos que exista y que la contraseña coincida con la encriptada
+    if not user or not check_password_hash(user.password, password):
+        return jsonify({"msg": "Email o contraseña incorrectos"}), 401
+
+    # 🔥 CREAMOS EL PASAPORTE (TOKEN JWT)
+    # Convertimos el ID del usuario en un string para usarlo como identidad del token
+    access_token = create_access_token(identity=str(user.id))
+
+    # Devolvemos el Token y los datos del usuario a React
+    return jsonify({
+        "access_token": access_token,
+        "user": user.serialize()
+    }), 200
