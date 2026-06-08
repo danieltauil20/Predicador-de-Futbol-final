@@ -5,8 +5,6 @@ import { Footer } from "../components/Footer";
 import AuthModal from "../components/AuthModal";
 import ProfileModal from "../components/ProfileModal"; // 🔥 AÑADIR
 import { Outlet } from "react-router-dom";
-import { TablaPosiciones } from "../components/TablaPosiciones"
-
 
 export const Layout = () => {
   const [open, setOpen] = useState(false);
@@ -44,8 +42,6 @@ export const Layout = () => {
         <div className="comentarios-container">
           <Outlet />
         </div>
-        <TablaPosiciones ligaId="140" nombreLiga="La Liga" />
-
         <Footer />
       </div>
     </ScrollToTop>
