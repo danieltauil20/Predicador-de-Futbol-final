@@ -332,7 +332,9 @@ def get_stats():
 @api.route('/news', methods=['GET'])
 def get_news():
     try:
-        # 🔥 Ahora tenemos una LISTA de canales (Primera División, Internacional, Champions, etc.)
+        import re
+        import html # 🔥 NUEVO: Herramienta para traducir códigos (ej. &#039; -> ')
+
         rss_urls = [
             {"url": "https://e00-marca.uecdn.es/rss/futbol/primera-division.xml", "tag": "La Liga"},
             {"url": "https://e00-marca.uecdn.es/rss/futbol/champions-league.xml", "tag": "Champions"},
@@ -348,11 +350,17 @@ def get_news():
                 xml_data = response.read()
                 root = ET.fromstring(xml_data)
                 
-                # Agarramos solo las 3 mejores de cada categoría para tener variedad
                 for index, item in enumerate(root.findall('.//item')[:3]):
-                    title = item.find('title').text if item.find('title') is not None else "Noticia"
+                    raw_title = item.find('title').text if item.find('title') is not None else "Noticia"
                     link = item.find('link').text if item.find('link') is not None else "#"
-                    description = item.find('description').text if item.find('description') is not None else ""
+                    raw_description = item.find('description').text if item.find('description') is not None else ""
+                    
+                    # 🔥 PASO 1: Traducimos los códigos raros a texto normal en el título y descripción
+                    clean_title = html.unescape(raw_title)
+                    decoded_description = html.unescape(raw_description)
+                    
+                    # 🔥 PASO 2: Eliminamos etiquetas HTML basura (<a href...>)
+                    clean_description = re.sub(r'<[^>]+>', '', decoded_description).strip()
                     
                     image = "https://images.unsplash.com/photo-1518605368461-12503a45c711?q=80&w=600&auto=format&fit=crop"
                     enclosure = item.find('enclosure')
@@ -364,19 +372,19 @@ def get_news():
                             image = media.get('url')
 
                     all_news.append({
-                        "id": f"{feed['tag']}-{index}", # ID único combinado
-                        "title": title,
-                        "description": description[:120] + "..." if len(description) > 120 else description,
+                        "id": f"{feed['tag']}-{index}", 
+                        "title": clean_title, # Usamos el título limpio
+                        "description": clean_description[:120] + "..." if len(clean_description) > 120 else clean_description,
                         "image": image,
                         "link": link,
-                        "tag": "Mundial" if "mundial" in title.lower() else feed["tag"],
+                        "tag": "Mundial" if "mundial" in clean_title.lower() else feed["tag"],
                         "source": "MARCA",
                         "date": "Reciente"
                     })
             except Exception as e:
                 print(f"Error cargando feed {feed['tag']}: {e}")
-                continue # Si falla un canal, que siga con los demás
+                continue 
                 
-        return jsonify(all_news[:8]), 200 # Devolvemos las 8 mejores en total
+        return jsonify(all_news[:8]), 200 
     except Exception as e:
         return jsonify({"msg": "Error general al cargar noticias", "error": str(e)}), 500
