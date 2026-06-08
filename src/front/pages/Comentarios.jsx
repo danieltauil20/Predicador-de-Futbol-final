@@ -2,7 +2,7 @@ import { useState } from "react";
 import PartidosTop from "../components/PartidosTop";
 import ComentariosPartido from "../components/ComentariosPartido";
 import ForoMini from "../components/ForoMini";
-import Normas from "../components/Normas"; // 🔥 AÑADIDO
+import Normas from "../components/Normas"; 
 
 export default function Comentarios() {
   const [partido, setPartido] = useState(null);
@@ -26,7 +26,7 @@ export default function Comentarios() {
 
       </div>
 
-      {/* 🔥 AQUÍ VA EL LATERAL */}
+      
       <Normas />
 
     </div>

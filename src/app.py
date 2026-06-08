@@ -2,6 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
+import requests
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
@@ -10,6 +11,7 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from flask_cors import CORS
 
 # from models import Person
 
@@ -30,9 +32,14 @@ else:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
+CORS(app)
 
 # add the admin
 setup_admin(app)
+
+API_TOKEN = "7fc4c822095b45d590fa0cd500eb3d5f"
+HEADERS = {"X-Auth-Token": API_TOKEN}
+MAPEO_LIGAS = {"PD": "PD", "PL": "PL", "SA": "SA", "BL": "BL1", "WC": "WC"}
 
 # add the admin
 setup_commands(app)

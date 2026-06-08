@@ -7,7 +7,7 @@ export default function ComentariosPartido({ partido }) {
 
   const [usuario, setUsuario] = useState("");
 
-  // 🔥 MODAL
+  
   const [mostrarModal, setMostrarModal] = useState(false);
   const [nuevoUsuario, setNuevoUsuario] = useState("");
 
@@ -43,7 +43,7 @@ export default function ComentariosPartido({ partido }) {
     localStorage.setItem("comentarios", JSON.stringify(guardados));
   };
 
-  // 🔥 SIN LÍMITE
+  
   const agregar = () => {
     if (!texto.trim()) return;
 
@@ -85,7 +85,7 @@ export default function ComentariosPartido({ partido }) {
   return (
     <div className="comentarios-container">
 
-      {/* 🔥 MODAL USUARIO */}
+      
       {mostrarModal && (
         <div className="modal-overlay">
           <div className="modal-box">

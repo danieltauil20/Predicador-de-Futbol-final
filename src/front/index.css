@@ -504,10 +504,14 @@ body,
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   transition: 0.3s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .product-card:hover {
   transform: translateY(-5px);
+  transform: scale(1.05);
+  
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
 .product-img {
@@ -515,6 +519,7 @@ body,
   height: 95px;
   object-fit: contain;
   margin-bottom: 10px;
+  
 }
 
 .product-card h3 {

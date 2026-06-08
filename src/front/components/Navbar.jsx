@@ -77,7 +77,7 @@ export const Navbar = ({ openModal }) => {
 
       </nav>
 
-      {/* 🔥 SOLO CAMBIO: menú fuera del nav */}
+      
       {menuOpen && (
         <div className="mobile-menu">
           {navItems.map((item) => (

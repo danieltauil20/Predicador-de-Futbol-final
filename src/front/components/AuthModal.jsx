@@ -25,7 +25,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
     }
 
     if (!isLogin) {
-      // 🔥 REGISTRO
+      
       const newUser = {
         username,
         email,
@@ -38,7 +38,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
       localStorage.setItem("user", JSON.stringify(newUser));
       localStorage.setItem("session", "true");
 
-      // 🔥 GUARDAR EN RANKING
+      
       let users = JSON.parse(localStorage.getItem("users")) || [];
 
       const index = users.findIndex(u => u.username === newUser.username);
@@ -51,7 +51,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
 
       localStorage.setItem("users", JSON.stringify(users));
 
-      // 🔥 CLAVE PARA EL MENSAJE (NO TOCAR)
+      
       localStorage.setItem("justRegistered", "true");
 
       onClose();
@@ -61,7 +61,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
       }
 
     } else {
-      // 🔥 LOGIN
+      
       const savedUser = JSON.parse(localStorage.getItem("user"));
 
       if (
@@ -83,7 +83,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
       }
     }
 
-    // 🔥 LIMPIAR CAMPOS
+    
     setUsername("");
     setEmail("");
     setPassword("");

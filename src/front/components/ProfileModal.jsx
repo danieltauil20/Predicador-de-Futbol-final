@@ -57,7 +57,7 @@ export default function ProfileModal({ isOpen, onClose }) {
     window.dispatchEvent(new Event("userUpdated"));
   };
 
-  // 🔥 SUBIR IMAGEN (NUEVO)
+  
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -108,7 +108,7 @@ export default function ProfileModal({ isOpen, onClose }) {
 
         <div className="user-box">
 
-          {/* 🔥 AVATAR CLICKABLE */}
+          
           <div
             className="avatar"
             onClick={() => document.getElementById("fileInput").click()}
@@ -120,7 +120,7 @@ export default function ProfileModal({ isOpen, onClose }) {
             )}
           </div>
 
-          {/* 🔥 INPUT OCULTO */}
+          
           <input
             type="file"
             id="fileInput"

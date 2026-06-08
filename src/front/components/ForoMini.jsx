@@ -7,11 +7,11 @@ export default function ForoMini() {
 
   const [usuario, setUsuario] = useState("");
 
-  // 🔥 NUEVO (modal)
+  
   const [mostrarModal, setMostrarModal] = useState(false);
   const [nuevoUsuario, setNuevoUsuario] = useState("");
 
-  // 🔥 pedir usuario (ANTES prompt → ahora modal)
+  
   useEffect(() => {
     if (!usuario) {
       setMostrarModal(true);
@@ -22,7 +22,7 @@ export default function ForoMini() {
     if (!nuevoUsuario.trim()) return;
 
     setUsuario(nuevoUsuario);
-    setMostrarModal(false); // 🔥 se cierra aquí
+    setMostrarModal(false); 
   };
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function ForoMini() {
 
       <h2>💬 Foro</h2>
 
-      {/* 🔥 MODAL */}
+      
       {mostrarModal && (
         <div className="modal-overlay">
           <div className="modal-box">
