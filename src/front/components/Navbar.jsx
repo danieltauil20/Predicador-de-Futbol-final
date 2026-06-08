@@ -7,11 +7,29 @@ export const Navbar = ({ openModal }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [ligasModalOpen, setLigasModalOpen] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    const checkSession = () => {
+      const session = localStorage.getItem("session");
+      setIsLogged(!!session);
+    };
+
+    checkSession();
+
+    window.addEventListener("click", checkSession);
+    window.addEventListener("storage", checkSession);
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("click", checkSession);
+      window.removeEventListener("storage", checkSession);
+    };
   }, []);
 
   const navItems = [
@@ -64,7 +82,7 @@ export const Navbar = ({ openModal }) => {
           <img src={logo} alt="GolHub Logo" />
         </Link>
 
-        {/* Links de escritorio */}
+        
         <ul className="nav-links">
           {navItems.map((item) => (
             <li key={item.path}>
@@ -81,7 +99,7 @@ export const Navbar = ({ openModal }) => {
           ))}
         </ul>
 
-        {/* Botón unirme + Hamburguesa */}
+        
         <div className="navbar-right">
           <button className="btn-primary" onClick={openModal}>Unirme</button>
           <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
@@ -89,7 +107,7 @@ export const Navbar = ({ openModal }) => {
           </div>
         </div>
 
-        {/* Menú móvil */}
+        
         {menuOpen && (
           <div className="mobile-menu">
             {navItems.map((item) => (
@@ -100,6 +118,31 @@ export const Navbar = ({ openModal }) => {
           </div>
         )}
       </nav>
+
+      {menuOpen && (
+        <div className="mobile-menu">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={() => setMenuOpen(false)}
+              className={location.pathname === item.path ? "active" : ""}
+            >
+              {item.name}
+            </Link>
+          ))}
+
+          <button
+            className="btn-primary"
+            onClick={() => {
+              setMenuOpen(false);
+              openModal();
+            }}
+          >
+            {isLogged ? "Mi perfil" : "Unirme"}
+          </button>
+        </div>
+      )}
     </>
-  );
-};
+  )
+}

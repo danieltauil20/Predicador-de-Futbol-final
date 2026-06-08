@@ -2,6 +2,7 @@ import { useState } from "react";
 import PartidosTop from "../components/PartidosTop";
 import ComentariosPartido from "../components/ComentariosPartido";
 import ForoMini from "../components/ForoMini";
+import Normas from "../components/Normas";
 
 export const Comentarios = () => {
   const [partido, setPartido] = useState({
@@ -16,7 +17,7 @@ export const Comentarios = () => {
 
       {/* Contenedor de 2 columnas alineadas a la misma altura */}
       <div style={{ display: "flex", gap: "20px", marginTop: "30px", alignItems: "stretch" }}>
-        
+
         {/* COLUMNA 1: Foro (Más estrecha) */}
         <div style={{ flex: 1 }}>
           <ForoMini />
@@ -28,6 +29,10 @@ export const Comentarios = () => {
         </div>
 
       </div>
+
+
+      <Normas />
+
     </div>
   );
 };

@@ -1,20 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ForoMini() {
-  const [temas, setTemas] = useState([
-    { creador: "Jose", titulo: "holaaaa" },
-    { creador: "Luis", titulo: "holaaaa" },
-    { creador: "bea", titulo: "hola" },
-    { creador: "bea", titulo: "holaaaa" }
-  ]);
-  const [nuevoTema, setNuevoTema] = useState("");
-  
-  const usuarioActivo = "Jose"; 
+  const [temas, setTemas] = useState([]);
+  const [nuevo, setNuevo] = useState("");
 
-  const agregarTema = () => {
-    if (!nuevoTema.trim()) return;
-    setTemas([...temas, { titulo: nuevoTema, creador: usuarioActivo }]);
-    setNuevoTema("");
+  const [usuario, setUsuario] = useState("");
+
+
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [nuevoUsuario, setNuevoUsuario] = useState("");
+
+
+  useEffect(() => {
+    if (!usuario) {
+      setMostrarModal(true);
+    }
+  }, [usuario]);
+
+  const guardarUsuario = () => {
+    if (!nuevoUsuario.trim()) return;
+
+    setUsuario(nuevoUsuario);
+    setMostrarModal(false);
+  };
+
+  useEffect(() => {
+    const guardados = JSON.parse(localStorage.getItem("foro")) || [
+      { texto: "¿Quién ganará la Champions?", usuario: "Rigo" }
+    ];
+    setTemas(guardados);
+  }, []);
+
+  const guardar = (lista) => {
+    localStorage.setItem("foro", JSON.stringify(lista));
+  };
+
+  const agregar = () => {
+    if (!nuevo.trim()) return;
+
+    const nuevosTemas = [
+      {
+        texto: nuevo,
+        usuario: usuario
+      },
+      ...temas
+    ];
+
+    setTemas(nuevosTemas);
+    guardar(nuevosTemas);
+    setNuevo("");
   };
 
   return (
@@ -26,7 +60,7 @@ export default function ForoMini() {
       display: "flex",
       flexDirection: "column",
       gap: "15px",
-      boxShadow: "none", 
+      boxShadow: "none",
       height: "500px" // 🔑 BLOQUEAMOS LA ALTURA
     }}>
       {/* Estilo para una barra de scroll moderna y oscura */}
@@ -47,53 +81,65 @@ export default function ForoMini() {
         💬 Foro
       </h3>
 
-      <div style={{ display: "flex", gap: "10px" }}>
+
+      {mostrarModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <h3>Nuevo usuario</h3>
+
+            <input
+              value={nuevoUsuario}
+              onChange={(e) => setNuevoUsuario(e.target.value)}
+              placeholder="Tu nombre..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") guardarUsuario();
+              }}
+            />
+
+            <button onClick={guardarUsuario}>
+              Entrar
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="input-box">
         <input
-          value={nuevoTema}
-          onChange={(e) => setNuevoTema(e.target.value)}
+          value={nuevo}
+          onChange={(e) => setNuevo(e.target.value)}
           placeholder="Crear tema..."
-          style={{ 
-            flex: 1, 
-            padding: "10px 14px", 
-            borderRadius: "8px", 
-            border: "1px solid #334155", 
-            background: "#0f172a", 
-            color: "white", 
+          style={{
+            flex: 1,
+            padding: "10px 14px",
+            borderRadius: "8px",
+            border: "1px solid #334155",
+            background: "#0f172a",
+            color: "white",
             outline: "none"
           }}
           onKeyDown={(e) => { if (e.key === "Enter") agregarTema(); }}
         />
-        <button 
-          onClick={agregarTema} 
-          style={{ 
-            background: "#22c55e", 
-            color: "white", 
-            padding: "0 20px", 
-            borderRadius: "8px", 
-            border: "none", 
-            cursor: "pointer", 
-            fontWeight: "600"
-          }}
-        >
+
+        <button onClick={agregar}>
           Enviar
         </button>
       </div>
 
-      {/* 🔑 Este contenedor ahora asume el espacio restante y scrollea */}
-      <div className="scroll-limpio" style={{ display: "flex", flexDirection: "column", gap: "10px", overflowY: "auto", flex: 1, paddingRight: "4px" }}>
-        {temas.map((t, i) => (
-          <div key={i} style={{ 
-            background: "#0f172a", 
-            padding: "12px 16px", 
-            borderRadius: "10px",
-            border: "none",
-            flexShrink: 0 // Evita que los mensajes se aplasten
-          }}>
-            <span style={{ color: "#94a3b8", fontSize: "14px", fontWeight: "600" }}>{t.creador}:</span> 
-            <span style={{ marginLeft: "6px", color: "#f8fafc", fontSize: "14px" }}>{t.titulo}</span>
-          </div>
-        ))}
+      <div className="lista-temas">
+        {temas.length === 0 ? (
+          <p style={{ color: "#aaa" }}>No hay temas todavía</p>
+        ) : (
+          temas.map((tema, i) => (
+            <div key={i} className="tema-card">
+
+              <span>
+                <strong>{tema.usuario || "Rigo"}</strong>: {tema.texto}
+              </span>
+
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
-}
+}                                                                                                                  

@@ -1,0 +1,586 @@
+:root {
+  --bg-dark: #0a0f1a;
+  --bg-card: #14161d;
+  --neon-green: #0ee7ac;
+  --neon-cyan: #00e5ff;
+  --text-white: #ffffff;
+  --text-muted: #8a8f98;
+  --border-glow: rgba(0, 255, 135, 0.15);
+  --error-red: #ff4a5a;
+  --neon-gold: #FFD700; 
+}
+
+.gt-quiniela-container {
+  background-color: var(--bg-dark);
+  color: var(--text-white);
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.gt-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.gt-title {
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin-bottom: 5px;
+}
+
+.gt-title span {
+  color: var(--neon-green);
+  text-shadow: 0 0 20px rgba(0, 255, 135, 0.4);
+}
+
+.gt-subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+.gt-fixtures-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 25px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 500px) {
+  .gt-fixtures-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gt-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.gt-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--neon-green);
+  box-shadow: 0 10px 30px var(--border-glow);
+}
+
+.gt-flag {
+  width: 18px;
+  height: auto;
+  border-radius: 2px;
+}
+
+.gt-match-core {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.gt-team {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.gt-team.local { justify-content: flex-start; }
+.gt-team.away { justify-content: flex-end; }
+
+.gt-team-logo {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+
+.gt-team-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.gt-team-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.local-info { 
+  align-items: flex-start; 
+}
+
+.away-info { 
+  align-items: flex-end; 
+  text-align: right; 
+}
+
+.gt-vs {
+  font-style: italic;
+  font-weight: 800;
+  color: var(--neon-cyan);
+  padding: 0 15px;
+  font-size: 0.9rem;
+}
+
+.gt-input-score {
+  width: 50px;
+  height: 45px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.gt-input-score:focus {
+  border-color: var(--neon-cyan);
+  background: rgba(0, 229, 255, 0.05);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}
+
+.gt-input-score::-webkit-outer-spin-button,
+.gt-input-score::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.gt-action-area {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 12px;
+}
+
+.gt-btn-atomic {
+  background: transparent;
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gt-btn-atomic:hover:not(:disabled) {
+  background: rgba(0, 229, 255, 0.1);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
+}
+
+.gt-btn-atomic.loading {
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.gt-btn-atomic.success {
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+  background: rgba(0, 255, 135, 0.05);
+  cursor: not-allowed;
+}
+
+.gt-btn-atomic.error {
+  border-color: var(--error-red);
+  color: var(--error-red);
+  background: rgba(255, 74, 90, 0.05);
+}
+
+.gt-error-container {
+  background: rgba(255, 74, 90, 0.1);
+  border: 1px solid var(--error-red);
+  color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 600px;
+  margin: 40px auto;
+}
+
+.gt-no-matches {
+  color: var(--text-muted);
+  text-align: center;
+  grid-column: 1 / -1;
+  font-size: 1.1rem;
+}
+
+.gt-loader {
+  background: var(--bg-dark);
+  color: var(--neon-green);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.gt-stats-trigger-zone {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.gt-btn-stats-toggle {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  color: var(--neon-cyan);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gt-btn-stats-toggle:hover {
+  background: rgba(0, 229, 255, 0.08);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
+}
+
+.gt-btn-stats-toggle.active {
+  background: rgba(255, 74, 90, 0.05);
+  border-color: rgba(255, 74, 90, 0.3);
+  color: #fff;
+}
+
+.gt-stats-panel {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px dashed rgba(0, 229, 255, 0.2);
+}
+
+.gt-stats-title {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.gt-stats-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gt-stat-bar-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.gt-stat-label { color: var(--text-muted); }
+.gt-stat-val { font-weight: 700; color: var(--neon-cyan); }
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Badges de Estado Temporal */
+.gt-badge-time {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.gt-badge-live {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--neon-green);
+  background: rgba(0, 255, 135, 0.08);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 255, 135, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.5px;
+}
+
+.gt-pulse-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--neon-green);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(0, 255, 135, 0.7);
+  animation: pulse-green 1.6s infinite;
+}
+
+@keyframes pulse-green {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 135, 0.5); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 255, 135, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 135, 0); }
+}
+
+.gt-btn-secondary {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-white);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.2s ease;
+  margin-right: auto;
+}
+
+.gt-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.gt-spinner-mini {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(0, 229, 255, 0.2);
+  border-top-color: var(--neon-cyan);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.gt-badge-finished {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #a0aec0;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ========================================================
+   ESTILOS DEL BOTÓN DE RANKING
+   ======================================================== */
+
+.gt-header-actions {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gt-btn-ranking {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid var(--neon-gold);
+  color: var(--neon-gold);
+  padding: 12px 28px;
+  border-radius: 30px; 
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.gt-btn-ranking::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+.gt-btn-ranking:hover {
+  background: rgba(255, 215, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.25);
+  color: #fff;
+}
+
+.gt-btn-ranking:hover::before {
+  left: 100%;
+}
+
+/* ========================================================
+   ACORDEÓN DE LIGAS (AGRUPACIÓN)
+   ======================================================== */
+
+.gt-leagues-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.gt-league-section {
+  background: transparent;
+}
+
+.gt-league-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card);
+  padding: 15px 25px;
+  border-radius: 12px;
+  border-left: 4px solid var(--neon-cyan);
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.gt-league-header:hover {
+  background: rgba(20, 22, 29, 0.8);
+  border-left-color: var(--neon-green);
+}
+
+.gt-league-header-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.gt-league-header-title h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--text-white);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.gt-league-header-title .gt-flag {
+  width: 28px;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.gt-league-toggle-icon {
+  color: var(--neon-cyan);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.gt-card-status-row {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.gt-prediction-result {
+  text-align: center;
+  margin: 15px 0;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.gt-real-score {
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--text-white);
+}
+
+.gt-points-badge {
+  margin-top: 8px;
+}
+
+.gt-points-perfect {
+  color: var(--neon-green);
+}
+
+.gt-points-partial {
+  color: var(--neon-gold);
+}
+
+.gt-missed {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* ========================================================
+   BARRA DE PROBABILIDAD (PREDICCIÓN)
+   ======================================================== */
+.gt-prob-container {
+  margin-bottom: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.gt-prob-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.gt-prob-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.gt-prob-segment {
+  height: 100%;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.prob-home { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+.prob-draw { background: #555; }
+.prob-away { background: var(--error-red); box-shadow: 0 0 10px var(--error-red); }

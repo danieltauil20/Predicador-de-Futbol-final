@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function AuthModal({ isOpen, onClose }) {
+export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
 
   const [username, setUsername] = useState("");
@@ -14,7 +14,6 @@ export default function AuthModal({ isOpen, onClose }) {
   const handleSubmit = () => {
     setError("");
 
-    // VALIDACIONES
     if (!password || (!isLogin && (!username || !email))) {
       setError("Completa todos los campos");
       return;
@@ -26,13 +25,43 @@ export default function AuthModal({ isOpen, onClose }) {
     }
 
     if (!isLogin) {
-      // REGISTRO
-      const user = { username, email, password };
-      localStorage.setItem("user", JSON.stringify(user));
+      
+      const newUser = {
+        username,
+        email,
+        password,
+        teams: [],
+        points: 30,
+        predictions: []
+      };
+
+      localStorage.setItem("user", JSON.stringify(newUser));
       localStorage.setItem("session", "true");
 
+      
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+
+      const index = users.findIndex(u => u.username === newUser.username);
+
+      if (index !== -1) {
+        users[index] = newUser;
+      } else {
+        users.push(newUser);
+      }
+
+      localStorage.setItem("users", JSON.stringify(users));
+
+      
+      localStorage.setItem("justRegistered", "true");
+
+      onClose();
+
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
+
     } else {
-      // LOGIN
+      
       const savedUser = JSON.parse(localStorage.getItem("user"));
 
       if (
@@ -41,37 +70,51 @@ export default function AuthModal({ isOpen, onClose }) {
         savedUser.password === password
       ) {
         localStorage.setItem("session", "true");
+
+        onClose();
+
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+
       } else {
         setError("Email o contraseña incorrectos");
         return;
       }
     }
 
-    onClose();
+    
+    setUsername("");
+    setEmail("");
+    setPassword("");
   };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
 
-        {/* TABS */}
         <div className="tabs">
           <button
             className={!isLogin ? "active" : ""}
-            onClick={() => setIsLogin(false)}
+            onClick={() => {
+              setIsLogin(false);
+              setError("");
+            }}
           >
             Registro
           </button>
 
           <button
             className={isLogin ? "active" : ""}
-            onClick={() => setIsLogin(true)}
+            onClick={() => {
+              setIsLogin(true);
+              setError("");
+            }}
           >
             Iniciar sesión
           </button>
         </div>
 
-        {/* FORM */}
         <div className="form">
           {!isLogin && (
             <input
@@ -96,11 +139,9 @@ export default function AuthModal({ isOpen, onClose }) {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          {/* ERROR */}
           {error && <p className="error">{error}</p>}
         </div>
 
-        {/* BOTONES */}
         <div className="actions">
           <button className="cancel" onClick={onClose}>
             Cancelar

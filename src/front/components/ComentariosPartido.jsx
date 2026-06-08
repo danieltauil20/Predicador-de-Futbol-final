@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ComentariosPartido({ partido }) {
   const [comentarios, setComentarios] = useState([
@@ -14,6 +14,83 @@ export default function ComentariosPartido({ partido }) {
     setNuevo("");
   };
 
+  const [usuario, setUsuario] = useState("");
+
+
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [nuevoUsuario, setNuevoUsuario] = useState("");
+
+  useEffect(() => {
+    if (!usuario) {
+      setMostrarModal(true);
+    }
+  }, [usuario]);
+
+  const guardarUsuario = () => {
+    if (!nuevoUsuario.trim()) return;
+
+    setUsuario(nuevoUsuario);
+    setMostrarModal(false);
+  };
+
+  const partidoId = partido
+    ? partido.teams
+      ? partido.teams.home.name + "-" + partido.teams.away.name
+      : partido.home + "-" + partido.away
+    : null;
+
+  useEffect(() => {
+    if (!partidoId) return;
+
+    const guardados = JSON.parse(localStorage.getItem("comentarios")) || {};
+    setComentarios(guardados[partidoId] || []);
+  }, [partidoId]);
+
+  const guardarEnLocal = (nuevosComentarios) => {
+    const guardados = JSON.parse(localStorage.getItem("comentarios")) || {};
+    guardados[partidoId] = nuevosComentarios;
+    localStorage.setItem("comentarios", JSON.stringify(guardados));
+  };
+
+
+  const agregar = () => {
+    if (!texto.trim()) return;
+
+    const nuevos = [
+      ...comentarios,
+      {
+        texto,
+        likes: 0,
+        usuario: usuario
+      }
+    ];
+
+    setComentarios(nuevos);
+    guardarEnLocal(nuevos);
+    setTexto("");
+  };
+
+  const darLike = (index) => {
+    const nuevos = comentarios.map((c, i) =>
+      i === index ? { ...c, likes: c.likes + 1 } : c
+    );
+
+    setComentarios(nuevos);
+    guardarEnLocal(nuevos);
+  };
+
+  if (!partido) {
+    return <p>Selecciona un partido</p>;
+  }
+
+  const homeName = partido.teams
+    ? partido.teams.home.name
+    : partido.home;
+
+  const awayName = partido.teams
+    ? partido.teams.away.name
+    : partido.away;
+
   return (
     <div style={{
       background: "#1e293b",
@@ -23,9 +100,11 @@ export default function ComentariosPartido({ partido }) {
       display: "flex",
       flexDirection: "column",
       gap: "15px",
-      boxShadow: "none", 
+      boxShadow: "none",
       height: "500px" // 🔑 BLOQUEAMOS LA ALTURA
     }}>
+
+
       <style>{`
         .scroll-limpio::-webkit-scrollbar {
           width: 6px;
@@ -39,72 +118,100 @@ export default function ComentariosPartido({ partido }) {
         }
       `}</style>
 
-      <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "600", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
-        ⚽ {partido.home} vs {partido.away}
-      </h2>
 
-      {/* 🔑 Este contenedor asume el espacio central y scrollea de forma independiente */}
-      <div className="scroll-limpio" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto", paddingRight: "4px" }}>
-        {comentarios.map((c, i) => (
-          <div key={i} style={{ 
-            background: "#0f172a", 
-            padding: "14px 18px", 
-            borderRadius: "12px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-            position: "relative",
-            flexShrink: 0
-          }}>
-            <div>
-              <span style={{ color: "#94a3b8", fontSize: "14px", fontWeight: "600" }}>💬 {c.usuario}:</span> 
-              <span style={{ marginLeft: "6px", color: "#f8fafc", fontSize: "14px" }}>{c.texto}</span>
-            </div>
-            
-            <div style={{ display: "flex", alignItems: "center", color: "#94a3b8", fontSize: "13px", fontWeight: "600" }}>
-              🤍 {c.likes}
-            </div>
+      {mostrarModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <h3>Usuario</h3>
 
-            {c.top && (
-              <span style={{ position: "absolute", right: "15px", bottom: "14px", color: "#f59e0b", fontSize: "12px", fontWeight: "bold" }}>
-                🔥 TOP
-              </span>
-            )}
+            <input
+              value={nuevoUsuario}
+              onChange={(e) => setNuevoUsuario(e.target.value)}
+              placeholder="Tu nombre..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") guardarUsuario();
+              }}
+            />
+
+            <button onClick={guardarUsuario}>
+              Entrar
+            </button>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
-      <div style={{ display: "flex", gap: "10px" }}>
-        <input
-          value={nuevo}
-          onChange={(e) => setNuevo(e.target.value)}
-          placeholder="Escribe un comentario..."
-          style={{ 
-            flex: 1, 
-            padding: "12px 14px", 
-            borderRadius: "8px", 
-            border: "1px solid #334155", 
-            background: "#0f172a", 
-            color: "white", 
-            outline: "none"
-          }}
-          onKeyDown={(e) => { if (e.key === "Enter") enviar(); }}
-        />
-        <button 
-          onClick={enviar} 
-          style={{ 
-            background: "#22c55e",
-            color: "white", 
-            padding: "0 20px", 
-            borderRadius: "8px", 
-            border: "none", 
-            cursor: "pointer", 
-            fontWeight: "600"
-          }}
-        >
-          Enviar
-        </button>
+      <h3>⚽ {homeName} vs {awayName}</h3>
+
+      <div className="lista-comentarios">
+        {comentarios.length === 0 && (
+          <p style={{ color: "#aaa" }}>
+            No hay comentarios todavía
+          </p>
+        )}
+
+        {/* 🔑 Este contenedor asume el espacio central y scrollea de forma independiente */}
+        <div className="scroll-limpio" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto", paddingRight: "4px" }}>
+          {comentarios.map((c, i) => (
+            <div key={i} style={{
+              background: "#0f172a",
+              padding: "14px 18px",
+              borderRadius: "12px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              position: "relative",
+              flexShrink: 0
+            }}>
+              <div>
+                <span style={{ color: "#94a3b8", fontSize: "14px", fontWeight: "600" }}>💬 {c.usuario}:</span>
+                <span style={{ marginLeft: "6px", color: "#f8fafc", fontSize: "14px" }}>{c.texto}</span>
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", color: "#94a3b8", fontSize: "13px", fontWeight: "600" }}>
+                🤍 {c.likes}
+              </div>
+
+              {c.top && (
+                <span style={{ position: "absolute", right: "15px", bottom: "14px", color: "#f59e0b", fontSize: "12px", fontWeight: "bold" }}>
+                  🔥 TOP
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="input-box">
+          <input
+            value={nuevo}
+            onChange={(e) => setNuevo(e.target.value)}
+            placeholder="Escribe un comentario..."
+            style={{
+              flex: 1,
+              padding: "12px 14px",
+              borderRadius: "8px",
+              border: "1px solid #334155",
+              background: "#0f172a",
+              color: "white",
+              outline: "none"
+            }}
+            onKeyDown={(e) => { if (e.key === "Enter") enviar(); }}
+          />
+          <button
+            onClick={enviar}
+            style={{
+              background: "#22c55e",
+              color: "white",
+              padding: "0 20px",
+              borderRadius: "8px",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: "600"
+            }}
+          >
+            Enviar
+          </button>
+        </div>
       </div>
     </div>
-  );
+  )
 }

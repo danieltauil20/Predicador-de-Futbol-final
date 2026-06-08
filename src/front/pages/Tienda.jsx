@@ -7,15 +7,27 @@ import city from "../assets/camisetas/city.jpg";
 import liverpool from "../assets/camisetas/liverpool.jpg";
 import bayern from "../assets/camisetas/bayern.jpg";
 import psg from "../assets/camisetas/psg.jpg";
+import brentford from "../assets/camisetas/brentford.jpg";
+import fulham from "../assets/camisetas/fulham.jpg";
+import crystal from "../assets/camisetas/crystal.jpg";
+import wolves from "../assets/camisetas/wolves.jpg";
+import bournemouth from "../assets/camisetas/bournemouth.jpg";
+import forest from "../assets/camisetas/forest.jpg";
 
 export const Tienda = () => {
   const products = [
-    { id: 1, name: "Camiseta Real Madrid 2024", price: 79.99, img: madrid },
-    { id: 2, name: "Camiseta Barcelona 2024", price: 79.99, img: barcelona },
-    { id: 3, name: "Camiseta Manchester City 2024", price: 74.99, img: city },
-    { id: 4, name: "Camiseta Liverpool 2024", price: 74.99, img: liverpool },
-    { id: 5, name: "Camiseta Bayern Munich 2024", price: 74.99, img: bayern },
-    { id: 6, name: "Camiseta PSG 2024", price: 74.99, img: psg },
+    { id: 1, name: "Camiseta Real Madrid ", price: 79.99, img: madrid },
+    { id: 2, name: "Camiseta Barcelona ", price: 79.99, img: barcelona },
+    { id: 3, name: "Camiseta Manchester City ", price: 74.99, img: city },
+    { id: 4, name: "Camiseta Liverpool ", price: 74.99, img: liverpool },
+    { id: 5, name: "Camiseta Bayern Munich ", price: 74.99, img: bayern },
+    { id: 6, name: "Camiseta PSG ", price: 74.99, img: psg },
+    { id: 7, name: "Camiseta Brentford ", price: 56, img: brentford },
+{ id: 8, name: "Camiseta Fulham ", price: 56, img: fulham },
+{ id: 9, name: "Camiseta Crystal Palace ", price: 56, img: crystal },
+{ id: 10, name: "Camiseta Wolverhampton ", price: 57, img: wolves },
+{ id: 11, name: "Camiseta Bournemouth ", price: 59, img: bournemouth },
+{ id: 12, name: "Camiseta Nottingham Forest ", price: 55, img: forest },
   ];
 
   const [cart, setCart] = useState([]);
@@ -77,12 +89,12 @@ export const Tienda = () => {
     <div className="tienda-container">
       <h1>Tienda</h1>
 
-      {/* BOTÓN CARRITO */}
+      
       <div className="cart-button" onClick={() => setOpen(!open)}>
         🛒 <span className="cart-count">{cart.length}</span>
       </div>
 
-      {/* GRID */}
+      
       <div className="tienda-grid">
         {products.map((p) => (
           <div className="product-card" key={p.id}>
@@ -94,7 +106,7 @@ export const Tienda = () => {
         ))}
       </div>
 
-      {/* SIDEBAR */}
+      
       <div className={`cart-sidebar ${open ? "open" : ""}`}>
         <div className="cart-header">
           <h2>Carrito</h2>
