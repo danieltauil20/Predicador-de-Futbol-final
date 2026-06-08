@@ -62,8 +62,7 @@ export const ListaPartidos = ({ ligaId }) => {
 
     return (
         <div style={pageStyle}>
-            {/* Solo dejamos este título para que quede centrado encima de los filtros */}
-            <h2 style={h2Style}>{ligaId.toUpperCase()}</h2>
+            {/* ELIMINADO EL h2Style PARA EVITAR DUPLICADOS CON EL HEADER LIGA */}
 
             <div style={filterContainerStyle}>
                 <select value={temporada} onChange={(e) => { setTemporada(e.target.value); setJornada("1"); }} style={pillSelectStyle}>
@@ -93,7 +92,6 @@ export const ListaPartidos = ({ ligaId }) => {
                     >
                         {/* EQUIPO LOCAL */}
                         <div style={teamLocalWrapperStyle}>
-                            {/* Eliminado el punto rojo */}
                             <img src={getLogoPath(p.HomeTeam)} alt={p.HomeTeam} style={logoStyle} />
                             <span style={teamNameStyle}>{p.HomeTeam}</span>
                         </div>
@@ -167,23 +165,28 @@ export const ListaPartidos = ({ ligaId }) => {
 };
 
 // --- ESTILOS DE LA PANTALLA PRINCIPAL ---
-const pageStyle = { fontFamily: "'Poppins', sans-serif", backgroundColor: "transparent", minHeight: "100vh", padding: "20px", display: "flex", flexDirection: "column", alignItems: "center" };
-const h2Style = { color: "#FFFFFF", fontWeight: "700", fontSize: "28px", marginBottom: "20px" };
-const filterContainerStyle = { display: "flex", gap: "12px", marginBottom: "20px" };
+const pageStyle = { fontFamily: "'Poppins', sans-serif", backgroundColor: "transparent", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" };
+// El h2Style fue removido
+const filterContainerStyle = { display: "flex", gap: "12px", marginBottom: "30px", justifyContent: "center" }; // Se agregó justifyContent center
 const pillSelectStyle = {
-    background: "#1F2A44",
-    color: "#FFFFFF",
+    background: "#1e293b", // Igualado al color del HeaderLiga para mayor cohesión
+    color: "#94a3b8", // Igualado al color del texto del HeaderLiga
     border: "1px solid rgba(255,255,255,0.08)",
-    padding: "12px 28px",
+    padding: "10px 24px",
     borderRadius: "24px",
     fontWeight: "600",
-    fontSize: "15px",
+    fontSize: "14px",
     cursor: "pointer",
-    outline: "none"
+    outline: "none",
+    appearance: "none", // Elimina la flechita nativa para un look más limpio
+    WebkitAppearance: "none",
+    MozAppearance: "none",
+    textAlign: "center"
 };
-const listContainerStyle = { width: "100%", maxWidth: "1100px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(480px, 1fr))", gap: "15px", padding: "12px" };
+const listContainerStyle = { width: "100%", maxWidth: "1175px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(480px, 1fr))", gap: "20px" };
 
-// AJUSTES APLICADOS AQUÍ PARA DISEÑO PLANO
+// ... el resto de tus estilos (matchRowStyle, etc.) permanecen iguales ...
+
 const matchRowStyle = {
     display: "grid",
     gridTemplateColumns: "1fr auto 1fr",
@@ -194,8 +197,6 @@ const matchRowStyle = {
     border: "1px solid rgba(255,255,255,0.25)",
     borderRadius: "16px",
     cursor: "pointer",
-    marginBottom: "12px"
-    // Eliminado el box-shadow negro
 };
 
 const teamLocalWrapperStyle = { display: "flex", alignItems: "center", gap: "14px", justifyContent: "flex-start" };
@@ -212,12 +213,10 @@ const teamNameStyle = {
     fontSize: "15px"
 };
 const scoreBoxStyle = { display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", padding: "0 20px" };
-const scoreDividerStyle = { margin: "0 8px", fontWeight: "800", fontSize: "16px", color: "#1F2A44" }; // Color unificado al navy
-
-// AJUSTE DE CONTRASTE APLICADO AQUÍ
+const scoreDividerStyle = { margin: "0 8px", fontWeight: "800", fontSize: "16px", color: "#1F2A44" };
 const numberCardStyle = {
     backgroundColor: "#A5D6A7",
-    color: "#1F2A44", // Cambiado a Azul Oscuro/Navy para mejorar la lectura
+    color: "#1F2A44",
     padding: "6px 16px",
     borderRadius: "8px",
     fontWeight: "800",
@@ -225,7 +224,6 @@ const numberCardStyle = {
     textAlign: "center"
 };
 
-// --- ESTILOS DEL MODAL (VERDE ORIGINAL MANTENIDO) ---
 const modalOverlayStyle = { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000, padding: "20px" };
 const modalContentStyle = { backgroundColor: "#1B4326", borderRadius: "12px", width: "100%", maxWidth: "540px", maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 20px 50px rgba(0,0,0,0.5)", overflow: "hidden", border: "1px solid #26753c" };
 const modalTopBarStyle = { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 24px", backgroundColor: "#26753c", borderBottom: "1px solid rgba(255,255,255,0.1)" };
@@ -239,7 +237,7 @@ const modalTeamNameBigStyle = { color: "#FFFFFF", fontWeight: "700", fontSize: "
 const modalScoreBigContainerStyle = { display: "flex", alignItems: "center", gap: "12px" };
 const modalScoreBigNumberStyle = { backgroundColor: "#FFFFFF", color: "#1B4326", fontSize: "32px", fontWeight: "800", padding: "10px 20px", borderRadius: "8px", minWidth: "50px", textAlign: "center" };
 const modalScoreDividerStyle = { color: "#FFFFFF", fontSize: "28px", fontWeight: "700" };
-const halfTimeStyle = { textAlign: "center", color: "#A0D4B1", fontSize: "14px", marginTop: "-12px" };
+const halfTimeStyle = { textAlign: "center", color: "#A0D4B1", fontSize: "14px", margin: "-12px 0" };
 const sectionContainerStyle = { backgroundColor: "#26753c", padding: "20px", borderRadius: "12px" };
 const sectionTitleStyle = { margin: "0 0 16px 0", color: "#A0D4B1", fontSize: "14px", fontWeight: "700", textTransform: "uppercase", textAlign: "center" };
 const statsComparisonWrapperStyle = { display: "flex", flexDirection: "column" };

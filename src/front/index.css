@@ -131,7 +131,7 @@ body,
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px); /* RESUELTO: Paréntesis cerrado correctamente */
+  transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(14, 231, 172, 0.45);
 }
 
@@ -275,6 +275,13 @@ body,
   padding: 6px 12px;
   border-radius: 5px;
   text-align: center;
+}
+
+/* Adaptación de tarjetas para móviles muy pequeños */
+@media (max-width: 480px) {
+  .card {
+    width: 100% !important;
+  }
 }
 
 /* ==========================================
@@ -547,7 +554,7 @@ body,
    ESTILOS COMPONENTE COMENTARIOS (FORO LADO A LADO)
    ==================================================== */
 .pagina {
-  max-width: 1250px; /* 🟢 Un pelín más ancho para que respiren las 3 columnas holgadamente */
+  max-width: 1250px;
   margin: 40px auto;
   padding: 0 20px;
   color: #ffffff;
@@ -572,16 +579,16 @@ body,
   box-sizing: border-box !important;
 }
 
-.foro-grande, 
-.comentarios-grande, 
+.foro-grande,
+.comentarios-grande,
 .normas-box-derecha {
   flex: 1 !important;
   min-width: 0 !important;
-  background-color: #1E293B !important; /* Azul marino KickHub */
+  background-color: #1e293b !important;
   border: 1px solid #334155 !important;
   border-radius: 12px !important;
   padding: 20px !important;
-  height: 400px !important; /* Altura fija alineada */
+  height: 400px !important;
   display: flex !important;
   flex-direction: column !important;
   box-sizing: border-box !important;
@@ -595,7 +602,7 @@ body,
   border: 1px solid #334155 !important;
   padding: 14px 20px !important;
   border-radius: 12px !important;
-  margin-top: auto !important; /* Lo empuja abajo */
+  margin-top: auto !important;
   width: 100% !important;
   box-sizing: border-box !important;
 }
@@ -607,7 +614,7 @@ body,
 }
 
 .banner-registro-moderno .btn-entrar {
-  background-color: #26753c !important; /* Tu verde oscuro KickHub */
+  background-color: #26753c !important;
   color: #ffffff !important;
   border: none !important;
   padding: 8px 16px !important;
@@ -624,13 +631,17 @@ body,
 
 /* RESPONSIVO COMPACTO PARA TABLETS Y MÓVILES */
 @media (max-width: 1024px) {
-  .zona-inferior { /* <--- CORREGIDO AQUÍ */
-    grid-template-columns: 1fr !important; /* Se apilan verticalmente si la pantalla es estrecha */
-    gap: 20px;
+  .zona-inferior {
+    /* LA CORRECCIÓN CLAVE: Sobrescribir el "row" de arriba por "column" */
+    flex-direction: column !important;
+    gap: 20px !important;
   }
   .foro-grande,
-  .comentarios-grande {
-    height: auto !important; /* Se liberan del tamaño fijo en móviles */
+  .comentarios-grande,
+  .normas-box-derecha {
+    height: auto !important;
+    min-height: 300px !important; /* Mínimo para que se vea el contenido */
+    width: 100% !important; /* Ocupan todo el ancho en móvil */
   }
 }
 
@@ -642,7 +653,7 @@ body,
 [class*="normas"] {
   position: relative !important;
   width: 100% !important;
-  height: 360px !important; /* Equilibrio de suelo milimétrico con Foro y Comentarios */
+  height: 360px !important;
   box-sizing: border-box !important;
 
   /* Fondo estilo pizarra de fútbol premium intacto */
@@ -735,7 +746,7 @@ body,
 }
 
 .card-partido {
-  background-color: #1e293b; /* Color oscuro de fondo */
+  background-color: #1e293b;
   border-radius: 12px;
   padding: 16px;
   cursor: pointer;
@@ -748,7 +759,7 @@ body,
 }
 
 .card-partido:hover {
-  transform: scale(1.03); /* Efecto al pasar el mouse */
+  transform: scale(1.03);
 }
 
 .equipos {
@@ -768,7 +779,7 @@ body,
 }
 
 .equipo img {
-  width: 50px; /* Ajusta el tamaño de los logos */
+  width: 50px;
   height: 50px;
   object-fit: contain;
 }
@@ -776,7 +787,7 @@ body,
 .vs {
   font-weight: bold;
   font-size: 1.2rem;
-  color: #10b981; /* Color verde que se ve en tu imagen */
+  color: #10b981;
 }
 
 /* Contenedor principal del foro */
@@ -810,7 +821,7 @@ body,
 }
 
 .input-box button {
-  background-color: #10b981; /* Verde característico */
+  background-color: #10b981;
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
@@ -829,7 +840,7 @@ body,
 }
 
 .tema-card strong {
-  color: #10b981; /* Resalta el nombre del usuario */
+  color: #10b981;
 }
 
 /* Ajuste del scroll para que se vea limpio */
@@ -844,8 +855,11 @@ body,
 /* Estilo simple para el modal */
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.7);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -870,4 +884,102 @@ body,
   flex: 1;
   overflow-y: auto;
   margin-bottom: 10px;
+}
+
+/* ======================================================
+   NUEVA CABECERA CENTRADA Y EFECTO FADE
+   ====================================================== */
+
+.league-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Esto es lo que centra todo el bloque */
+  justify-content: center;
+  margin: 40px 0 30px 0;
+  text-align: center;
+  width: 100%;
+}
+
+.league-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.season-info {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  margin-top: 8px;
+}
+
+/* El fade para cuando cambias de liga */
+.fade-transition {
+  animation: fadeIn 150ms ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.partidos-container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Contenedor principal de la página de liga */
+.pagina-liga {
+  color: white; 
+  padding: 20px;
+}
+
+/* Cabecera centrada y elegante */
+.league-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40px 0;
+  text-align: center;
+}
+
+.league-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: white;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.season-info {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 10px;
+  padding: 5px 15px;
+  /* Fondo oscuro semitransparente en lugar de verde */
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+}
+
+/* Animación de fade */
+.fade-transition {
+  animation: fadeIn 300ms ease-in-out; /* Un poquito más lento para que sea más premium */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); } /* Añadimos un pequeño movimiento hacia arriba */
+  to { opacity: 1; transform: translateY(0); }
 }

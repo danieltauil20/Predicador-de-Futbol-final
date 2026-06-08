@@ -6,8 +6,6 @@ export const Navbar = ({ openModal }) => {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  
-  // Estado para controlar la apertura del modal de ligas
   const [ligasModalOpen, setLigasModalOpen] = useState(false);
 
   useEffect(() => {
@@ -35,122 +33,70 @@ export const Navbar = ({ openModal }) => {
 
   return (
     <>
-      {/* ========================================================
-          MODAL CENTRADO DE LIGAS (Reutiliza tus estilos globales)
-          ======================================================== */}
+      {/* MODAL DE LIGAS RESPONSIVO */}
       {ligasModalOpen && (
         <div className="modal-overlay" onClick={() => setLigasModalOpen(false)}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()} style={{ width: "420px" }}>
-            
+          {/* Ajuste de width a 90% para móviles */}
+          <div className="modal-box" onClick={(e) => e.stopPropagation()} style={{ width: "90%", maxWidth: "420px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ margin: 0, color: "#ffffff", fontSize: "1.3rem", fontWeight: "700" }}>
-                Selecciona una Competición
-              </h3>
-              <button 
-                onClick={() => setLigasModalOpen(false)} 
-                style={{ background: "transparent", border: "none", color: "#bfc3ca", fontSize: "1.2rem", cursor: "pointer" }}
-              >
-                ✖
-              </button>
+              <h3 style={{ margin: 0, color: "#ffffff", fontSize: "1.3rem", fontWeight: "700" }}>Competiciones</h3>
+              <button onClick={() => setLigasModalOpen(false)} style={{ background: "transparent", border: "none", color: "#bfc3ca", fontSize: "1.2rem", cursor: "pointer" }}>✖</button>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {leagueLinks.map((l) => (
-                <Link 
-                  key={l.path} 
-                  to={l.path} 
-                  onClick={() => setLigasModalOpen(false)}
-                  className="continue"
-                  style={{ 
-                    textDecoration: "none", 
-                    display: "flex", 
-                    alignItems: "center", 
-                    justifyContent: "center",
-                    gap: "10px",
-                    padding: "14px",
-                    height: "auto",
-                    fontSize: "1rem"
-                  }}
-                >
-                  <span>⚽</span> {l.name}
+                <Link key={l.path} to={l.path} onClick={() => setLigasModalOpen(false)} className="continue" style={{ textDecoration: "none", display: "flex", justifyContent: "center", padding: "14px" }}>
+                  {l.name}
                 </Link>
               ))}
             </div>
 
             <div className="actions" style={{ marginTop: "20px" }}>
-              <button className="cancel" onClick={() => setLigasModalOpen(false)}>
-                Cerrar
-              </button>
+              <button className="cancel" onClick={() => setLigasModalOpen(false)}>Cerrar</button>
             </div>
-
           </div>
         </div>
       )}
 
-      {/* ========================================================
-          NAVBAR PRINCIPAL
-          ======================================================== */}
+      {/* NAVBAR PRINCIPAL */}
       <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
-        <style>{`
-          .navbar { 
-            position: static !important; 
-            z-index: 999; 
-            overflow: visible !important;
-          } 
-        `}</style>
-
         <Link to="/" className="logo">
           <img src={logo} alt="GolHub Logo" />
         </Link>
 
+        {/* Links de escritorio */}
         <ul className="nav-links">
-          {navItems.map((item) =>
-            item.name === "Partidos" ? (
-              <li key={item.path}>
-                <a
-                  href="#ligas"
-                  className={location.pathname === item.path ? "active" : ""}
-                  onClick={(e) => { e.preventDefault(); setLigasModalOpen(true); }}
-                  style={{ cursor: "pointer" }}
-                >
-                  {item.name} <span style={{ fontSize: "10px", marginLeft: "2px" }}>▼</span>
-                </a>
-              </li>
-            ) : (
-              <li key={item.path}>
-                <Link
-                  to={item.path}
-                  className={location.pathname === item.path ? "active" : ""}
-                >
+          {navItems.map((item) => (
+            <li key={item.path}>
+              {item.name === "Partidos" ? (
+                <span onClick={() => setLigasModalOpen(true)} className={location.pathname.includes("/liga/") ? "active" : ""} style={{ cursor: "pointer" }}>
+                  Partidos ▼
+                </span>
+              ) : (
+                <Link to={item.path} className={location.pathname === item.path ? "active" : ""}>
                   {item.name}
                 </Link>
-              </li>
-            )
-          )}
+              )}
+            </li>
+          ))}
         </ul>
 
+        {/* Botón unirme + Hamburguesa */}
         <div className="navbar-right">
           <button className="btn-primary" onClick={openModal}>Unirme</button>
-          <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? "✖" : "☰"}</div>
+          <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? "✖" : "☰"}
+          </div>
         </div>
 
+        {/* Menú móvil */}
         {menuOpen && (
           <div className="mobile-menu">
             {navItems.map((item) => (
               <div key={item.path}>
                 <Link to={item.path} onClick={() => setMenuOpen(false)}>{item.name}</Link>
-                {item.name === "Partidos" && (
-                  <div style={{ paddingLeft: '20px', borderLeft: '2px solid #0ee7ac', marginBottom: '10px' }}>
-                    {leagueLinks.map(l => (
-                      <Link key={l.path} to={l.path} onClick={() => setMenuOpen(false)} style={{ fontSize: '0.8rem', display: 'block', padding: '5px 0' }}>
-                        {l.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
-            <button className="btn-primary" onClick={() => { setMenuOpen(false); openModal(); }}>Unirme</button>
           </div>
         )}
       </nav>

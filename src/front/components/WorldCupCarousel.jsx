@@ -1,11 +1,11 @@
+import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 
-export const WorldCupCarousel = () => {
-    // Definimos los grupos con códigos estándar (ej: mex, usa, bra)
+export const WorldCupCarousel = ({ onSelect }) => {
     const grupos = [
-        { nombre: "GRUPO A", equipos: [{ code: "mexico", name: "mexico" }, { code: "sudafrica", name: "sudafrica." }, { code: "corea", name: "corea" }, { code: "rep. checa", name: "rep.checa" }] },
+        { nombre: "GRUPO A", equipos: [{ code: "mexico", name: "mexico" }, { code: "sudafrica", name: "sudafrica" }, { code: "corea", name: "corea" }, { code: "rep. checa", name: "rep.checa" }] },
         { nombre: "GRUPO B", equipos: [{ code: "canada", name: "canada" }, { code: "bosnia", name: "bosnia" }, { code: "qatar", name: "qatar" }, { code: "suiza", name: "suiza" }] },
         { nombre: "GRUPO C", equipos: [{ code: "brasil", name: "brasil" }, { code: "marruecos", name: "marruecos" }, { code: "haiti", name: "haiti" }, { code: "escocia", name: "escocia" }] },
         { nombre: "GRUPO D", equipos: [{ code: "usa", name: "usa" }, { code: "paraguay", name: "paraguay" }, { code: "australia", name: "australia" }, { code: "turquia", name: "turquia" }] },
@@ -26,24 +26,27 @@ export const WorldCupCarousel = () => {
                 background: "linear-gradient(90deg, #3CAC3B, #2A398D, #E61D25)",
                 borderRadius: "12px", padding: "10px 28px", boxShadow: "0 4px 10px rgba(0,0,0,0.2)"
             }}>
-
                 <Swiper
                     modules={[Autoplay]}
-                    slidesPerView={4}      /* 👈 Mantenemos tus 4 grupos fijos */
-                    spaceBetween={30}      /* 👈 INCREMENTADO: De 15 a 30 para estirar el carrusel hacia la derecha */
+                    slidesPerView={4}
+                    spaceBetween={30}
                     loop={true}
-                    speed={3000}
-                    autoplay={{ delay: 0, disableOnInteraction: false, pauseOnMouseEnter: true }}
-                    style={{ padding: "0 10px" }} /* 👈 NUEVO: Empuja sutilmente el primer grupo hacia adentro */
+                    speed={1500} /* Transición de 1.5s para suavidad */
+                    autoplay={{
+                        delay: 3000, /* Espera 3 segundos antes de pasar al siguiente */
+                        disableOnInteraction: false,
+                        pauseOnMouseEnter: true
+                    }}
+                    style={{ padding: "0 10px" }}
                 >
                     {grupos.map((g, i) => (
                         <SwiperSlide key={i}>
                             <div style={{
                                 background: "#E2E8F0",
                                 borderRadius: "8px",
-                                padding: "12px", // Más espacio interno
+                                padding: "12px",
                                 textAlign: "center",
-                                height: "90px", // Altura mayor para que el escudo tenga aire
+                                height: "90px",
                                 display: "flex",
                                 flexDirection: "column",
                                 justifyContent: "center"
@@ -54,13 +57,16 @@ export const WorldCupCarousel = () => {
 
                                 <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center" }}>
                                     {g.equipos.map((team, j) => (
-                                        <div key={j} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
+                                        <div
+                                            key={j}
+                                            onClick={() => onSelect && onSelect(team)}
+                                            style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px", cursor: "pointer" }}
+                                        >
                                             <img
                                                 src={`/logos/${team.code.toLowerCase()}.png`}
                                                 alt={team.code}
-                                                style={{ width: "32px", height: "32px", objectFit: "contain" }} // Escudo más grande
+                                                style={{ width: "32px", height: "32px", objectFit: "contain" }}
                                             />
-                                            {/* Texto más oscuro y legible */}
                                             <span style={{ fontSize: "10px", color: "#1E293B", fontWeight: "700" }}>
                                                 {team.code.toUpperCase()}
                                             </span>
@@ -74,5 +80,4 @@ export const WorldCupCarousel = () => {
             </div>
         </div>
     );
-
 };
