@@ -21,12 +21,12 @@ export const router = createBrowserRouter(
 
       <Route index element={<Home />} />
       <Route path="/liga/:nombre" element={<Liga />} />
-      <Route path="quiniela" element={<Quiniela />} />
+      <Route path="/quiniela" element={<Quiniela />} />
       <Route path="/single/:theId" element={<Single />} />
       <Route path="/demo" element={<Demo />} />
       <Route path="/tienda" element={<Tienda />} />
       <Route path="/ranking" element={<Ranking />} />
-      <Route path="comentarios" element={<Comentarios />} />
+      <Route path="/comentarios" element={<Comentarios />} />
     </Route >
   )
 );
