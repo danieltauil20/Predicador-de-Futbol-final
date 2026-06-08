@@ -1,11 +1,8 @@
-/* ======================================================
-   GOALHUB - HOJA DE ESTILOS GENERAL COMPLETA Y CORREGIDA
-   ====================================================== */
 
-/* 1. Importación correcta de la fuente Google Fonts */
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap");
 
-/* 2. Reset y Aplicación Global */
+
 * {
   box-sizing: border-box;
 }
@@ -26,9 +23,7 @@ body,
   margin: 0;
 }
 
-/* ==========================================
-   ESTILOS COMPONENTE NAVBAR
-   ========================================== */
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -212,9 +207,7 @@ img {
   }
 }
 
-/* ==========================================
-   ESTILOS DE LAS TARJETAS (CARDS HOME)
-   ========================================== */
+
 .cards-container {
   display: flex;
   gap: 20px;
@@ -293,9 +286,7 @@ img {
   }
 }
 
-/* ==========================================
-   ESTILOS DE LOS MODALES GLOBALES
-   ========================================== */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -396,9 +387,7 @@ img {
   margin-top: -5px;
 }
 
-/* ==========================================
-   ESTILOS COMPONENTE TIENDA (COMPLETO)
-   ========================================== */
+
 .tienda-container {
   padding: 20px;
   color: white;
@@ -560,9 +549,7 @@ img {
   color: white;
 }
 
-/* ====================================================
-   ESTILOS COMPONENTE COMENTARIOS (FORO LADO A LADO)
-   ==================================================== */
+
 .pagina {
   max-width: 1250px;
   margin: 40px auto;
@@ -655,9 +642,7 @@ img {
   }
 }
 
-/* ========================================================
-   ⚽ PIZARRA TÁCTICA PREMIUM PARA EL HUECO DERECHO
-   ======================================================== */
+
 .normas-box-derecha,
 .zon .normas-container,
 [class*="normas"] {
@@ -896,9 +881,7 @@ img {
   margin-bottom: 10px;
 }
 
-/* ======================================================
-   NUEVA CABECERA CENTRADA Y EFECTO FADE
-   ====================================================== */
+
 
 .league-header {
   display: flex;
@@ -971,7 +954,6 @@ img {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-
 .season-info {
   color: #94a3b8;
   font-size: 1.1rem;
@@ -983,12 +965,10 @@ img {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
 }
-
 /* Animación de fade */
 .fade-transition {
   animation: fadeIn 300ms ease-in-out; /* Un poquito más lento para que sea más premium */
 }
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -999,7 +979,6 @@ img {
     transform: translateY(0);
   }
 }
-
 .card-wrapper:hover {
   transform: scale(1.05); /* Pequeño zoom muy sutil */
   transition: transform 0.2s ease-in-out;
