@@ -123,7 +123,7 @@ export default function ForoMini() {
           onKeyDown={(e) => { if (e.key === "Enter") agregar(); }} // Corregido para llamar a agregar()
         />
 
-        <button 
+        <button
           onClick={agregar}
           style={{
             background: "#22c55e",
@@ -139,7 +139,7 @@ export default function ForoMini() {
         </button>
       </div>
 
-      <div className="lista-temas" style={{ flex: 1, overflowY: "auto" }} className="scroll-limpio">
+      <div className="lista-temas, scroll-limpio" style={{ flex: 1, overflowY: "auto" }} >
         {temas.length === 0 ? (
           <p style={{ color: "#aaa" }}>No hay temas todavía</p>
         ) : (

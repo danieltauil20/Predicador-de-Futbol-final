@@ -14,6 +14,7 @@ from flask_cors import CORS
 import urllib.request
 import xml.etree.ElementTree as ET
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import func
 
 api = Blueprint('api', __name__)
 
@@ -543,3 +544,142 @@ def get_historico():
     } for p in partidos]
 
     return jsonify(resultado)
+
+
+@api.route('/ranking', methods=['GET'])
+def get_ranking():
+    try:
+        # Agregamos User.email al group_by para evitar que PostgreSQL se queje
+        results = db.session.query(
+            User.id,
+            User.email,
+            func.sum(Prediction.points_earned).label('total_points')
+        ).outerjoin(Prediction, User.id == Prediction.user_id).group_by(User.id, User.email).all()
+
+        ranking = []
+        for r in results:
+            username = r.email.split('@')[0]
+            # Si un usuario se registra, obtiene 30 puntos por defecto
+            points = (int(r.total_points)
+                      if r.total_points is not None else 0) + 30
+
+            ranking.append({
+                "user_id": r.id,
+                "username": username,
+                "points": points
+            })
+
+        # Ordenamos primero por puntos (mayor a menor) y luego por username (A-Z) para desempatar
+        ranking.sort(key=lambda x: (-x['points'], x['username'].lower()))
+
+        # Limitamos a los mejores 100 usuarios para proteger la memoria de tus usuarios
+        ranking = ranking[:100]
+
+        # Asignamos la posición final (después de ordenar y cortar)
+        for index, user in enumerate(ranking):
+            user['rank'] = index + 1
+
+        return jsonify(ranking), 200
+
+    except Exception as e:
+        # Si algo explota, le decimos a Flask que cancele la transacción corrupta y nos muestre el error exacto
+        db.session.rollback()
+        print("🚨 ERROR EN RANKING:", str(e))
+        return jsonify({"msg": "Error interno del servidor", "error": str(e)}), 500
+
+
+@api.route('/evaluate', methods=['POST'])
+def evaluate_predictions():
+    # 1. Buscamos todas las predicciones que el bot aún no ha calificado
+    pending_predictions = Prediction.query.filter_by(points_earned=None).all()
+
+    if not pending_predictions:
+        return jsonify({"msg": "Todo al día. No hay predicciones pendientes por evaluar."}), 200
+
+    # 2. Agrupamos los partidos para no hacerle la misma pregunta a la API 100 veces
+    unique_fixtures = set([p.fixture_id for p in pending_predictions])
+
+    API_KEY = os.getenv("VITE_API_KEY", "8a0aed89a11642cf9abd50eb19825215")
+    headers = {"X-Auth-Token": API_KEY}
+
+    evaluated_count = 0
+
+    for fixture_id in unique_fixtures:
+        url = f"https://api.football-data.org/v4/matches/{fixture_id}"
+
+        try:
+            # Le preguntamos a la API de Football-Data el resultado real
+            response = requests.get(url, headers=headers)
+            if response.status_code != 200:
+                continue
+
+            match_data = response.json()
+
+            # Solo calificamos si el partido ya terminó en la vida real
+            if match_data.get('status') not in ['FINISHED', 'AWARDED']:
+                continue
+
+            real_home = match_data['score']['fullTime']['home']
+            real_away = match_data['score']['fullTime']['away']
+
+            if real_home is None or real_away is None:
+                continue
+
+            # Determinamos la tendencia real (1=Local, -1=Visitante, 0=Empate)
+            if real_home > real_away:
+                real_winner = 1
+            elif real_home < real_away:
+                real_winner = -1
+            else:
+                real_winner = 0
+
+            # 3. Traemos todas las predicciones de los usuarios para este partido en específico
+            fixture_predictions = [
+                p for p in pending_predictions if p.fixture_id == fixture_id]
+
+            for pred in fixture_predictions:
+                # 🥇 ACIERTO EXACTO (Marcador idéntico) -> 3 puntos
+                if pred.home_goals == real_home and pred.away_goals == real_away:
+                    pred.points_earned = 3
+                else:
+                    # Determinamos la tendencia que el usuario predijo
+                    if pred.home_goals > pred.away_goals:
+                        pred_winner = 1
+                    elif pred.home_goals < pred.away_goals:
+                        pred_winner = -1
+                    else:
+                        pred_winner = 0
+
+                    # 🥈 ACIERTO PARCIAL (Atinó quién ganaba o si empataban) -> 1 punto
+                    if pred_winner == real_winner:
+                        pred.points_earned = 1
+                    # 💔 FALLO TOTAL -> 0 puntos
+                    else:
+                        pred.points_earned = 0
+
+                evaluated_count += 1
+
+        except Exception as e:
+            print(f"Error evaluando partido {fixture_id}: {str(e)}")
+            continue
+
+    # 4. Guardamos los puntos asignados en la base de datos física
+    db.session.commit()
+
+    return jsonify({"msg": f"Se evaluaron y calificaron {evaluated_count} predicciones nuevas."}), 200
+
+
+@api.route('/stats', methods=['GET'])
+def get_stats():
+    try:
+        total_users = User.query.count()
+        # Como aún no tenemos un sistema de WebSockets para saber quién está online exactamente,
+        # calculamos un estimado realista para la demostración (mínimo 1).
+        online_users = max(1, total_users // 3)
+
+        return jsonify({
+            "total": total_users,
+            "online": online_users
+        }), 200
+    except Exception as e:
+        return jsonify({"msg": "Error al cargar las estadísticas", "error": str(e)}), 500
