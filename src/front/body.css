@@ -10,6 +10,10 @@
 }
 
 body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  background-color: #0d0d0d; /* Fondo oscuro tipo app */
   background-color: var(--kick-bg);
   font-family: "Poppins", sans-serif;
   color: var(--kick-text-main);

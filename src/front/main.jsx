@@ -6,6 +6,8 @@ import { router } from "./routes";
 import { StoreProvider } from "./hooks/useGlobalReducer";
 import { BackendURL } from "./components/BackendURL";
 
+
+console.log("¿Qué vale la variable?:", import.meta.env.VITE_BACKEND_URL);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     {(!import.meta.env.VITE_BACKEND_URL ||

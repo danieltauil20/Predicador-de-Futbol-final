@@ -1,14 +1,20 @@
+
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-# NUEVO: Asegúrate de importar Prediction además de User
+
+import time
+import requests
+from datetime import datetime, timezone, timedelta
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Prediction
+# NUEVO: Asegúrate de importar Prediction además de User
+from api.models import db, User, Prediction, Comment, Favorite, Partido
 from api.utils import generate_sitemap, APIException
-from sqlalchemy import func
 from flask_cors import CORS
 import urllib.request
 import xml.etree.ElementTree as ET
+from werkzeug.security import generate_password_hash, check_password_hash
+
 api = Blueprint('api', __name__)
 
 FOOTBALL_API_BASE_URL = "https://api.football-data.org/v4/competitions"
@@ -20,33 +26,13 @@ CACHE_DURACION_SEGUNDOS = 600
 
 LIGAS_PERMITIDAS = ["PD", "PL", "BL1", "SA", "WC"]
 
-HEADERS = {"X-Auth-Token": API_TOKEN}
-MAPEO_LIGAS = {"PD": "PD", "PL": "PL", "SA": "SA", "BL": "BL1", "WC": "WC"}
 
-
-@api.route('/api/fixtures/historico', methods=['GET'])
-def get_historico():
-    liga = request.args.get('liga', 'PD')
-    temporada = request.args.get('temporada', '2025')
-
-    # Si es Mundial, devolvemos datos vacíos o tu JSON local
-    if liga == "WC":
-        return jsonify([]), 200
-
-    id_liga = MAPEO_LIGAS.get(liga, "PD")
-    url = f"https://api.football-data.org/v4/competitions/{id_liga}/matches?season={temporada}"
-
-    res = requests.get(url, headers=HEADERS)
-    return jsonify(res.json().get("matches", [])), 200
-
-
-@api.route('/api/partido/detalle/<partido_id>', methods=['GET'])
-def get_detalle_partido(partido_id):
-    # Simulamos datos para el detalle
-    return jsonify({
-        "goles": [{"jugador": "Jugador 1"}, {"jugador": "Jugador 2"}],
-        "tarjetas": [{"jugador": "Jugador 3"}]
-    })
+@api.route('/hello', methods=['POST', 'GET'])
+def handle_hello():
+    response_body = {
+        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
+    }
+    return jsonify(response_body), 200
 
 
 @api.route('/fixtures', methods=['GET'])
@@ -135,7 +121,9 @@ def save_prediction():
 
     predictions_data = body['predictions']
 
-    user_id = 1
+    user_id = body.get("user_id")
+    if not user_id:
+        return jsonify({"msg": "Falta user_id"}), 400
 
     saved_predictions = []
 
@@ -175,205 +163,349 @@ def save_prediction():
     return jsonify({"msg": "Predicciones guardadas con éxito", "predictions": result}), 201
 
 # =========================================================
-# NUEVO ENDPOINT: OBTENER EL RANKING GLOBAL
+# 💬 COMMENTS CRUD
 # =========================================================
 
-
-@api.route('/ranking', methods=['GET'])
-def get_ranking():
-    try:
-        # Agregamos User.email al group_by para evitar que PostgreSQL se queje
-        results = db.session.query(
-            User.id,
-            User.email,
-            func.sum(Prediction.points_earned).label('total_points')
-        ).outerjoin(Prediction, User.id == Prediction.user_id).group_by(User.id, User.email).all()
-
-        ranking = []
-        for r in results:
-            username = r.email.split('@')[0]
-            # Si un usuario se registra, obtiene 30 puntos por defecto
-            points = (int(r.total_points)
-                      if r.total_points is not None else 0) + 30
-
-            ranking.append({
-                "user_id": r.id,
-                "username": username,
-                "points": points
-            })
-
-        # Ordenamos primero por puntos (mayor a menor) y luego por username (A-Z) para desempatar
-        ranking.sort(key=lambda x: (-x['points'], x['username'].lower()))
-
-        # Limitamos a los mejores 100 usuarios para proteger la memoria de tus usuarios
-        ranking = ranking[:100]
-
-        # Asignamos la posición final (después de ordenar y cortar)
-        for index, user in enumerate(ranking):
-            user['rank'] = index + 1
-
-        return jsonify(ranking), 200
-
-    except Exception as e:
-        # Si algo explota, le decimos a Flask que cancele la transacción corrupta y nos muestre el error exacto
-        db.session.rollback()
-        print("🚨 ERROR EN RANKING:", str(e))
-        return jsonify({"msg": "Error interno del servidor", "error": str(e)}), 500
+# CREATE comentario
 
 
-# =========================================================
-# NUEVO ENDPOINT: EVALUADOR (CALCULAR PUNTOS)
-# =========================================================
+@api.route('/comments', methods=['POST'])
+def create_comment():
+    data = request.get_json()
 
-@api.route('/evaluate', methods=['POST'])
-def evaluate_predictions():
-    # 1. Buscamos todas las predicciones que el bot aún no ha calificado
-    pending_predictions = Prediction.query.filter_by(points_earned=None).all()
+    if not data or not data.get("user_id") or not data.get("match_id") or not data.get("content"):
+        return jsonify({"error": "Datos incompletos"}), 400
 
-    if not pending_predictions:
-        return jsonify({"msg": "Todo al día. No hay predicciones pendientes por evaluar."}), 200
+    user = User.query.get(data["user_id"])
+    if not user:
+        return jsonify({"error": "Usuario no existe"}), 404
 
-    # 2. Agrupamos los partidos para no hacerle la misma pregunta a la API 100 veces
-    unique_fixtures = set([p.fixture_id for p in pending_predictions])
+    new_comment = Comment(
+        user_id=data["user_id"],
+        match_id=data["match_id"],
+        content=data["content"]
+    )
 
-    API_KEY = os.getenv("VITE_API_KEY", "8a0aed89a11642cf9abd50eb19825215")
-    headers = {"X-Auth-Token": API_KEY}
-
-    evaluated_count = 0
-
-    for fixture_id in unique_fixtures:
-        url = f"https://api.football-data.org/v4/matches/{fixture_id}"
-
-        try:
-            # Le preguntamos a la API de Football-Data el resultado real
-            response = requests.get(url, headers=headers)
-            if response.status_code != 200:
-                continue
-
-            match_data = response.json()
-
-            # Solo calificamos si el partido ya terminó en la vida real
-            if match_data.get('status') not in ['FINISHED', 'AWARDED']:
-                continue
-
-            real_home = match_data['score']['fullTime']['home']
-            real_away = match_data['score']['fullTime']['away']
-
-            if real_home is None or real_away is None:
-                continue
-
-            # Determinamos la tendencia real (1=Local, -1=Visitante, 0=Empate)
-            if real_home > real_away:
-                real_winner = 1
-            elif real_home < real_away:
-                real_winner = -1
-            else:
-                real_winner = 0
-
-            # 3. Traemos todas las predicciones de los usuarios para este partido en específico
-            fixture_predictions = [
-                p for p in pending_predictions if p.fixture_id == fixture_id]
-
-            for pred in fixture_predictions:
-                # 🥇 ACIERTO EXACTO (Marcador idéntico) -> 3 puntos
-                if pred.home_goals == real_home and pred.away_goals == real_away:
-                    pred.points_earned = 3
-                else:
-                    # Determinamos la tendencia que el usuario predijo
-                    if pred.home_goals > pred.away_goals:
-                        pred_winner = 1
-                    elif pred.home_goals < pred.away_goals:
-                        pred_winner = -1
-                    else:
-                        pred_winner = 0
-
-                    # 🥈 ACIERTO PARCIAL (Atinó quién ganaba o si empataban) -> 1 punto
-                    if pred_winner == real_winner:
-                        pred.points_earned = 1
-                    # 💔 FALLO TOTAL -> 0 puntos
-                    else:
-                        pred.points_earned = 0
-
-                evaluated_count += 1
-
-        except Exception as e:
-            print(f"Error evaluando partido {fixture_id}: {str(e)}")
-            continue
-
-    # 4. Guardamos los puntos asignados en la base de datos física
+    db.session.add(new_comment)
     db.session.commit()
 
-    return jsonify({"msg": f"Se evaluaron y calificaron {evaluated_count} predicciones nuevas."}), 200
+    return jsonify(new_comment.serialize()), 201
+
+
+# GET todos los comentarios
+@api.route('/comments', methods=['GET'])
+def get_all_comments():
+    comments = Comment.query.all()
+    return jsonify([c.serialize() for c in comments]), 200
+
+
+# GET comentarios por partido
+@api.route('/comments/match/<int:match_id>', methods=['GET'])
+def get_comments_by_match(match_id):
+    comments = Comment.query.filter_by(match_id=match_id).all()
+    return jsonify([c.serialize() for c in comments]), 200
+
+
+# GET comentarios por usuario
+@api.route('/comments/user/<int:user_id>', methods=['GET'])
+def get_comments_by_user(user_id):
+    comments = Comment.query.filter_by(user_id=user_id).all()
+    return jsonify([c.serialize() for c in comments]), 200
+
+
+# UPDATE comentario
+@api.route('/comments/<int:id>', methods=['PUT'])
+def update_comment(id):
+    comment = Comment.query.get(id)
+
+    if not comment:
+        return jsonify({"error": "Comentario no encontrado"}), 404
+
+    data = request.get_json()
+    comment.content = data.get("content", comment.content)
+
+    db.session.commit()
+
+    return jsonify(comment.serialize()), 200
+
+
+# DELETE comentario
+@api.route('/comments/<int:id>', methods=['DELETE'])
+def delete_comment(id):
+    comment = Comment.query.get(id)
+
+    if not comment:
+        return jsonify({"error": "Comentario no encontrado"}), 404
+
+    db.session.delete(comment)
+    db.session.commit()
+
+    return jsonify({"msg": "Comentario eliminado"}), 200
+
 
 # =========================================================
-# ENDPOINT DE ESTADÍSTICAS GLOBALES
+# ⭐ FAVORITES CRUD
 # =========================================================
 
+# CREATE favorito
+@api.route('/favorites', methods=['POST'])
+def add_favorite():
+    data = request.get_json()
 
-@api.route('/stats', methods=['GET'])
-def get_stats():
-    try:
-        total_users = User.query.count()
-        # Como aún no tenemos un sistema de WebSockets para saber quién está online exactamente,
-        # calculamos un estimado realista para la demostración (mínimo 1).
-        online_users = max(1, total_users // 3)
+    if not data or not data.get("user_id") or not data.get("team_name"):
+        return jsonify({"error": "Datos incompletos"}), 400
 
-        return jsonify({
-            "total": total_users,
-            "online": online_users
-        }), 200
-    except Exception as e:
-        return jsonify({"msg": "Error al cargar las estadísticas", "error": str(e)}), 500
+    user = User.query.get(data["user_id"])
+    if not user:
+        return jsonify({"error": "Usuario no existe"}), 404
+
+    existing = Favorite.query.filter_by(
+        user_id=data["user_id"],
+        team_name=data["team_name"]
+    ).first()
+
+    if existing:
+        return jsonify({"msg": "Este equipo ya está en favoritos"}), 200
+
+    new_fav = Favorite(
+        user_id=data["user_id"],
+        team_name=data["team_name"]
+    )
+
+    db.session.add(new_fav)
+    db.session.commit()
+
+    return jsonify(new_fav.serialize()), 201
 
 
-   # =========================================================
+# GET todos los favoritos
+@api.route('/favorites', methods=['GET'])
+def get_all_favorites():
+    favorites = Favorite.query.all()
+    return jsonify([f.serialize() for f in favorites]), 200
+
+
+# GET favoritos de un usuario
+@api.route('/favorites/user/<int:user_id>', methods=['GET'])
+def get_user_favorites(user_id):
+    favorites = Favorite.query.filter_by(user_id=user_id).all()
+    return jsonify([f.serialize() for f in favorites]), 200
+
+
+# DELETE favorito
+@api.route('/favorites/<int:id>', methods=['DELETE'])
+def delete_favorite(id):
+    fav = Favorite.query.get(id)
+
+    if not fav:
+        return jsonify({"error": "Favorito no encontrado"}), 404
+
+    db.session.delete(fav)
+    db.session.commit()
+
+    return jsonify({"msg": "Favorito eliminado"}), 200
+
+  # =========================================================
+# 👤 USERS PRO (APP FÚTBOL)
+# =========================================================
+
+# REGISTER
+
+
+@api.route('/users/register', methods=['POST'])
+def register_user():
+    data = request.get_json()
+
+    if not data or not data.get("email") or not data.get("password"):
+        return jsonify({"error": "Datos incompletos"}), 400
+
+    existing = User.query.filter_by(email=data["email"]).first()
+    if existing:
+        return jsonify({"error": "Email ya registrado"}), 400
+
+    new_user = User(
+        email=data["email"],
+        password=generate_password_hash(data["password"])
+    )
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({
+        "msg": "Usuario creado correctamente",
+        "user": new_user.serialize()
+    }), 201
+
+
+# LOGIN
+@api.route('/users/login', methods=['POST'])
+def login_user():
+    data = request.get_json()
+
+    if not data or not data.get("email") or not data.get("password"):
+        return jsonify({"error": "Datos incompletos"}), 400
+
+    user = User.query.filter_by(email=data["email"]).first()
+
+    if not user or not check_password_hash(user.password, data["password"]):
+        return jsonify({"error": "Credenciales incorrectas"}), 401
+
+    return jsonify({
+        "msg": "Login correcto",
+        "user": user.serialize()
+    }), 200
+
+
+# PROFILE
+@api.route('/users/<int:id>/profile', methods=['GET'])
+def get_user_profile(id):
+    user = User.query.get(id)
+
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    predictions = Prediction.query.filter_by(user_id=id).all()
+    comments = Comment.query.filter_by(user_id=id).all()
+    favorites = Favorite.query.filter_by(user_id=id).all()
+
+    return jsonify({
+        "user": user.serialize(),
+        "predictions": [p.serialize() for p in predictions],
+        "comments": [c.serialize() for c in comments],
+        "favorites": [f.serialize() for f in favorites]
+    }), 200
+
+
+# STATS
+@api.route('/users/<int:id>/stats', methods=['GET'])
+def get_user_stats(id):
+    predictions = Prediction.query.filter_by(user_id=id).all()
+
+    total = len(predictions)
+    puntos = sum(p.points_earned or 0 for p in predictions)
+
+    return jsonify({
+        "total_predictions": total,
+        "total_points": puntos
+    }), 200
+
+# =========================================================
+# 👤 USERS CRUD (LO QUE TE FALTABA)
+# =========================================================
+
+# GET todos los usuarios
+
+
+@api.route('/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    return jsonify([u.serialize() for u in users]), 200
+
+
+# GET un usuario
+@api.route('/users/<int:id>', methods=['GET'])
+def get_user(id):
+    user = User.query.get(id)
+
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    return jsonify(user.serialize()), 200
+
+
+# UPDATE usuario
+@api.route('/users/<int:id>', methods=['PUT'])
+def update_user(id):
+    user = User.query.get(id)
+
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    data = request.get_json()
+
+    user.email = data.get("email", user.email)
+
+    if data.get("password"):
+        user.password = generate_password_hash(data["password"])
+
+    db.session.commit()
+
+    return jsonify(user.serialize()), 200
+
+
+# DELETE usuario
+@api.route('/users/<int:id>', methods=['DELETE'])
+def delete_user(id):
+    user = User.query.get(id)
+
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({"msg": "Usuario eliminado"}), 200
+
+ # =========================================================
 # NUEVO ENDPOINT: NOTICIAS MULTICANAL (RSS FEED)
 # =========================================================
+
+
 @api.route('/news', methods=['GET'])
 def get_news():
     try:
         import re
-        import html # 🔥 NUEVO: Herramienta para traducir códigos (ej. &#039; -> ')
+        # 🔥 NUEVO: Herramienta para traducir códigos (ej. &#039; -> ')
+        import html
 
         rss_urls = [
-            {"url": "https://e00-marca.uecdn.es/rss/futbol/primera-division.xml", "tag": "La Liga"},
-            {"url": "https://e00-marca.uecdn.es/rss/futbol/champions-league.xml", "tag": "Champions"},
-            {"url": "https://e00-marca.uecdn.es/rss/futbol/futbol-internacional.xml", "tag": "Internacional"}
+            {"url": "https://e00-marca.uecdn.es/rss/futbol/primera-division.xml",
+                "tag": "La Liga"},
+            {"url": "https://e00-marca.uecdn.es/rss/futbol/champions-league.xml",
+                "tag": "Champions"},
+            {"url": "https://e00-marca.uecdn.es/rss/futbol/futbol-internacional.xml",
+                "tag": "Internacional"}
         ]
-        
+
         all_news = []
-        
+
         for feed in rss_urls:
             try:
-                req = urllib.request.Request(feed["url"], headers={'User-Agent': 'Mozilla/5.0'})
+                req = urllib.request.Request(
+                    feed["url"], headers={'User-Agent': 'Mozilla/5.0'})
                 response = urllib.request.urlopen(req)
                 xml_data = response.read()
                 root = ET.fromstring(xml_data)
-                
+
                 for index, item in enumerate(root.findall('.//item')[:3]):
-                    raw_title = item.find('title').text if item.find('title') is not None else "Noticia"
-                    link = item.find('link').text if item.find('link') is not None else "#"
-                    raw_description = item.find('description').text if item.find('description') is not None else ""
-                    
+                    raw_title = item.find('title').text if item.find(
+                        'title') is not None else "Noticia"
+                    link = item.find('link').text if item.find(
+                        'link') is not None else "#"
+                    raw_description = item.find('description').text if item.find(
+                        'description') is not None else ""
+
                     # 🔥 PASO 1: Traducimos los códigos raros a texto normal en el título y descripción
                     clean_title = html.unescape(raw_title)
                     decoded_description = html.unescape(raw_description)
-                    
+
                     # 🔥 PASO 2: Eliminamos etiquetas HTML basura (<a href...>)
-                    clean_description = re.sub(r'<[^>]+>', '', decoded_description).strip()
-                    
+                    clean_description = re.sub(
+                        r'<[^>]+>', '', decoded_description).strip()
+
                     image = "https://images.unsplash.com/photo-1518605368461-12503a45c711?q=80&w=600&auto=format&fit=crop"
                     enclosure = item.find('enclosure')
                     if enclosure is not None and enclosure.get('url'):
                         image = enclosure.get('url')
                     else:
-                        media = item.find('{http://search.yahoo.com/mrss/}content')
+                        media = item.find(
+                            '{http://search.yahoo.com/mrss/}content')
                         if media is not None and media.get('url'):
                             image = media.get('url')
 
                     all_news.append({
-                        "id": f"{feed['tag']}-{index}", 
-                        "title": clean_title, # Usamos el título limpio
+                        "id": f"{feed['tag']}-{index}",
+                        "title": clean_title,  # Usamos el título limpio
                         "description": clean_description[:120] + "..." if len(clean_description) > 120 else clean_description,
                         "image": image,
                         "link": link,
@@ -383,8 +515,31 @@ def get_news():
                     })
             except Exception as e:
                 print(f"Error cargando feed {feed['tag']}: {e}")
-                continue 
-                
-        return jsonify(all_news[:8]), 200 
+                continue
+
+        return jsonify(all_news[:8]), 200
     except Exception as e:
         return jsonify({"msg": "Error general al cargar noticias", "error": str(e)}), 500
+
+
+@api.route('/fixtures/historico', methods=['GET'])
+def get_historico():
+    liga = request.args.get('liga', 'La Liga')
+    temporada = request.args.get('temporada', '2024-2025')
+
+    print(f"Buscando en BD: liga={liga}, temporada={temporada}")
+
+    partidos = Partido.query.filter_by(liga=liga, temporada=temporada).all()
+
+    print(f"Resultados encontrados: {len(partidos)}")
+
+    resultado = [{
+        "id": p.id,
+        "jornada": p.jornada,
+        "homeTeam": {"name": p.home_team},
+        "awayTeam": {"name": p.away_team},
+        "score": {"fullTime": {"home": p.score_home, "away": p.score_away}},
+        "eventos": [{"tipo": e.tipo, "jugador": e.jugador, "minuto": e.minuto} for e in p.eventos]
+    } for p in partidos]
+
+    return jsonify(resultado)

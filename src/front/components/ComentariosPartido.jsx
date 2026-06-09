@@ -1,13 +1,21 @@
 import { useState, useEffect } from "react";
-import { FaHeart, FaFire, FaComment } from "react-icons/fa";
+import ForoMini from "../components/ForoMini";
 
 export default function ComentariosPartido({ partido }) {
-  const [comentarios, setComentarios] = useState([]);
-  const [texto, setTexto] = useState("");
+  const [comentarios, setComentarios] = useState([
+    { usuario: "Jose", texto: "viva el arsenal", likes: 0 },
+    { usuario: "Jose", texto: "va a ganar por 5 puntos", likes: 1 },
+    { usuario: "Rigo", texto: "viva el arsenal", likes: 3, top: true }
+  ]);
+  const [nuevo, setNuevo] = useState("");
+
+  const enviar = () => {
+    if (!nuevo.trim()) return;
+    setComentarios([...comentarios, { usuario: "Jose", texto: nuevo, likes: 0 }]);
+    setNuevo("");
+  };
 
   const [usuario, setUsuario] = useState("");
-
-  // 🔥 MODAL
   const [mostrarModal, setMostrarModal] = useState(false);
   const [nuevoUsuario, setNuevoUsuario] = useState("");
 
@@ -43,14 +51,13 @@ export default function ComentariosPartido({ partido }) {
     localStorage.setItem("comentarios", JSON.stringify(guardados));
   };
 
-  // 🔥 SIN LÍMITE
   const agregar = () => {
-    if (!texto.trim()) return;
+    if (!nuevo.trim()) return; // Corregido 'texto' por 'nuevo' que es tu estado real
 
     const nuevos = [
       ...comentarios,
       {
-        texto,
+        texto: nuevo,
         likes: 0,
         usuario: usuario
       }
@@ -58,7 +65,7 @@ export default function ComentariosPartido({ partido }) {
 
     setComentarios(nuevos);
     guardarEnLocal(nuevos);
-    setTexto("");
+    setNuevo("");
   };
 
   const darLike = (index) => {
@@ -83,74 +90,131 @@ export default function ComentariosPartido({ partido }) {
     : partido.away;
 
   return (
-    <div className="comentarios-container">
+    <div style={{
+      background: "#1e293b",
+      padding: "20px",
+      borderRadius: "16px",
+      color: "white",
+      display: "flex",
+      flexDirection: "column",
+      gap: "15px",
+      boxShadow: "none",
+      height: "500px" // 🔑 BLOQUEAMOS LA ALTURA
+    }}>
 
-      {/* 🔥 MODAL USUARIO */}
+      <style>{`
+        .scroll-limpio::-webkit-scrollbar {
+          width: 6px;
+        }
+        .scroll-limpio::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .scroll-limpio::-webkit-scrollbar-thumb {
+          background: #334155;
+          border-radius: 10px;
+        }
+      `}</style>
+
+      {/* 🟢 MODAL DE USUARIO CON DISEÑO PREMIUM CORREGIDO */}
       {mostrarModal && (
         <div className="modal-overlay">
-          <div className="modal-box">
-            <h3>Usuario</h3>
+          <div className="modal-box" style={{ maxWidth: "340px" }}>
+            <h2 style={{ color: "#ffffff", fontSize: "22px", fontWeight: "600", marginBottom: "15px" }}>
+              Usuario
+            </h2>
 
-            <input
-              value={nuevoUsuario}
-              onChange={(e) => setNuevoUsuario(e.target.value)}
-              placeholder="Tu nombre..."
-              onKeyDown={(e) => {
-                if (e.key === "Enter") guardarUsuario();
-              }}
-            />
+            <div className="form">
+              <input
+                value={nuevoUsuario}
+                onChange={(e) => setNuevoUsuario(e.target.value)}
+                placeholder="Tu nombre..."
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") guardarUsuario();
+                }}
+              />
+            </div>
 
-            <button onClick={guardarUsuario}>
-              Entrar
-            </button>
+            <div className="modal-actions-grid" style={{ marginTop: "20px" }}>
+              <button onClick={guardarUsuario} className="btn-auth active">
+                Entrar
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       <h3>⚽ {homeName} vs {awayName}</h3>
 
-      <div className="lista-comentarios">
+      <div className="lista-comentarios" style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         {comentarios.length === 0 && (
           <p style={{ color: "#aaa" }}>
             No hay comentarios todavía
           </p>
         )}
 
-        {comentarios.map((c, i) => (
-          <div key={i} className="comentario-card">
+        {/* 🔑 Contenedor scrolleable */}
+        <div className="scroll-limpio" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto", paddingRight: "4px", marginBottom: "15px" }}>
+          {comentarios.map((c, i) => (
+            <div key={i} style={{
+              background: "#0f172a",
+              padding: "14px 18px",
+              borderRadius: "12px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              position: "relative",
+              flexShrink: 0
+            }}>
+              <div>
+                <span style={{ color: "#94a3b8", fontSize: "14px", fontWeight: "600" }}>💬 {c.usuario}:</span>
+                <span style={{ marginLeft: "6px", color: "#f8fafc", fontSize: "14px" }}>{c.texto}</span>
+              </div>
 
-            <div className="texto">
-              <FaComment /> <strong>{c.usuario || "Rigo"}</strong>: {c.texto}
-            </div>
+              <div style={{ display: "flex", alignItems: "center", color: "#94a3b8", fontSize: "13px", fontWeight: "600" }}>
+                🤍 {c.likes}
+              </div>
 
-            <div className="acciones">
-              <span onClick={() => darLike(i)}>
-                <FaHeart /> {c.likes}
-              </span>
-
-              {c.likes >= 3 && (
-                <span className="top-badge">
-                  <FaFire /> TOP
+              {c.top && (
+                <span style={{ position: "absolute", right: "15px", bottom: "14px", color: "#f59e0b", fontSize: "12px", fontWeight: "bold" }}>
+                  🔥 TOP
                 </span>
               )}
             </div>
+          ))}
+        </div>
 
-          </div>
-        ))}
+        <div className="input-box" style={{ display: "flex", gap: "10px" }}>
+          <input
+            value={nuevo}
+            onChange={(e) => setNuevo(e.target.value)}
+            placeholder="Escribe un comentario..."
+            style={{
+              flex: 1,
+              padding: "12px 14px",
+              borderRadius: "8px",
+              border: "1px solid #334155",
+              background: "#0f172a",
+              color: "white",
+              outline: "none"
+            }}
+            onKeyDown={(e) => { if (e.key === "Enter") enviar(); }}
+          />
+          <button
+            onClick={enviar}
+            style={{
+              background: "#22c55e",
+              color: "white",
+              padding: "0 20px",
+              borderRadius: "8px",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: "600"
+            }}
+          >
+            Enviar
+          </button>
+        </div>
       </div>
-
-      <div className="input-box">
-        <input
-          value={texto}
-          onChange={(e) => setTexto(e.target.value)}
-          placeholder="Escribe un comentario..."
-        />
-
-        <button onClick={agregar}>
-          Enviar
-        </button>
-      </div>
-
     </div>
   );
 }

@@ -2,33 +2,39 @@ import { useState } from "react";
 import PartidosTop from "../components/PartidosTop";
 import ComentariosPartido from "../components/ComentariosPartido";
 import ForoMini from "../components/ForoMini";
-import Normas from "../components/Normas"; // 🔥 AÑADIDO
+import Normas from "../components/Normas";
 
-export default function Comentarios() {
-  const [partido, setPartido] = useState(null);
+export const Comentarios = () => {
+  const [partido, setPartido] = useState({
+    id: 5,
+    home: "Arsenal",
+    away: "Chelsea",
+  });
 
   return (
-    <div className="pagina">
-
-      <h1 className="titulo">🔥 Partidos TOP</h1>
-
+    <div className="pagina" style={{ maxWidth: "1100px", margin: "0 auto", padding: "20px", fontFamily: "'Poppins', sans-serif" }}>
       <PartidosTop setPartido={setPartido} />
 
-      <div className="zona-inferior">
+      {/* Contenedor de 2 columnas alineadas a la misma altura */}
+      <div style={{ display: "flex", gap: "20px", marginTop: "30px", alignItems: "stretch" }}>
 
-        <div className="foro-grande">
+        {/* COLUMNA 1: Foro (Más estrecha) */}
+        <div style={{ flex: 1 }}>
           <ForoMini />
         </div>
 
-        <div className="comentarios-grande">
+        {/* COLUMNA 2: Comentarios del Partido (Más ancha) */}
+        <div style={{ flex: 2 }}>
           <ComentariosPartido partido={partido} />
         </div>
 
       </div>
 
-      {/* 🔥 AQUÍ VA EL LATERAL */}
+
       <Normas />
 
     </div>
   );
-}
+};
+
+export default Comentarios;
