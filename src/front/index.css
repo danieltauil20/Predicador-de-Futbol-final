@@ -1,5 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap");
 
+/* ======================================================= */
+/* 🟢 CONFIGURACIÓN ESTRUCTURAL GLOBAL                     */
+/* ======================================================= */
 * {
   box-sizing: border-box;
 }
@@ -8,7 +11,7 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
-  background-color: #0f172a !important; /* Fuerza el fondo oscuro oficial */
+  background-color: #0f172a !important; /* Fondo oscuro oficial */
   font-family: "Poppins", sans-serif;
   min-height: 100vh;
 }
@@ -20,18 +23,44 @@ body,
   margin: 0;
 }
 
+img {
+  max-width: 100%;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* ===== CONTENEDORES DE PÁGINA GRANDE ===== */
+.pagina {
+  max-width: 1250px;
+  margin: 40px auto;
+  padding: 0 20px;
+  color: #ffffff;
+  position: relative !important;
+}
+
+.pagina-liga {
+  color: white;
+  padding: 20px;
+}
+
+.titulo {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* ======================================================= */
+/* 🧭 BARRA DE NAVEGACIÓN (NAVBAR)                         */
+/* ======================================================= */
 .navbar {
   display: flex;
   justify-content: space-between;
   padding: 10px 28px;
   background-color: #1e293b;
   color: #ffffff;
-  position: absolute;
   max-width: 1175px;
-  margin: 40px auto 20px auto;
+  margin: 0px auto 20px auto;
   position: relative;
   z-index: 10;
-
   transition: all 0.35s ease;
   backdrop-filter: blur(6px);
   animation: fadeDown 0.6s ease;
@@ -46,20 +75,16 @@ body,
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-.logo img {
-  height: 190px;
-  width: auto;
-  display: block;
-}
-
-img {
-  transition: opacity 0.3s ease-in-out;
-}
-
 .logo {
   margin-left: -24px;
   display: flex;
   align-items: center;
+}
+
+.logo img {
+  height: 190px;
+  width: auto;
+  display: block;
 }
 
 .nav-links {
@@ -107,8 +132,6 @@ img {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-left: 0;
-  margin-right: 0;
 }
 
 .btn-primary {
@@ -144,72 +167,49 @@ img {
   position: absolute;
   top: 180px;
   right: 60px;
-
   background-color: #1e293b;
   padding: 20px;
   border-radius: 12px;
-
   display: flex;
   flex-direction: column;
   gap: 16px;
   align-items: center;
-
   z-index: 9999;
 }
 
-@media (min-width: 769px) {
-  .navbar {
-    max-width: 1175px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 10px 28px;
-  }
+/* ======================================================= */
+/* ⚽ SECCIÓN DE PARTIDOS Y SELECCIÓN DE LIGAS            */
+/* ======================================================= */
+.league-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 0 30px 0;
+  text-align: center;
+  width: 100%;
 }
 
-@keyframes fadeDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.league-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
-@media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
-  .hamburger {
-    display: block;
-  }
-
-  .navbar {
-    max-width: 100%;
-    width: calc(100% - 40px);
-    height: auto;
-    padding: 16px;
-    margin: 60px auto 20px auto;
-    transform: translateY(30px);
-  }
-
-  .logo img {
-    height: 90px;
-  }
-
-  .btn-primary {
-    height: 34px;
-    padding: 0 12px;
-    font-size: 13px;
-  }
-
-  .navbar-right {
-    margin: 0;
-  }
+.season-info {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 10px;
+  padding: 5px 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
 }
 
-/* CONTENEDOR */
 .cards-container {
   display: flex;
   gap: 20px;
@@ -218,6 +218,7 @@ img {
   margin-top: 40px;
   padding: 0 20px;
 }
+
 .card {
   width: 220px;
   height: 140px;
@@ -231,15 +232,7 @@ img {
   align-items: center;
   cursor: pointer;
   padding: 16px;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease,
-    border 0.2s ease;
-}
-
-.card img {
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.1));
+  transition: all 0.2s ease;
 }
 
 .card:hover {
@@ -248,308 +241,264 @@ img {
   box-shadow: 0 0 10px rgba(14, 231, 172, 0.4);
   transform: translateY(-5px) scale(1.02);
 }
+
 .card h3 {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
   color: #ffffff;
 }
+
 .card .title {
   margin: 6px 0;
   font-size: 16px;
   font-weight: 600;
   color: #ffffff;
 }
+
 .card span {
   font-size: 13px;
   font-weight: 400;
   color: #bfc3ca;
 }
+
 .league-logo {
   width: 50px;
   height: 50px;
   object-fit: contain;
   margin-bottom: 10px;
 }
-.score-box-center {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #fbbf24;
-  background-color: #08090d;
-  padding: 6px 12px;
-  border-radius: 5px;
-  text-align: center;
+
+/* --- TARJETAS DE PARTIDOS VS --- */
+/* Este contenedor envolverá tu lista de partidos de la misma forma que el de comentarios */
+.partidos-grande {
+  background: #1e2a3a !important;
+  border: 1px solid #334155 !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  height: 420px !important; /* Misma altura simétrica que comentarios y foro */
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
-/* Adaptación de tarjetas para móviles muy pequeños */
-@media (max-width: 480px) {
-  .card {
-    width: 100% !important;
-  }
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(10, 20, 40, 0.75);
-  backdrop-filter: blur(12px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-.modal-box {
-  width: 360px;
-  padding: 25px;
-  border-radius: 20px;
-  background: linear-gradient(160deg, #1e293b, #0f172a);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-  animation: fadeModal 0.3s ease;
-}
-
-@keyframes fadeModal {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-.tabs button {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 12px;
-  background: #334155;
-  color: #bfc3ca;
-
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.tabs button.active {
-  background: linear-gradient(90deg, #0ee7ac, #22c55e);
-  color: #0f172a;
+/* El título del panel de partidos */
+.partidos-grande h2 {
+  font-size: 1.2rem;
   font-weight: 600;
-  box-shadow: 0 5px 20px rgba(14, 231, 172, 0.4);
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #ffffff;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 10px;
 }
-.form {
+
+/* La lista interna que permite el scroll vertical sin mover toda la pantalla */
+.lista-partidos {
+  flex: 1;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  scrollbar-width: none; /* Oculta scroll en Firefox */
 }
-.form input {
-  padding: 12px;
-  border-radius: 12px;
+
+.lista-partidos::-webkit-scrollbar {
+  display: none; /* Oculta scroll en Chrome/Safari */
+}
+
+/* La tarjeta individual del partido adaptada al formato de lista */
+.card-partido {
+  background-color: #0f172a !important; /* Fondo oscuro interno igual que los comentarios */
   border: 1px solid #334155;
-  background: #0f172a;
-  color: #fff;
-  outline: none;
-  transition: all 0.2s ease;
-}
-.form input:focus {
-  border-color: #0ee7ac;
-  box-shadow: 0 0 10px rgba(14, 231, 172, 0.3);
-}
-.actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-.cancel {
-  flex: 1;
-  padding: 12px;
   border-radius: 12px;
-  border: none;
-  background: #334155;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    border-color 0.2s,
+    background-color 0.2s;
   color: white;
-  cursor: pointer;
-  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-.cancel:hover {
-  background: #475569;
-}
-.continue {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
 
-  background: linear-gradient(90deg, #0ee7ac, #22c55e);
-  color: #0f172a;
-
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-.continue:hover {
+.card-partido:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(14, 231, 172, 0.5);
-}
-.error {
-  color: #ff6b6b;
-  font-size: 13px;
-  margin-top: -5px;
+  border-color: #10b981;
+  background-color: #1e293b !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
 }
 
+/* Distribución interna de los equipos en la fila */
+.equipos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.equipo {
+  display: flex;
+  align-items: center; /* Alineado horizontal para que ocupe menos espacio vertical */
+  gap: 12px;
+  width: 40%;
+}
+
+/* Ajustamos las posiciones para que el equipo izquierdo y derecho se vean simétricos */
+.equipo:first-child {
+  justify-content: flex-start;
+}
+
+.equipo:last-child {
+  justify-content: flex-end;
+  flex-direction: row-reverse; /* Imagen a la derecha del texto en el rival */
+}
+
+.equipo img {
+  width: 32px !important; /* Tamaño más compacto y estilizado para la lista */
+  height: 32px !important;
+  object-fit: contain;
+}
+
+.equipo p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Marcador o VS central */
+.vs-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+}
+
+.vs {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #0ee7ac !important;
+  margin: 0;
+}
+
+.score-box-center {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fbbf24;
+  background-color: #08090d;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* ======================================================= */
+/* 🛒 SECCIÓN DE TIENDA PREMIUM                            */
+/* ======================================================= */
 .tienda-container {
   padding: 20px;
   color: white;
 }
+
 .tienda-container h1 {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto 20px auto;
   padding-left: 10px;
 }
+
 .tienda-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-  max-width: 1000px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)) !important;
+  gap: 24px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
 .product-card {
-  background: rgba(30, 41, 59, 0.85);
-  border-radius: 12px;
-  padding: 30px;
+  background: #1e293b !important;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 25px !important;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  transition: 0.3s;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  transform: scale(1.05);
-
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-}
-
-.product-img {
-  width: 95px;
-  height: 95px;
-  object-fit: contain;
-  margin-bottom: 10px;
-}
-
-.product-card h3 {
-  font-size: 14px;
-  margin: 10px 0;
-}
-
-.price {
-  color: #0ee7ac;
-  font-weight: bold;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.product-card button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background: #0ee7ac;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.product-card button:hover {
-  transform: scale(1.05);
-}
-
-.cart-button {
-  position: fixed;
-  top: 90px;
-  right: 20px;
-  background: #2c3e50;
-  padding: 10px 15px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.cart-count {
-  background: red;
-  border-radius: 50%;
-  padding: 3px 7px;
-  margin-left: 5px;
-}
-
-.cart-sidebar {
-  position: fixed;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
+
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(14, 231, 172, 0.3);
-  border-color: #0ee7ac;
+  transform: translateY(-5px) scale(1.02) !important;
+  box-shadow: 0 12px 25px rgba(14, 231, 172, 0.2) !important;
+  border-color: #0ee7ac !important;
 }
+
 .product-img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-  border-radius: 12px;
-  margin-bottom: 15px;
+  width: 100% !important;
+  height: 160px !important; /* Altura perfecta para que no se coma la tarjeta */
+  object-fit: contain !important; /* Evita que las camisetas se deformen */
+  margin: 0 auto 15px auto !important;
 }
+
 .product-card h3 {
-  font-size: 1.1rem;
-  margin: 10px 0 5px 0;
+  font-size: 1rem !important;
   font-weight: 600;
+  margin: 10px 0 5px 0;
 }
+
 .product-card .price {
-  color: #0ee7ac;
-  font-size: 1.2rem;
-  font-weight: 700;
+  color: #0ee7ac !important;
+  font-size: 1.2rem !important;
+  font-weight: 800 !important;
   margin-bottom: 15px;
 }
+
 .product-card button {
-  background: #0ee7ac;
-  color: #0f172a;
+  background: #0ee7ac !important;
+  color: #0f172a !important;
   border: none;
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-}
-.product-card button:hover {
-  background: #22c55e;
+  transition: background 0.2s ease;
 }
 
-/* 📥 Carrito Sidebar */
+.product-card button:hover {
+  background: #22c55e !important;
+}
+
+/* --- SIDEBAR DEL CARRITO --- */
 .cart-button {
   position: fixed;
   top: 100px;
   right: 30px;
   background: #1e293b;
-  border: 1px solid #293047;
+  border: 1px solid #334155;
   padding: 15px;
   border-radius: 50%;
   cursor: pointer;
   font-size: 1.5rem;
   z-index: 100;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  color: #0ee7ac;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s ease;
 }
+
+.cart-button:hover {
+  transform: scale(1.1);
+  border-color: #0ee7ac;
+  box-shadow: 0 10px 30px rgba(14, 231, 172, 0.3);
+}
+
 .cart-count {
   position: absolute;
   top: -5px;
@@ -561,19 +510,22 @@ img {
   border-radius: 50%;
   font-weight: 700;
 }
+
 .cart-sidebar {
   position: fixed;
   top: 0;
-  right: -360px;
-  width: 360px;
+  right: -400px;
+  width: 400px;
   height: 100vh;
-  background: #151824;
+  background: #0f172a; /* Fondo oscuro integrado con la app */
   border-left: 1px solid #293047;
   padding: 30px 20px;
   z-index: 10000;
-  transition: right 0.3s ease-in-out;
+  transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   color: white;
   box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
 }
 
 .cart-sidebar.open {
@@ -586,80 +538,129 @@ img {
   align-items: center;
   margin-bottom: 25px;
   border-bottom: 1px solid #293047;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
 }
+
+.cart-header h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0;
+}
+
 .cart-header button {
-  background: transparent;
-  border: none;
+  background: #1e293b;
+  border: 1px solid #334155;
   color: #ff6b6b;
-  font-size: 1.2rem;
+  font-size: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cart-header button:hover {
+  background: #ff6b6b;
+  color: white;
+  transform: rotate(90deg);
+}
+
+.cart-items-container::-webkit-scrollbar {
+  display: none;
 }
 
 .cart-item {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
-  gap: 10px;
+  gap: 15px;
+  background: #1e293b;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #293047;
 }
 
 .cart-item img {
-  width: 40px;
-  height: 40px;
+  width: 55px !important;
+  height: 55px !important;
+  object-fit: contain;
+  background: #ffffff; /* Destaca la camiseta del fondo */
+  padding: 4px;
+  border-radius: 8px;
 }
 
 .cart-item p {
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   margin: 0;
 }
 
 .cart-item span {
-  font-size: 13px;
+  font-size: 14px;
   color: #0ee7ac;
+  font-weight: 700;
 }
 
 .cart-item button {
   margin-left: auto;
   background: none;
   border: none;
-  color: red;
+  color: #64748b;
   cursor: pointer;
+  font-size: 1.1rem;
+  transition: color 0.2s;
 }
 
-.pay-button {
+.pay-button,
+.paypal-btn {
   width: 100%;
-  padding: 10px;
-  background: #0ee7ac;
-  border: none;
+  padding: 12px;
   border-radius: 8px;
-  color: white;
   font-weight: bold;
   margin-top: 10px;
   cursor: pointer;
+  border: none;
 }
 
-.pay-button:hover {
-  transform: scale(1.03);
+.cart-item button:hover {
+  color: #ff6b6b;
 }
 
+.pay-button,
 .paypal-btn {
   width: 100%;
-  padding: 10px;
-  background: #0070ba !important;
-  border: none;
+  padding: 12px;
   border-radius: 8px;
-  border: none;
-  font-weight: 600;
+  font-weight: bold;
   margin-top: 10px;
   cursor: pointer;
+  border: none;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
+
 .pay-button {
   background: linear-gradient(90deg, #0ee7ac, #22c55e);
   color: #0f172a;
 }
+
+.pay-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(14, 231, 172, 0.3);
+}
+
 .paypal-btn {
   background: #0070ba;
   color: white;
+}
+
+.paypal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 110, 186, 0.3);
 }
 
 .success {
@@ -667,108 +668,232 @@ img {
   color: #22c55e;
   text-align: center;
 }
-/* ========================= */
-/* 📱 RESPONSIVE MÓVIL */
-/* ========================= */
 
-@media (max-width: 1024px) {
-  .zona-inferior {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-}
-
-  .product-card {
-    padding: 15px;
-    border-radius: 15px;
-  }
-
-  .product-card img {
-    width: 80px;
-  }
-
-  .product-card button {
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  h1 {
-    font-size: 22px;
-    padding-left: 10px;
-  }
-
-  .price {
-    font-size: 13px;
-  }
-
-  /* 🛒 CARRITO FULL SCREEN */
-  .cart-sidebar {
-    width: 100%;
-    right: -100%;
-    border-radius: 0;
-  }
-
-  .cart-sidebar.open {
-    right: 0;
-  }
-
-  .cart-item img {
-    width: 40px;
-  }
-
-  .cart-item p {
-    font-size: 13px;
-  }
-
-  .pay-button,
-  .paypal-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 14px;
-  }
-}
-/* ===== CONTENEDOR GENERAL ===== */
-.pagina {
-  max-width: 1250px;
-  margin: 40px auto;
-  padding: 0 20px;
-  color: #ffffff;
-  position: relative !important;
-}
-
-.titulo {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-/* 🟢 CONTENEDOR FLUIDO: Configuración limpia de 3 columnas de espejo */
+/* ======================================================= */
+/* 🟢 ZONA INFERIOR: FORO, COMENTARIOS Y NORMAS            */
+/* ======================================================= */
 .zona-inferior {
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: flex-end !important; /* Alinea los elementos al final (derecha) */
-  align-items: flex-start !important;   /* <--- ESTO LO SUBE (alinea al top) */
+  margin-top: 40px !important;
+  display: grid !important;
+  /* Configuración estricta de 3 columnas en ordenadores */
+  grid-template-columns: 280px 1fr 280px !important;
   gap: 20px !important;
-  margin-top: 24px !important;
+  align-items: start !important;
   width: 100% !important;
-  box-sizing: border-box !important;
 }
 
 .foro-grande,
 .comentarios-grande,
 .normas-box-derecha {
-  width: 300px !important; /* <--- Ajusta este ancho a tu gusto (ej: 300px, 350px) */
-  flex: none !important; /* <--- Importante: anulamos el flex: 1 */
-  background-color: #1e293b !important;
+  background: #1e2a3a !important;
   border: 1px solid #334155 !important;
-  border-radius: 12px !important;
+  border-radius: 16px !important;
   padding: 20px !important;
-  height: 400px !important;
-  display: flex !important;
-  flex-direction: column !important;
+  height: 420px !important; /* Altura fija simétrica para PC */
   box-sizing: border-box !important;
 }
 
+/* --- 1. EL FORO --- */
+.foro-grande {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.foro-container {
+  margin-top: 10px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.lista-temas {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.lista-temas::-webkit-scrollbar {
+  display: none;
+}
+
+.tema-card {
+  background-color: #0f172a;
+  padding: 12px;
+  border-radius: 10px;
+  color: white;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.tema-card:hover {
+  background: #243147;
+}
+
+.tema-card strong {
+  color: #10b981;
+}
+
+/* --- 2. LOS COMENTARIOS --- */
+.comentarios-grande .comentarios-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.comentarios-grande .lista-comentarios {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: none;
+}
+
+.lista-comentarios::-webkit-scrollbar {
+  display: none;
+}
+
+.comentario-card {
+  background: #0f172a;
+  padding: 12px;
+  border-radius: 10px;
+  color: white;
+  text-align: left;
+}
+
+.texto {
+  margin-bottom: 5px;
+}
+
+.acciones {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.top-badge {
+  color: orange;
+}
+
+/* Cajas de inputs globales de Foro y Comentarios */
+.foro-container .input-box,
+.input-box {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.foro-container .input-box input,
+.input-box input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  background: #0f172a;
+  color: white;
+  border: 1px solid #334155;
+}
+
+.foro-container .input-box input:focus,
+.input-box input:focus {
+  border-color: #00ff88;
+  outline: none;
+}
+
+.foro-container .input-box button,
+.input-box button {
+  padding: 10px 15px;
+  background: #00ff88 !important;
+  color: #022c22 !important;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* --- 3. PIZARRA TÁCTICA DE NORMAS (ARREGLADA) --- */
+.normas-box-derecha,
+.normas-container {
+  position: relative !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  background: #ffffff !important; /* Pizarra blanca */
+  border: 3px solid #2d3f37 !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+  z-index: 10 !important;
+  overflow-y: auto !important;
+
+  background-image:
+    linear-gradient(to right, rgba(14, 231, 172, 0.15) 1px, transparent 1px),
+    radial-gradient(
+      circle,
+      transparent 30%,
+      rgba(14, 231, 172, 0.15) 32%,
+      transparent 33%
+    ) !important;
+  background-position: center;
+  background-size:
+    100% 100%,
+    70px 70px;
+  background-repeat: no-repeat;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* CORRECCIÓN DE CONTRASTE: Color oscuro para leerse sobre la pizarra */
+.normas-box-derecha h2,
+.normas-box-derecha li {
+  color: #0f172a !important;
+}
+
+.normas-box-derecha h2 {
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  margin: 0 0 15px 0 !important;
+  font-family: "monospace", sans-serif !important;
+  text-align: center !important;
+  border-bottom: 2px dashed rgba(45, 63, 55, 0.2) !important;
+  padding-bottom: 8px !important;
+}
+
+.normas-box-derecha ul {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.normas-box-derecha li {
+  font-size: 0.85rem !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.normas-box-derecha li::before {
+  content: "⚽" !important;
+  color: #0ee7ac !important;
+  font-size: 0.75rem !important;
+}
+
+.normas-box-derecha li:last-child::before {
+  content: "◯" !important;
+  color: #ef4444 !important;
+}
+
+/* Banner complementario */
 .banner-registro-moderno {
   display: flex !important;
   align-items: center !important;
@@ -796,7 +921,7 @@ img {
   border-radius: 8px !important;
   font-size: 13px !important;
   font-weight: 600 !important;
-  cursor: pointer !important;
+  cursor: pointer;
   transition: background-color 0.2s ease !important;
 }
 
@@ -804,595 +929,317 @@ img {
   background-color: #1e5c2f !important;
 }
 
-/* RESPONSIVO COMPACTO PARA TABLETS Y MÓVILES */
+/* ======================================================= */
+/* 🖼️ MODALES GENERALES (POPUPS)                           */
+/* ======================================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 20, 40, 0.75);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-box {
+  width: 90% !important;
+  max-width: 380px !important;
+  padding: 25px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #1e293b, #0f172a);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  animation: fadeModal 0.3s ease;
+  color: white;
+  text-align: center;
+}
+
+/* CONTAINER DE LOS BOTONES DE ACCIÓN EN PARALELO */
+.tabs,
+.modal-actions-grid {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Ajustamos la parte inferior para que también use flex en paralelo */
+.modal-actions-grid {
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+
+/* ESTILO DE LOS BOTONES PREMIUM (REGISTRO E INICIAR SESIÓN) */
+.tabs button,
+.btn-auth {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #1e293b;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* BOTÓN ACTIVO / SELECCIONADO (VERDE CON BRILLO GLOBAL) */
+.tabs button.active,
+.btn-auth.active {
+  background: linear-gradient(135deg, #22c55e, #10b981) !important;
+  color: #020617 !important;
+  font-weight: 800;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+}
+
+/* EFECTO HOVER PARA BOTONES INACTIVOS */
+.tabs button:not(.active):hover,
+.btn-auth:not(.active):hover {
+  background: #2d3748;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* COMPORTAMIENTO GENERAL DE LOS INPUTS */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form input,
+.modal-box input {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #2d3748;
+  background: #0f172a;
+  color: #fff;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.form input:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+}
+
+.form input::placeholder {
+  color: #4b5563;
+}
+
+/* ======================================================= */
+/* 📱 SECCIÓN RESPONSIVA PARA MÓVILES Y TABLETS            */
+/* ======================================================= */
+
+/* --- TABLETS Y PANTALLAS MEDIANAS --- */
 @media (max-width: 1024px) {
   .zona-inferior {
-    /* LA CORRECCIÓN CLAVE: Sobrescribir el "row" de arriba por "column" */
-    flex-direction: column !important;
-    gap: 20px !important;
+    grid-template-columns: 1fr !important; /* Pasa a una sola fila vertical */
+    gap: 25px !important;
   }
+
   .foro-grande,
   .comentarios-grande,
   .normas-box-derecha {
-    height: auto !important;
-    min-height: 300px !important; /* Mínimo para que se vea el contenido */
-    width: 100% !important; /* Ocupan todo el ancho en móvil */
+    width: 100% !important;
+    height: auto !important; /* Crecen según lo que tengan dentro */
+    min-height: 320px !important;
   }
 }
 
-.normas-box-derecha,
-.zon .normas-container,
-[class*="normas"] {
-  position: relative !important;
-  width: 100% !important;
-  height: 360px !important;
-  box-sizing: border-box !important;
-
-  /* Fondo estilo pizarra de fútbol premium intacto */
-  background: #ffffff !important;
-  border: 3px solid #2d3f37 !important;
-  border-radius: 12px !important;
-  padding: 22px !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-  z-index: 10 !important;
-  color: #ffffff !important;
-  overflow: hidden !important;
-
-  /* Dibujo original del campo táctico de fondo */
-  background-image:
-    linear-gradient(to right, rgba(14, 231, 172, 0.15) 1px, transparent 1px),
-    radial-gradient(
-      circle,
-      transparent 30%,
-      rgba(14, 231, 172, 0.15) 32%,
-      transparent 33%
-    );
-  background-position: center;
-  background-size:
-    100% 100%,
-    70px 70px;
-  background-repeat: no-repeat;
-
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-/* Encabezado de tu pizarra táctica original */
-.normas-box-derecha h2,
-.normas-container h2,
-[class*="normas"] h2 {
-  color: #1e293b !important;
-  font-size: 1.15rem !important;
-  font-weight: 800 !important;
-  letter-spacing: 1.5px !important;
-  text-transform: uppercase !important;
-  margin: 0 0 15px 0 !important;
-  font-family: "monospace", sans-serif !important;
-  text-align: center !important;
-  border-bottom: 1px dashed rgba(14, 231, 172, 0.3) !important;
-  padding-bottom: 6px !important;
-}
-
-/* Lista interna */
-.normas-box-derecha ul,
-.normas-container ul,
-[class*="normas"] ul {
-  list-style: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 12px !important;
-}
-
-/* Tus normas e iconos de jugadores originales */
-.normas-box-derecha li,
-.normas-container li,
-[class*="normas"] li {
-  font-size: 0.85rem !important;
-  line-height: 1.5 !important;
-  color: #1e293b !important;
-  font-weight: 600 !important;
-  margin-bottom: 0px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-}
-
-/* Tus balones e iconos tácticos originales */
-.normas-box-derecha li::before,
-.normas-container li::before,
-[class*="normas"] li::before {
-  content: "⚽" !important;
-  color: #0ee7ac !important;
-  font-weight: 900 !important;
-  font-size: 0.75rem !important;
-}
-
-/* Tu marca táctica de advertencia final */
-.normas-box-derecha li:last-child::before,
-.normas-container li:last-child::before,
-[class*="normas"] li:last-child::before {
-  content: "◯" !important;
-  color: #ef4444 !important;
-}
-
-.card-partido {
-  background-color: #1e293b;
-  border-radius: 12px;
-  padding: 16px;
-  cursor: pointer;
-  transition: transform 0.2s;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #334155;
-}
-
-.card-partido:hover {
-  transform: scale(1.03);
-}
-
-.equipos {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 10px;
-}
-
-.equipo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: 40%;
-}
-
-.equipo img {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
-}
-
-.vs {
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: #10b981;
-}
-
-.zona-inferior {
-  margin-top: 40px;
-  display: grid;
-  /* Creamos 3 columnas: Foro (250px), Comentarios (lo que sobre), Normas (250px) */
-  grid-template-columns: 250px 1fr 250px; 
-  gap: 20px;
-  align-items: start; /* FUNDAMENTAL: Evita que las normas se estiren hacia abajo */
-  width: 100%;
-}
-
-.foro-grande {
-  background: #1e2a3a;
-  padding: 25px;
-  border-radius: 15px;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-}
-
-.foro-container {
-  margin-top: 10px;
-}
-
-.lista-temas {
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 250px;
-  overflow-y: auto;
-
-  scrollbar-width: none;
-}
-
-.lista-temas::-webkit-scrollbar {
-  display: none;
-}
-
-.tema-card {
-  background: #0f172a;
-  padding: 12px;
-  border-radius: 10px;
-  color: white;
-}
-
-.tema-card:hover {
-  background: #1e293b;
-}
-
-.foro-container .input-box {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.foro-container .input-box input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 5px;
-
-  background: #0f172a;
-  color: white;
-
-  border: 1px solid #00ff88;
-}
-
-.foro-container .input-box input::placeholder {
-  color: #aaa;
-}
-
-.foro-container .input-box button {
-  padding: 10px 15px;
-  background: #00ff88;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.foro-container .input-box button:hover {
-  background: #00cc6a;
-}
-
-.comentarios-grande {
-  background: #1e2a3a;
-  padding: 20px;
-  border-radius: 15px;
-}
-
-.comentarios-container {
-  margin-top: 10px;
-}
-
-.lista-comentarios {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 200px;
-  overflow-y: auto;
-  margin-bottom: 15px;
-}
-
-.lista-comentarios::-webkit-scrollbar {
-  display: none;
-}
-
-.comentario-card {
-  background: #0f172a;
-  padding: 10px;
-  border-radius: 10px;
-  color: white;
-  text-align: left;
-}
-
-.texto {
-  margin-bottom: 5px;
-}
-
-.acciones {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-}
-
-.input-box {
-  display: flex;
-  gap: 8px;
-}
-
-.input-box input {
-  flex: 1;
-  background: #0f172a;
-  border: 1px solid #334155;
-  padding: 8px;
-  border-radius: 6px;
-  color: white;
-}
-
-.input-box button {
-  padding: 8px 12px;
-  background: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.input-box button:hover {
-  background: #00cc6a;
-}
-
-.input-box button,
-.foro-container .input-box button {
-  background: #00ff88;
-  color: #022c22; /* texto oscuro */
-  font-weight: bold;
-}
-
-.top-badge {
-  color: orange;
-}
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
-.modal-box {
-  background: #0f172a;
-  padding: 20px;
-  border-radius: 10px;
-  color: white;
-  text-align: center;
-}
-
-.modal-box input {
-  padding: 10px;
-  margin-top: 10px;
-  width: 100%;
-}
-
-.modal-box button {
-  margin-top: 10px;
-  padding: 10px;
-  background: #22c55e;
-  border: none;
-  color: black;
-  cursor: pointer;
-  border-radius: 8px;
-  font-weight: bold;
-}
-
-.normas-lateral {
-  position: fixed;
-  right: 0px;
-  top: 150px;
-  opacity: 0.95;
-  margin-right: 20px;
-  width: 150px;
-  background: white;
-  color: black;
-  padding: 15px;
-  border-radius: 10px;
-  font-size: 13px;
-  backdrop-filter: blur(6px);
-  line-height: 1.5;
-  transition: all 0.3s ease;
-}
-
-.normas-lateral:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
-}
-
-/* Tarjetas individuales de cada tema */
-.tema-card {
-  background-color: #334155;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
-
-.tema-card strong {
-  color: #10b981;
-}
-
-/* Ajuste del scroll para que se vea limpio */
-.lista-temas::-webkit-scrollbar {
-  width: 6px;
-}
-.lista-temas::-webkit-scrollbar-thumb {
-  background-color: #475569;
-  border-radius: 4px;
-}
-
-/* Estilo simple para el modal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-}
-
-.modal-box {
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #334155;
-  text-align: center;
-}
-
-.comentarios-grande .comentarios-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.comentarios-grande .lista-comentarios {
-  flex: 1;
-  overflow-y: auto;
-  margin-bottom: 10px;
-}
-
-.league-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Esto es lo que centra todo el bloque */
-  justify-content: center;
-  margin: 40px 0 30px 0;
-  text-align: center;
-  width: 100%;
-}
-
-.league-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin: 0;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-img {
-  max-width: 100%;
-}
-
-/* El fade para cuando cambias de liga */
-.fade-transition {
-  animation: fadeIn 150ms ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
+/* --- MÓVILES MÁS COMUNES --- */
 @media (max-width: 768px) {
-  .pagina {
-    padding: 15px;
+  .navbar {
+    width: calc(100% - 40px);
+    padding: 16px;
+    margin: 30px auto 20px auto;
   }
-  .normas-lateral {
+
+  .logo img {
+    height: 55px !important; /* Tamaño controlado del escudo en móvil */
+  }
+
+  .nav-links {
     display: none;
   }
 
-  /* Contenedor principal de la página de liga */
-  .pagina-liga {
-    color: white;
-    padding: 20px;
+  .hamburger {
+    display: block !important;
   }
 
-  /* Cabecera centrada y elegante */
-  .league-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 40px 0;
-    text-align: center;
+  .btn-primary {
+    height: 36px;
+    padding: 0 16px;
+    font-size: 13px;
   }
 
   .league-title {
-    font-size: 3rem;
-    font-weight: 800;
-    margin: 0;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    background: white;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 2rem;
   }
-  .season-info {
-    color: #94a3b8;
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-top: 10px;
-    padding: 5px 15px;
-    /* Fondo oscuro semitransparente en lugar de verde */
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
+
+  /* Tienda adaptada a celulares */
+  .tienda-grid {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(160px, 1fr)
+    ) !important; /* Doble columna fluida */
+    gap: 12px;
   }
-  /* Animación de fade */
-  .fade-transition {
-    animation: fadeIn 300ms ease-in-out; /* Un poquito más lento para que sea más premium */
+
+  .product-card {
+    padding: 15px !important;
   }
+
+  .product-img {
+    height: 120px !important; /* Remeras proporcionales */
+  }
+
+  .cart-sidebar {
+    width: 100%;
+    right: -100%;
+  }
+
+  .cart-sidebar.open {
+    right: 0;
+  }
+
+  .normas-lateral {
+    display: none !important;
+  }
+}
+
+/* --- CELULARES MUY PEQUEÑOS --- */
+@media (max-width: 480px) {
+  .card {
+    width: 100% !important;
+  }
+  .tienda-grid {
+    grid-template-columns: 1fr !important; /* Una sola camiseta por fila si es muy chico */
+  }
+}
+
+/* ======================================================= */
+/* 🎬 ANIMACIONES Y TRANSICIONES                           */
+/* ======================================================= */
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeModal {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.fade-transition {
+  animation: fadeIn 300ms ease-in-out;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(10px);
-  } /* Añadimos un pequeño movimiento hacia arriba */
+  }
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-/* ===== OVERLAY ===== */
+
+/* ======================================================= */
+/* 👤 MODAL DE PERFIL DE USUARIO (PREMIUM GREEN)           */
+/* ======================================================= */
 .overlay {
   position: fixed;
   inset: 0;
   background: rgba(2, 6, 23, 0.85);
   backdrop-filter: blur(12px);
-
   display: flex;
   justify-content: center;
   align-items: flex-start;
-
   padding-top: 50px;
   z-index: 999;
 }
 
-/* ===== CARD ===== */
+/* ===== CARD PERFIL ===== */
 .profile-card {
-  background: rgba(2, 6, 23, 0.9);
+  background: rgba(2, 6, 23, 0.9) !important;
   backdrop-filter: blur(25px);
-
   width: 90%;
   max-width: 380px;
-
   padding: 24px;
   border-radius: 22px;
   color: white;
-
-  max-height: 90vh;
-  overflow-y: auto;
-
+  max-height: 80vh !important; /* Mantenemos el límite optimizado */
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 6px;
   box-shadow:
     0 30px 80px rgba(0, 0, 0, 0.9),
     inset 0 0 40px rgba(34, 197, 94, 0.05);
-
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* ===== HEADER ===== */
-.header {
+/* Optimización del Scrollbar del Perfil */
+.profile-card::-webkit-scrollbar {
+  width: 5px;
+}
+.profile-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+.profile-card::-webkit-scrollbar-thumb {
+  background: rgba(34, 197, 94, 0.3);
+  border-radius: 10px;
+}
+.profile-card::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 197, 94, 0.6);
+}
+
+/* ===== PROFILE HEADER (Protegido para no romper la web) ===== */
+.profile-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 18px;
 }
 
-.header h2 {
+.profile-header h2 {
   font-size: 20px;
   font-weight: 600;
+  margin: 0;
+  color: #ffffff;
 }
 
-.header .close {
+.profile-header .close {
   cursor: pointer;
   opacity: 0.6;
   transition: 0.2s;
 }
 
-.header .close:hover {
+.profile-header .close:hover {
   opacity: 1;
 }
 
@@ -1401,7 +1248,6 @@ img {
   display: flex;
   align-items: center;
   gap: 14px;
-
   background: linear-gradient(
     135deg,
     rgba(34, 197, 94, 0.15),
@@ -1409,11 +1255,8 @@ img {
   );
   padding: 16px;
   border-radius: 16px;
-
   margin-bottom: 20px;
-
   border: 1px solid rgba(34, 197, 94, 0.3);
-
   box-shadow: 0 10px 40px rgba(34, 197, 94, 0.15);
 }
 
@@ -1422,23 +1265,16 @@ img {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-
   overflow: hidden;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   background: #020617;
-
   border: 2px solid #22c55e;
-
   font-size: 20px;
   font-weight: bold;
-
   box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
-
   transition: all 0.3s ease;
 }
 
@@ -1470,10 +1306,11 @@ img {
   margin-top: 20px;
 }
 
-.title {
+.profile-title {
   font-size: 14px;
   margin-bottom: 10px;
   color: #94a3b8;
+  font-weight: 600;
 }
 
 /* ===== LEAGUES ===== */
@@ -1498,10 +1335,8 @@ img {
   padding: 7px 12px;
   border-radius: 999px;
   margin: 4px;
-
   font-size: 13px;
   cursor: pointer;
-
   transition: all 0.2s ease;
 }
 
@@ -1514,8 +1349,14 @@ img {
   background: linear-gradient(135deg, #22c55e, #16a34a);
   color: black;
   font-weight: bold;
-
   box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+}
+
+.favorite-teams {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 /* ===== DIVIDER ===== */
@@ -1529,12 +1370,9 @@ img {
 .prediction-item {
   padding: 10px;
   border-radius: 10px;
-
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
-
   margin-bottom: 8px;
-
   transition: 0.2s;
 }
 
@@ -1552,12 +1390,9 @@ img {
 .ranking-item {
   display: flex;
   justify-content: space-between;
-
   padding: 8px 10px;
   border-radius: 10px;
-
   margin-bottom: 6px;
-
   background: rgba(255, 255, 255, 0.03);
 }
 
@@ -1566,14 +1401,11 @@ img {
   width: 95%;
   margin-top: 20px;
   padding: 12px;
-
   border-radius: 14px;
   border: none;
-
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   font-weight: bold;
-
   cursor: pointer;
   transition: all 0.25s ease;
 }
@@ -1582,87 +1414,3 @@ img {
   transform: scale(1.05);
   box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
 }
-.favorite-teams {
-  margin-top: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.profile-card {
-  max-height: 80vh;
-  overflow-y: auto;
-  padding-right: 6px;
-  overflow-x: hidden;
-}
-
-.profile-card::-webkit-scrollbar {
-  width: 5px;
-}
-
-.profile-card::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.profile-card::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #22c55e, #4ade80);
-  border-radius: 10px;
-}
-
-/* Ranking */
-.ranking-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px;
-  margin-bottom: 6px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.top1 {
-  background: rgba(34, 197, 94, 0.2);
-}
-
-.top2 {
-  background: rgba(148, 163, 184, 0.2);
-}
-
-.top3 {
-  background: rgba(251, 191, 36, 0.2);
-}
-/* ===== RESPONSIVE ===== */
-@media (max-width: 480px) {
-  .overlay {
-    align-items: flex-end;
-    padding-top: 0;
-  }
-
-  .profile-card {
-    width: 100%;
-    height: 92vh;
-    border-radius: 20px 20px 0 0;
-
-    animation: slideUp 0.3s ease;
-  }
-
-  .user-box {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .avatar {
-    width: 75px;
-    height: 75px;
-  }
-}
-
-/* ===== ANIMATION ===== */
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-

@@ -14,7 +14,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
   const handleSubmit = () => {
     setError("");
 
-    if (!password || (!isLogin && (!username || !email))) {
+    if (!password || (!isLogin && (!username || !email)) || (isLogin && !email)) {
       setError("Completa todos los campos");
       return;
     }
@@ -25,7 +25,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
     }
 
     if (!isLogin) {
-      
+      // Lógica de Registro
       const newUser = {
         username,
         email,
@@ -38,9 +38,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
       localStorage.setItem("user", JSON.stringify(newUser));
       localStorage.setItem("session", "true");
 
-      
       let users = JSON.parse(localStorage.getItem("users")) || [];
-
       const index = users.findIndex(u => u.username === newUser.username);
 
       if (index !== -1) {
@@ -50,18 +48,13 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
       }
 
       localStorage.setItem("users", JSON.stringify(users));
-
-      
       localStorage.setItem("justRegistered", "true");
 
       onClose();
-
-      if (onLoginSuccess) {
-        onLoginSuccess();
-      }
+      if (onLoginSuccess) onLoginSuccess();
 
     } else {
-      
+      // Lógica de Inicio de Sesión
       const savedUser = JSON.parse(localStorage.getItem("user"));
 
       if (
@@ -70,20 +63,14 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
         savedUser.password === password
       ) {
         localStorage.setItem("session", "true");
-
         onClose();
-
-        if (onLoginSuccess) {
-          onLoginSuccess();
-        }
-
+        if (onLoginSuccess) onLoginSuccess();
       } else {
         setError("Email o contraseña incorrectos");
         return;
       }
     }
 
-    
     setUsername("");
     setEmail("");
     setPassword("");
@@ -93,6 +80,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
 
+        {/* Pestañas Superiores (Controlan exclusivamente la vista) */}
         <div className="tabs">
           <button
             className={!isLogin ? "active" : ""}
@@ -115,6 +103,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
           </button>
         </div>
 
+        {/* Inputs del Formulario */}
         <div className="form">
           {!isLogin && (
             <input
@@ -139,15 +128,26 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          {error && <p className="error">{error}</p>}
+          {error && <p className="error" style={{ color: "#ef4444", fontSize: "13px", margin: "5px 0 0" }}>{error}</p>}
         </div>
 
-        <div className="actions">
-          <button className="cancel" onClick={onClose}>
+        {/* 🟢 BOTONES INFERIORES: Cancelar y Continuar en Paralelo y con Libertad */}
+        <div className="modal-actions-grid">
+          <button 
+            type="button" 
+            className="btn-auth" 
+            onClick={onClose}
+            style={{ background: "#1e293b", color: "#94a3b8" }} // Tono oscuro neutro por defecto
+          >
             Cancelar
           </button>
 
-          <button className="continue" onClick={handleSubmit}>
+          <button 
+            type="button" 
+            className="btn-auth" 
+            onClick={handleSubmit}
+            style={{ background: "#22c55e", color: "#020617", fontWeight: "800" }} // El botón de acción principal resalta en verde
+          >
             Continuar
           </button>
         </div>

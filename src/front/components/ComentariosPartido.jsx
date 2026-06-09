@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import ForoMini from "../components/ForoMini";
 
 export default function ComentariosPartido({ partido }) {
   const [comentarios, setComentarios] = useState([
@@ -15,8 +16,6 @@ export default function ComentariosPartido({ partido }) {
   };
 
   const [usuario, setUsuario] = useState("");
-
-
   const [mostrarModal, setMostrarModal] = useState(false);
   const [nuevoUsuario, setNuevoUsuario] = useState("");
 
@@ -52,14 +51,13 @@ export default function ComentariosPartido({ partido }) {
     localStorage.setItem("comentarios", JSON.stringify(guardados));
   };
 
-
   const agregar = () => {
-    if (!texto.trim()) return;
+    if (!nuevo.trim()) return; // Corregido 'texto' por 'nuevo' que es tu estado real
 
     const nuevos = [
       ...comentarios,
       {
-        texto,
+        texto: nuevo,
         likes: 0,
         usuario: usuario
       }
@@ -67,7 +65,7 @@ export default function ComentariosPartido({ partido }) {
 
     setComentarios(nuevos);
     guardarEnLocal(nuevos);
-    setTexto("");
+    setNuevo("");
   };
 
   const darLike = (index) => {
@@ -104,7 +102,6 @@ export default function ComentariosPartido({ partido }) {
       height: "500px" // 🔑 BLOQUEAMOS LA ALTURA
     }}>
 
-
       <style>{`
         .scroll-limpio::-webkit-scrollbar {
           width: 6px;
@@ -118,39 +115,45 @@ export default function ComentariosPartido({ partido }) {
         }
       `}</style>
 
-
+      {/* 🟢 MODAL DE USUARIO CON DISEÑO PREMIUM CORREGIDO */}
       {mostrarModal && (
         <div className="modal-overlay">
-          <div className="modal-box">
-            <h3>Usuario</h3>
+          <div className="modal-box" style={{ maxWidth: "340px" }}>
+            <h2 style={{ color: "#ffffff", fontSize: "22px", fontWeight: "600", marginBottom: "15px" }}>
+              Usuario
+            </h2>
 
-            <input
-              value={nuevoUsuario}
-              onChange={(e) => setNuevoUsuario(e.target.value)}
-              placeholder="Tu nombre..."
-              onKeyDown={(e) => {
-                if (e.key === "Enter") guardarUsuario();
-              }}
-            />
+            <div className="form">
+              <input
+                value={nuevoUsuario}
+                onChange={(e) => setNuevoUsuario(e.target.value)}
+                placeholder="Tu nombre..."
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") guardarUsuario();
+                }}
+              />
+            </div>
 
-            <button onClick={guardarUsuario}>
-              Entrar
-            </button>
+            <div className="modal-actions-grid" style={{ marginTop: "20px" }}>
+              <button onClick={guardarUsuario} className="btn-auth active">
+                Entrar
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       <h3>⚽ {homeName} vs {awayName}</h3>
 
-      <div className="lista-comentarios">
+      <div className="lista-comentarios" style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         {comentarios.length === 0 && (
           <p style={{ color: "#aaa" }}>
             No hay comentarios todavía
           </p>
         )}
 
-        {/* 🔑 Este contenedor asume el espacio central y scrollea de forma independiente */}
-        <div className="scroll-limpio" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto", paddingRight: "4px" }}>
+        {/* 🔑 Contenedor scrolleable */}
+        <div className="scroll-limpio" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto", paddingRight: "4px", marginBottom: "15px" }}>
           {comentarios.map((c, i) => (
             <div key={i} style={{
               background: "#0f172a",
@@ -180,7 +183,7 @@ export default function ComentariosPartido({ partido }) {
           ))}
         </div>
 
-        <div className="input-box">
+        <div className="input-box" style={{ display: "flex", gap: "10px" }}>
           <input
             value={nuevo}
             onChange={(e) => setNuevo(e.target.value)}
@@ -213,5 +216,5 @@ export default function ComentariosPartido({ partido }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

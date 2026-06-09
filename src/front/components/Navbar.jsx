@@ -51,27 +51,57 @@ export const Navbar = ({ openModal }) => {
 
   return (
     <>
-      {/* MODAL DE LIGAS RESPONSIVO */}
+      {/* 🟢 MODAL DE LIGAS RESPONSIVO TOTALMENTE CORREGIDO Y COMPATIBLE */}
       {ligasModalOpen && (
         <div className="modal-overlay" onClick={() => setLigasModalOpen(false)}>
-          {/* Ajuste de width a 90% para móviles */}
           <div className="modal-box" onClick={(e) => e.stopPropagation()} style={{ width: "90%", maxWidth: "420px" }}>
+            
+            {/* Cabecera */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ margin: 0, color: "#ffffff", fontSize: "1.3rem", fontWeight: "700" }}>Competiciones</h3>
-              <button onClick={() => setLigasModalOpen(false)} style={{ background: "transparent", border: "none", color: "#bfc3ca", fontSize: "1.2rem", cursor: "pointer" }}>✖</button>
+              <h2 style={{ margin: 0, color: "#ffffff", fontSize: "22px", fontWeight: "600" }}>Competiciones</h2>
+              <button 
+                onClick={() => setLigasModalOpen(false)} 
+                style={{ background: "transparent", border: "none", color: "#94a3b8", fontSize: "1.4rem", cursor: "pointer" }}
+              >
+                ✖
+              </button>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            {/* Opciones de ligas transformadas en botones estilizados individuales */}
+            <div className="form" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {leagueLinks.map((l) => (
-                <Link key={l.path} to={l.path} onClick={() => setLigasModalOpen(false)} className="continue" style={{ textDecoration: "none", display: "flex", justifyContent: "center", padding: "14px" }}>
+                <Link 
+                  key={l.path} 
+                  to={l.path} 
+                  onClick={() => setLigasModalOpen(false)} 
+                  className="btn-auth" 
+                  style={{ textDecoration: "none" }}
+                >
                   {l.name}
                 </Link>
               ))}
             </div>
 
-            <div className="actions" style={{ marginTop: "20px" }}>
-              <button className="cancel" onClick={() => setLigasModalOpen(false)}>Cerrar</button>
+            {/* Acciones de abajo independientes: Cancelar (Gris neutro) y Continuar (Verde) */}
+            <div className="modal-actions-grid" style={{ marginTop: "20px" }}>
+              <button 
+                type="button" 
+                className="btn-auth" 
+                onClick={() => setLigasModalOpen(false)}
+                style={{ background: "#1e293b", color: "#94a3b8" }}
+              >
+                Cancelar
+              </button>
+              <button 
+                type="button" 
+                className="btn-auth" 
+                onClick={() => setLigasModalOpen(false)}
+                style={{ background: "linear-gradient(135deg, #22c55e, #10b981)", color: "#020617", fontWeight: "800" }}
+              >
+                Continuar
+              </button>
             </div>
+
           </div>
         </div>
       )}
@@ -82,7 +112,6 @@ export const Navbar = ({ openModal }) => {
           <img src={logo} alt="GolHub Logo" />
         </Link>
 
-        
         <ul className="nav-links">
           {navItems.map((item) => (
             <li key={item.path}>
@@ -99,15 +128,17 @@ export const Navbar = ({ openModal }) => {
           ))}
         </ul>
 
-        
         <div className="navbar-right">
-          <button className="btn-primary" onClick={openModal}>Unirme</button>
+          {/* Sincronizado para mostrar "Mi perfil" o "Unirme" en PC */}
+          <button className="btn-primary" onClick={openModal}>
+            {isLogged ? "Mi perfil" : "Unirme"}
+          </button>
           <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? "✖" : "☰"}
           </div>
         </div>
 
-        
+        {/* MENÚ MÓVIL (DENTRO DEL NAV) */}
         {menuOpen && (
           <div className="mobile-menu">
             {navItems.map((item) => (
@@ -119,6 +150,7 @@ export const Navbar = ({ openModal }) => {
         )}
       </nav>
 
+      {/* MENÚ MÓVIL EXTERNO */}
       {menuOpen && (
         <div className="mobile-menu">
           {navItems.map((item) => (
@@ -144,5 +176,5 @@ export const Navbar = ({ openModal }) => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
