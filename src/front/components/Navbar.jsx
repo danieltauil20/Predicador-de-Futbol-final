@@ -36,7 +36,7 @@ export const Navbar = ({ openModal }) => {
     { name: "Inicio", path: "/" },
     { name: "Partidos", path: "/partidos" },
     { name: "Quiniela", path: "/quiniela" },
-    { name: "Categoría", path: "/categoria" },
+    { name: "Ranking", path: "/ranking" },
     { name: "Noticias", path: "/noticias" },
     { name: "Tienda", path: "/tienda" },
     { name: "Comentarios", path: "/comentarios" },
@@ -55,12 +55,12 @@ export const Navbar = ({ openModal }) => {
       {ligasModalOpen && (
         <div className="modal-overlay" onClick={() => setLigasModalOpen(false)}>
           <div className="modal-box" onClick={(e) => e.stopPropagation()} style={{ width: "90%", maxWidth: "420px" }}>
-            
+
             {/* Cabecera */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <h2 style={{ margin: 0, color: "#ffffff", fontSize: "22px", fontWeight: "600" }}>Competiciones</h2>
-              <button 
-                onClick={() => setLigasModalOpen(false)} 
+              <button
+                onClick={() => setLigasModalOpen(false)}
                 style={{ background: "transparent", border: "none", color: "#94a3b8", fontSize: "1.4rem", cursor: "pointer" }}
               >
                 ✖
@@ -70,11 +70,11 @@ export const Navbar = ({ openModal }) => {
             {/* Opciones de ligas transformadas en botones estilizados individuales */}
             <div className="form" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {leagueLinks.map((l) => (
-                <Link 
-                  key={l.path} 
-                  to={l.path} 
-                  onClick={() => setLigasModalOpen(false)} 
-                  className="btn-auth" 
+                <Link
+                  key={l.path}
+                  to={l.path}
+                  onClick={() => setLigasModalOpen(false)}
+                  className="btn-auth"
                   style={{ textDecoration: "none" }}
                 >
                   {l.name}
@@ -84,17 +84,17 @@ export const Navbar = ({ openModal }) => {
 
             {/* Acciones de abajo independientes: Cancelar (Gris neutro) y Continuar (Verde) */}
             <div className="modal-actions-grid" style={{ marginTop: "20px" }}>
-              <button 
-                type="button" 
-                className="btn-auth" 
+              <button
+                type="button"
+                className="btn-auth"
                 onClick={() => setLigasModalOpen(false)}
                 style={{ background: "#1e293b", color: "#94a3b8" }}
               >
                 Cancelar
               </button>
-              <button 
-                type="button" 
-                className="btn-auth" 
+              <button
+                type="button"
+                className="btn-auth"
                 onClick={() => setLigasModalOpen(false)}
                 style={{ background: "linear-gradient(135deg, #22c55e, #10b981)", color: "#020617", fontWeight: "800" }}
               >

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { NewsCarousel } from "./NewsCarousel";
 import "../body.css";
 import "../index.css";
 
@@ -51,6 +52,8 @@ export const Body = () => {
             <h1 className="hero-title">Temporada 2026/27</h1>
             <h2 className="hero-subtitle">Tu portal definitivo de fútbol europeo</h2>
             <p className="feature-text">Sigue las mejores ligas, haz predicciones, compite con amigos y vive cada gol como si estuvieras en el estadio.</p>
+            {/* AQUÍ INYECTAMOS NUESTRO NUEVO CARRUSEL */}
+            <NewsCarousel />
 
             {/* Rejilla de características superior */}
             <div className="features-grid">
@@ -65,22 +68,25 @@ export const Body = () => {
                         <h3 className="feature-name">{item.title}</h3>
                         <p className="feature-text">{item.description}</p>
 
-                        {item.id === "usuarios" && (
-                            <div className="user-stats-container">
-                                <span className="user-stat-badge total">
-                                    Total: <b>{userStats.total}</b>
-                                </span>
-                                <span className="user-stat-badge online">
-                                    Online: <b>{userStats.online}</b> 🟢
-                                </span>
-                            </div>
-                        )}
-                    </div>
+                        {/* 5. Renderizado del contador exclusivo de Usuarios con Clases limpias */}
+                        {
+                            item.id === "usuarios" && (
+                                <div className="user-stats-container">
+                                    <span className="user-stat-badge total">
+                                        Total: <b>{userStats.total}</b>
+                                    </span>
+                                    <span className="user-stat-badge online">
+                                        Online: <b>{userStats.online}</b> 🟢
+                                    </span>
+                                </div>
+                            )
+                        }
+                    </div >
                 ))}
-            </div>
+            </div >
 
             {/* 🟢 NUEVO BLOQUE INFERIOR: PANEL DE PARTIDOS ESTILO COMENTARIOS */}
-            <div className="zona-inferior" style={{ marginTop: "50px" }}>
+            < div className="zona-inferior" style={{ marginTop: "50px" }}>
                 <div className="partidos-grande">
                     <h2>Próximos Partidos</h2>
                     <div className="lista-partidos">
@@ -116,7 +122,7 @@ export const Body = () => {
                         ))}
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };

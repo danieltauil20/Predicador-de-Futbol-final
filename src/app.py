@@ -41,45 +41,14 @@ basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "database.db")}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-
-
-
-
-
-
-@app.route('/api/fixtures/historico', methods=['GET'])
-def get_historico():
-    liga = request.args.get('liga', 'La Liga')
-    temporada = request.args.get('temporada', '2024-2025')
-
-    print(f"Buscando en BD: liga={liga}, temporada={temporada}")
-
-    partidos = Partido.query.filter_by(liga=liga, temporada=temporada).all()
-
-    print(f"Resultados encontrados: {len(partidos)}")
-
-    resultado = [{
-        "id": p.id,
-        "jornada": p.jornada,
-        "homeTeam": {"name": p.home_team},
-        "awayTeam": {"name": p.away_team},
-        "score": {"fullTime": {"home": p.score_home, "away": p.score_away}},
-        "eventos": [{"tipo": e.tipo, "jugador": e.jugador, "minuto": e.minuto} for e in p.eventos]
-    } for p in partidos]
-
-    return jsonify(resultado)
-
+app.register_blueprint(api,url_prefix="/api") 
 
 # Handle/serialize errors like a JSON object
-
-
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
 # generate sitemap with all your endpoints
-
-
 @app.route('/')
 def sitemap():
     if ENV == "development":
@@ -87,8 +56,6 @@ def sitemap():
     return send_from_directory(static_file_dir, 'index.html')
 
 # any other endpoint will try to serve it like a static file
-
-
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
     if not os.path.isfile(os.path.join(static_file_dir, path)):
@@ -96,7 +63,6 @@ def serve_any_other_file(path):
     response = send_from_directory(static_file_dir, path)
     response.cache_control.max_age = 0  # avoid cache memory
     return response
-
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

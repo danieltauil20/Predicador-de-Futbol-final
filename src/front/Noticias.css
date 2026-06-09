@@ -1,0 +1,131 @@
+/* ==========================================================================
+   ESTILOS GENERALES DE LA PÁGINA NOTICIAS
+   ========================================================================== */
+.gt-news-page {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  min-height: 100vh;
+}
+
+.gt-news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.gt-news-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.gt-news-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--neon-cyan, #0ee7ac);
+  box-shadow: 0 10px 20px rgba(14, 231, 172, 0.15);
+}
+
+.gt-news-img-container {
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+}
+
+.gt-news-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.gt-news-card:hover .gt-news-img {
+  transform: scale(1.05); /* Efecto zoom premium al pasar el ratón */
+}
+
+.gt-news-tag {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: var(--neon-cyan, #0ee7ac);
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.gt-news-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.gt-news-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+
+.gt-news-desc {
+  font-size: 0.9rem;
+  color: #8a8f98;
+  margin-bottom: 15px;
+  flex-grow: 1;
+}
+
+.gt-news-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #64748b;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 12px;
+}
+
+/* ==========================================================================
+   ESTILOS PARA EL FUTURO CARRUSEL
+   ========================================================================== */
+.gt-carousel-wrapper {
+  margin: 50px auto;
+  max-width: 1200px;
+  overflow: hidden;
+}
+
+.gt-carousel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+.gt-carousel-track-container {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  /* Ocultar barra de scroll para mayor elegancia */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding: 10px 20px;
+}
+.gt-carousel-track-container::-webkit-scrollbar {
+  display: none;
+}
+
+.gt-carousel-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+}
