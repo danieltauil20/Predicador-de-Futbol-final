@@ -13,7 +13,7 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
+
 
 # from models import Person
 
@@ -41,35 +41,10 @@ basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "database.db")}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
-
-# Modelos
 
 
-class Partido(db.Model):
-    __tablename__ = 'partido'
-    id = db.Column(db.Integer, primary_key=True)
-    liga = db.Column(db.String(10))
-    temporada = db.Column(db.String(20))
-    jornada = db.Column(db.Integer)
-    home_team = db.Column(db.String(100))
-    away_team = db.Column(db.String(100))
-    score_home = db.Column(db.Integer)
-    score_away = db.Column(db.Integer)
-    fecha = db.Column(db.String(20))
-    hora = db.Column(db.String(10))
-    estadio = db.Column(db.String(100))
-    eventos = db.relationship('Evento', backref='partido', lazy=True)
 
 
-class Evento(db.Model):
-    __tablename__ = 'evento'
-    id = db.Column(db.Integer, primary_key=True)
-    tipo = db.Column(db.String(20))
-    jugador = db.Column(db.String(100))
-    minuto = db.Column(db.String(10))
-    partido_id = db.Column(db.Integer, db.ForeignKey(
-        'partido.id'), nullable=False)
 
 
 @app.route('/api/fixtures/historico', methods=['GET'])
