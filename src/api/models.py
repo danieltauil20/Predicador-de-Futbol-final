@@ -4,14 +4,18 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean(), nullable=False, default=True)
 
     # NUEVO: Relación de 1 a Muchos (Un usuario -> Muchas predicciones)
-    predictions = relationship("Prediction", back_populates="user", cascade="all, delete-orphan")
+    predictions = relationship(
+        "Prediction", back_populates="user", cascade="all, delete-orphan")
 
     def serialize(self):
         return {
@@ -21,19 +25,22 @@ class User(db.Model):
         }
 
 # NUEVO MODELO: Tabla para guardar las quinielas de los usuarios
+
+
 class Prediction(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    
+
     # Llave foránea: ¿De qué usuario es esta predicción?
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.id'), nullable=False)
-    
+    user_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey('user.id'), nullable=False)
+
     # ID del partido (el mismo que viene de la API de football-data)
     fixture_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    
+
     # Goles predichos
     home_goals: Mapped[int] = mapped_column(Integer, nullable=False)
     away_goals: Mapped[int] = mapped_column(Integer, nullable=False)
-    
+
     # Puntos ganados (Inicia vacío, se llena cuando el partido termina en la vida real)
     points_earned: Mapped[int] = mapped_column(Integer, nullable=True)
 
@@ -49,7 +56,8 @@ class Prediction(db.Model):
             "away_goals": self.away_goals,
             "points_earned": self.points_earned
         }
-        
+
+
 class Comment(db.Model):
     __tablename__ = "comments"
 
@@ -66,6 +74,7 @@ class Comment(db.Model):
             "content": self.content
         }
 
+
 class Favorite(db.Model):
     __tablename__ = "favorites"
 
@@ -81,3 +90,29 @@ class Favorite(db.Model):
             "user_id": self.user_id,
             "team_name": self.team_name
         }
+
+
+class Partido(db.Model):
+    __tablename__ = 'partido'
+    id = db.Column(db.Integer, primary_key=True)
+    liga = db.Column(db.String(10))
+    temporada = db.Column(db.String(20))
+    jornada = db.Column(db.Integer)
+    home_team = db.Column(db.String(100))
+    away_team = db.Column(db.String(100))
+    score_home = db.Column(db.Integer)
+    score_away = db.Column(db.Integer)
+    fecha = db.Column(db.String(20))
+    hora = db.Column(db.String(10))
+    estadio = db.Column(db.String(100))
+    eventos = db.relationship('Evento', backref='partido', lazy=True)
+
+
+class Evento(db.Model):
+    __tablename__ = 'evento'
+    id = db.Column(db.Integer, primary_key=True)
+    tipo = db.Column(db.String(20))
+    jugador = db.Column(db.String(100))
+    minuto = db.Column(db.String(10))
+    partido_id = db.Column(db.Integer, db.ForeignKey(
+        'partido.id'), nullable=False)
