@@ -89,12 +89,12 @@ export const Tienda = () => {
     <div className="tienda-container">
       <h1>Tienda</h1>
 
-      {/* BOTÓN CARRITO */}
+      
       <div className="cart-button" onClick={() => setOpen(!open)}>
         🛒 <span className="cart-count">{cart.length}</span>
       </div>
 
-      {/* GRID */}
+      
       <div className="tienda-grid">
         {products.map((p) => (
           <div className="product-card" key={p.id}>
@@ -106,7 +106,7 @@ export const Tienda = () => {
         ))}
       </div>
 
-      {/* SIDEBAR */}
+      
       <div className={`cart-sidebar ${open ? "open" : ""}`}>
         <div className="cart-header">
           <h2>Carrito</h2>

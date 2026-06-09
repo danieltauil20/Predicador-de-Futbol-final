@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { RulesCard } from '../components/RulesCard';
-import useGlobalReducer from '../hooks/useGlobalReducer';
+import {useGlobalReducer} from '../hooks/useGlobalReducer';
 import '../Ranking.css';
 
 export const Ranking = () => {

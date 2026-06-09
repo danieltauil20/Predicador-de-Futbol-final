@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "liga": "PD",
+    "temporada": "2024-2025",
+    "jornada": 1,
+    "homeTeam": {"name": "Real Madrid"},
+    "awayTeam": {"name": "Barcelona"},
+    "score": {"fullTime": {"home": 2, "away": 1}},
+    "eventos": [
+      {"tipo": "gol", "jugador": "Vinicius Jr", "minuto": "15'"}
+    ]
+  },
+  {
+    "id": 2,
+    "liga": "PD",
+    "temporada": "2024-2025",
+    "jornada": 1,
+    "homeTeam": {"name": "Atletico Madrid"},
+    "awayTeam": {"name": "Sevilla"},
+    "score": {"fullTime": {"home": 1, "away": 1}},
+    "eventos": [
+      {"tipo": "amarilla", "jugador": "Giménez", "minuto": "20'"}
+    ]
+  },
+  {
+    "id": 3,
+    "liga": "PD",
+    "temporada": "2024-2025",
+    "jornada": 2,
+    "homeTeam": {"name": "Valencia"},
+    "awayTeam": {"name": "Villarreal"},
+    "score": {"fullTime": {"home": 0, "away": 2}},
+    "eventos": [
+      {"tipo": "gol", "jugador": "Gerard Moreno", "minuto": "80'"}
+    ]
+  }
+]

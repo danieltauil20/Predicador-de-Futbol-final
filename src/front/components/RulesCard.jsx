@@ -9,7 +9,7 @@ export const RulesCard = () => {
         <span>📜 Normativas y Reglas del Juego</span>
         <span>{isOpen ? '▲' : '▼'}</span>
       </div>
-      
+
       {isOpen && (
         <div className="gt-rules-content">
           <p>¡Bienvenido a la Quiniela! Por registrarte, ya hemos sumado <strong>30 puntos base</strong> a tu cuenta para que comiences a competir. Gana más puntos así:</p>
@@ -18,8 +18,11 @@ export const RulesCard = () => {
             <li style={{ marginBottom: '8px' }}><span style={{ color: '#C0C0C0', fontWeight: 'bold' }}>🥈 1 Punto:</span> Aciertas qué equipo gana o si hay empate, pero fallas los goles (Ej: Predices 3-0 y termina 1-0).</li>
             <li><span style={{ color: '#ff4a5a', fontWeight: 'bold' }}>💔 0 Puntos:</span> Fallo total en el resultado.</li>
           </ul>
+          <p style={{ marginTop: '15px' }}>
+            🎁 Al alcanzar los <strong>100 puntos</strong>, podrás pasar por tienda y canjearlos por un <strong>50% de descuento</strong> en tu camiseta.
+          </p>
         </div>
       )}
     </div>
   );
-};
+};                                                                                                                         

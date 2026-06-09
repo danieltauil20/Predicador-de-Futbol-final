@@ -1,7 +1,9 @@
+
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
+import requests
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
@@ -10,6 +12,8 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from flask_cors import CORS
+
 
 # from models import Person
 
@@ -30,15 +34,41 @@ else:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
+CORS(app)
 
-# add the admin
-setup_admin(app)
+# Ruta absoluta forzada a la raíz
+basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "database.db")}'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# add the admin
-setup_commands(app)
 
-# Add all endpoints form the API with a "api" prefix
-app.register_blueprint(api, url_prefix='/api')
+
+
+
+
+
+@app.route('/api/fixtures/historico', methods=['GET'])
+def get_historico():
+    liga = request.args.get('liga', 'La Liga')
+    temporada = request.args.get('temporada', '2024-2025')
+
+    print(f"Buscando en BD: liga={liga}, temporada={temporada}")
+
+    partidos = Partido.query.filter_by(liga=liga, temporada=temporada).all()
+
+    print(f"Resultados encontrados: {len(partidos)}")
+
+    resultado = [{
+        "id": p.id,
+        "jornada": p.jornada,
+        "homeTeam": {"name": p.home_team},
+        "awayTeam": {"name": p.away_team},
+        "score": {"fullTime": {"home": p.score_home, "away": p.score_away}},
+        "eventos": [{"tipo": e.tipo, "jugador": e.jugador, "minuto": e.minuto} for e in p.eventos]
+    } for p in partidos]
+
+    return jsonify(resultado)
+
 
 # Handle/serialize errors like a JSON object
 
