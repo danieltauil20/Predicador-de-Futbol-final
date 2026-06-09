@@ -15,6 +15,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import func
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 api = Blueprint('api', __name__)
 
@@ -683,3 +684,67 @@ def get_stats():
         }), 200
     except Exception as e:
         return jsonify({"msg": "Error al cargar las estadísticas", "error": str(e)}), 500
+    
+@api.route('/login', methods=['POST'])
+def login():
+    body = request.get_json()
+    email = body.get('email', None)
+    password = body.get('password', None)
+
+    if not email or not password:
+        return jsonify({"msg": "Debes enviar email y contraseña"}), 400
+
+    # Buscamos al usuario en la base de datos
+    user = User.query.filter_by(email=email).first()
+
+    # Verificamos que exista y que la contraseña coincida con la encriptada
+    if not user or not check_password_hash(user.password, password):
+        return jsonify({"msg": "Email o contraseña incorrectos"}), 401
+
+    # 🔥 CREAMOS EL PASAPORTE (TOKEN JWT)
+    # Convertimos el ID del usuario en un string para usarlo como identidad del token
+    access_token = create_access_token(identity=str(user.id))
+
+    # Devolvemos el Token y los datos del usuario a React
+    return jsonify({
+        "access_token": access_token,
+        "user": user.serialize()
+    }), 200
+
+@api.route('/signup', methods=['POST'])
+def signup():
+    body = request.get_json()
+
+    # Extraemos los datos que envía React
+    email = body.get('email', None)
+    password = body.get('password', None)
+
+    if not email or not password:
+        return jsonify({"msg": "Debes enviar un email y una contraseña"}), 400
+
+    # Verificamos que el usuario no exista previamente
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({"msg": "El correo ya está registrado"}), 400
+
+    # 🔥 ENCRIPTAMOS LA CONTRASEÑA (¡Nunca se guarda en texto plano!)
+    hashed_password = generate_password_hash(
+        str(password), method='pbkdf2:sha256')
+
+    # Creamos el usuario en la base de datos
+    new_user = User(email=email, password=hashed_password, is_active=True)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"msg": "Usuario creado exitosamente"}), 201
+
+@api.route('/predictions/me', methods=['GET'])
+@jwt_required()
+def get_my_predictions():
+    current_user_id = get_jwt_identity()
+    # Traemos las predicciones del usuario ordenadas de la más nueva a la más vieja
+    my_preds = Prediction.query.filter_by(user_id=current_user_id).order_by(Prediction.id.desc()).all()
+    
+    return jsonify([p.serialize() for p in my_preds]), 200
+
+
