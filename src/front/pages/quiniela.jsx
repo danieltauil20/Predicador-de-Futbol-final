@@ -7,7 +7,6 @@ import { RulesCard } from '../components/RulesCard';
 import '../quiniela.css';
 
 export const Quiniela = () => {
-  // === ESTADOS (Memoria de la aplicación) ===
   const [fixtures, setFixtures] = useState([]);
   const [teamForms, setTeamForms] = useState({});
   const [predictions, setPredictions] = useState({});
@@ -18,31 +17,39 @@ export const Quiniela = () => {
   const [loadingStats, setLoadingStats] = useState({});
   const [submittingStatus, setSubmittingStatus] = useState({});
 
-  // === EFECTOS SECUNDARIOS ===
   useEffect(() => {
-    const loadWeeklyFixtures = async () => {
+    const loadData = async () => {
       try {
-        setLoading(true); // Encendemos la pantalla de "Cargando..."
+        setLoading(true);
         const { matches, forms } = await footballService.getWeeklyEliteFixtures();
         setFixtures(matches || []);
         setTeamForms(forms || {});
+
+        const history = await predictionService.getHistory();
+        if (history && history.length > 0) {
+          const loadedPredictions = {};
+          const loadedStatus = {};
+          history.forEach(p => {
+             loadedPredictions[p.fixture_id] = { home: p.home_goals, away: p.away_goals, points: p.points_earned };
+             loadedStatus[p.fixture_id] = 'success';
+          });
+          setPredictions(loadedPredictions);
+          setSubmittingStatus(loadedStatus);
+        }
       } catch (err) {
-        setError("No se pudieron sincronizar los partidos de la jornada semanal.");
+        setError("No se pudieron sincronizar los datos de la jornada semanal.");
       } finally {
-        setLoading(false); // Apagamos el "Cargando..." pase lo que pase
+        setLoading(false); 
       }
     };
-
-    loadWeeklyFixtures();
+    loadData();
   }, []);
 
-  // === FUNCIONES DE ACCIÓN (Interacción del usuario) ===
   const handleToggleStats = useCallback(async (fixtureId, teamHomeId, teamAwayId) => {
     if (activeStats[fixtureId]) {
       setActiveStats(prev => ({ ...prev, [fixtureId]: null }));
       return;
     }
-
     setLoadingStats(prev => ({ ...prev, [fixtureId]: true }));
     try {
       const summary = await footballService.getH2HSummary(fixtureId, teamHomeId, teamAwayId);
@@ -56,38 +63,27 @@ export const Quiniela = () => {
 
   const handlePredictionChange = useCallback((fixtureId, type, value) => {
     const parsedValue = value === "" ? "" : parseInt(value, 10);
-    
     setPredictions(prev => {
-      // 1. Tomamos lo que ya existía, o si es nuevo, inicializamos ambos en vacío
       const current = prev[fixtureId] || { home: "", away: "" };
-      
-      return {
-        ...prev,
-        [fixtureId]: { 
-           ...current, 
-           [type]: parsedValue 
-        }
-      };
+      return { ...prev, [fixtureId]: { ...current, [type]: parsedValue } };
     });
   }, []);
 
-  const handleSendSinglePrediction = async (fixtureId) => {
+  const handleSendSinglePrediction = async (fixtureId, match) => {
     const matchPrediction = predictions[fixtureId];
-
     if (!matchPrediction || matchPrediction.home === undefined || matchPrediction.away === undefined) {
       alert("Por favor, introduce ambos marcadores antes de enviar.");
       return;
     }
-
     setSubmittingStatus(prev => ({ ...prev, [fixtureId]: 'loading' }));
     try {
       await predictionService.submit({
         fixtureId,
         homeGoals: matchPrediction.home,
-        awayGoals: matchPrediction.away
+        awayGoals: matchPrediction.away,
+        matchData: match 
       });
       setSubmittingStatus(prev => ({ ...prev, [fixtureId]: 'success' }));
-      setTimeout(() => setSubmittingStatus(prev => ({ ...prev, [fixtureId]: null })), 3000);
     } catch (err) {
       setSubmittingStatus(prev => ({ ...prev, [fixtureId]: 'error' }));
     }
@@ -100,17 +96,12 @@ export const Quiniela = () => {
   };
 
   const toggleLeague = (leagueName) => {
-    setCollapsedLeagues(prev => ({
-      ...prev,
-      [leagueName]: !prev[leagueName]
-    }));
+    setCollapsedLeagues(prev => ({ ...prev, [leagueName]: !prev[leagueName] }));
   };
 
-  // === PANTALLAS DE INTERRUPCIÓN ===
-  if (loading) return <div className="gt-loader">Cargando cartelera de élite semanal y estados de forma...</div>;
+  if (loading) return <div className="gt-loader">Cargando cartelera...</div>;
   if (error) return <div className="gt-error-container">{error}</div>;
 
-  // === LÓGICA PRE-RENDER: Agrupador de Ligas ===
   const groupedFixtures = fixtures.reduce((acc, match) => {
     const leagueName = match.league.name;
     if (!acc[leagueName]) {
@@ -120,7 +111,6 @@ export const Quiniela = () => {
     return acc;
   }, {});
 
-  // === RENDER PRINCIPAL DEL COMPONENTE ===
   return (
     <div className="gt-quiniela-container">
       <header className="gt-header">
@@ -136,7 +126,7 @@ export const Quiniela = () => {
 
       <div className="gt-leagues-container">
         {!fixtures || fixtures.length === 0 ? (
-          <p className="gt-no-matches">No hay partidos de élite programados para los próximos días.</p>
+          <p className="gt-no-matches">No hay partidos programados.</p>
         ) : (
           Object.keys(groupedFixtures).map(leagueName => {
             const group = groupedFixtures[leagueName];
@@ -144,19 +134,14 @@ export const Quiniela = () => {
 
             return (
               <div key={leagueName} className="gt-league-section">
-
-                {/* CABECERA: Botón interactivo para cerrar/abrir la liga */}
                 <div className="gt-league-header" onClick={() => toggleLeague(leagueName)}>
                   <div className="gt-league-header-title">
                     {group.flag && <img src={group.flag} alt="Bandera" className="gt-flag" />}
                     <h2>{leagueName}</h2>
                   </div>
-                  <span className="gt-league-toggle-icon">
-                    {isCollapsed ? '▼' : '▲'}
-                  </span>
+                  <span className="gt-league-toggle-icon">{isCollapsed ? '▼' : '▲'}</span>
                 </div>
 
-                {/* CONTENIDO DE LA LIGA */}
                 {!isCollapsed && (
                   <div className="gt-fixtures-grid animate-fade-in">
                     {group.matches.map(match => {
@@ -168,15 +153,12 @@ export const Quiniela = () => {
                       const isLive = ['1H', '2H', 'HT', 'ET', 'P', 'LIVE'].includes(statusShort);
                       const isFinished = ['FT', 'AET', 'PEN'].includes(statusShort);
 
-                      // Formato de fecha completa actualizado
                       const matchDateObj = new Date(match.fixture.date);
                       const matchDay = matchDateObj.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
                       const matchTime = matchDateObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
                       return (
                         <div key={fId} className="gt-card">
-
-                          {/* FILA DE ESTADO */}
                           <div className="gt-card-status-row">
                             <div className="gt-time-status-container">
                               {isLive ? (
@@ -191,17 +173,13 @@ export const Quiniela = () => {
                             </div>
                           </div>
 
-                          {/* FILA PRINCIPAL: Equipos y Cajas de Predicción */}
                           <div className="gt-match-core">
                             <div className="gt-team local">
                               <img src={match.teams.home.logo} alt="" className="gt-team-logo" />
-
-                              {/* CAJÓN DEL EQUIPO LOCAL (Apila Nombre + Racha/NA) */}
                               <div className="gt-team-info local-info">
                                 <span className="gt-team-name">{match.teams.home.name}</span>
                                 <TeamForm formString={teamForms?.[match.teams.home.id] || ""} />
                               </div>
-
                               {!isFinished && (
                                 <input
                                   type="number"
@@ -229,18 +207,14 @@ export const Quiniela = () => {
                                   disabled={status === 'loading' || status === 'success'}
                                 />
                               )}
-
-                              {/* CAJÓN DEL EQUIPO VISITANTE (Apila Nombre + Racha/NA) */}
                               <div className="gt-team-info away-info">
                                 <span className="gt-team-name">{match.teams.away.name}</span>
                                 <TeamForm formString={teamForms?.[match.teams.away.id] || ""} />
                               </div>
-
                               <img src={match.teams.away.logo} alt="" className="gt-team-logo" />
                             </div>
                           </div>
 
-                          {/* REVELACIÓN FINAL: Se muestra solo si el partido acabó */}
                           {isFinished && (
                             <div className="gt-prediction-result">
                               <div className="gt-real-score">
@@ -256,7 +230,6 @@ export const Quiniela = () => {
                             </div>
                           )}
 
-                          {/* BOTÓN ESTADÍSTICAS: Activa el H2H */}
                           <div className="gt-stats-trigger-zone">
                             <button
                               type="button"
@@ -273,24 +246,19 @@ export const Quiniela = () => {
                             </button>
                           </div>
 
-                          {/* PANEL DE ESTADÍSTICAS (Oculto por defecto) */}
-                          {/* PANEL DE ESTADÍSTICAS CON BARRA DE PROBABILIDAD */}
                           {activeStats[fId] && (() => {
-                            // Algoritmo matemático para sacar las probabilidades basado en el historial
                             const stats = activeStats[fId];
-                            let homeProb = 33, drawProb = 34, awayProb = 33; // Si nunca han jugado, 33% a todos
+                            let homeProb = 33, drawProb = 34, awayProb = 33;
 
                             if (stats.total > 0) {
                               homeProb = Math.round((stats.homeWins / stats.total) * 100);
                               drawProb = Math.round((stats.draws / stats.total) * 100);
-                              awayProb = 100 - homeProb - drawProb; // Garantiza sumar 100%
+                              awayProb = 100 - homeProb - drawProb; 
                             }
 
                             return (
                               <div className="gt-stats-panel animate-fade-in">
                                 <div className="gt-stats-title">Últimos {stats.total} enfrentamientos directos:</div>
-
-                                {/* NUEVO: La Barra Predictiva Neón */}
                                 <div className="gt-prob-container">
                                   <div className="gt-prob-labels">
                                     <span style={{ color: 'var(--neon-cyan)' }}>{homeProb}% Local</span>
@@ -303,7 +271,6 @@ export const Quiniela = () => {
                                     <div className="gt-prob-segment prob-away" style={{ width: `${awayProb}%` }}></div>
                                   </div>
                                 </div>
-
                                 <div className="gt-stats-bars" style={{ marginTop: '15px' }}>
                                   <div className="gt-stat-bar-item">
                                     <span className="gt-stat-label">Victorias {match.teams.home.name}:</span>
@@ -322,7 +289,6 @@ export const Quiniela = () => {
                             );
                           })()}
 
-                          {/* BOTONERA: Ver más detalles de liga / Enviar Predicción */}
                           <div className="gt-action-area">
                             <Link to={`/liga/${encodeURIComponent(leagueName.toLowerCase().replace(/ /g, "-"))}`} className="gt-btn-secondary">
                               Detalles
@@ -330,7 +296,7 @@ export const Quiniela = () => {
                             {!isFinished && (
                               <button
                                 className={getButtonClass(status)}
-                                onClick={() => handleSendSinglePrediction(fId)}
+                                onClick={() => handleSendSinglePrediction(fId, match)}
                                 disabled={status === 'loading' || status === 'success'}
                               >
                                 {status === 'loading' && 'Guardando...'}

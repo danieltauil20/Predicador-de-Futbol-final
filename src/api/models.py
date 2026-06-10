@@ -7,13 +7,14 @@ db = SQLAlchemy()
 
 class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(
+        String(50), unique=True, nullable=True)
     email: Mapped[str] = mapped_column(
         String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(
         Boolean(), nullable=False, default=True)
 
-    # NUEVO: Relación de 1 a Muchos (Un usuario -> Muchas predicciones)
     predictions = relationship(
         "Prediction", back_populates="user", cascade="all, delete-orphan")
 
@@ -21,30 +22,27 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            # NOTA: No serializamos la contraseña por seguridad
+            "username": self.username,
         }
-
-# NUEVO MODELO: Tabla para guardar las quinielas de los usuarios
 
 
 class Prediction(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    # Llave foránea: ¿De qué usuario es esta predicción?
     user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey('user.id'), nullable=False)
-
-    # ID del partido (el mismo que viene de la API de football-data)
     fixture_id: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    # Goles predichos
     home_goals: Mapped[int] = mapped_column(Integer, nullable=False)
     away_goals: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    # Puntos ganados (Inicia vacío, se llena cuando el partido termina en la vida real)
+    home_team_name: Mapped[str] = mapped_column(String(100), nullable=True)
+    away_team_name: Mapped[str] = mapped_column(String(100), nullable=True)
+    home_team_logo: Mapped[str] = mapped_column(String(300), nullable=True)
+    away_team_logo: Mapped[str] = mapped_column(String(300), nullable=True)
+
     points_earned: Mapped[int] = mapped_column(Integer, nullable=True)
 
-    # Relación inversa para poder acceder al usuario desde la predicción
     user = relationship("User", back_populates="predictions")
 
     def serialize(self):
@@ -54,17 +52,22 @@ class Prediction(db.Model):
             "fixture_id": self.fixture_id,
             "home_goals": self.home_goals,
             "away_goals": self.away_goals,
+            "home_team_name": self.home_team_name,
+            "away_team_name": self.away_team_name,
+            "home_team_logo": self.home_team_logo,
+            "away_team_logo": self.away_team_logo,
             "points_earned": self.points_earned
         }
 
+# TABLAS NUEVAS
+
 
 class Comment(db.Model):
-    __tablename__ = "comments"
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
-    match_id = db.Column(db.Integer, nullable=False)
-    content = db.Column(db.String(500), nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey('user.id'), nullable=False)
+    match_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    content: Mapped[str] = mapped_column(String(500), nullable=False)
 
     def serialize(self):
         return {
@@ -76,13 +79,10 @@ class Comment(db.Model):
 
 
 class Favorite(db.Model):
-    __tablename__ = "favorites"
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship("User", backref="favorites")
-    team_name = db.Column(db.String(120), nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey('user.id'), nullable=False)
+    team_name: Mapped[str] = mapped_column(String(100), nullable=False)
 
     def serialize(self):
         return {
@@ -90,29 +90,3 @@ class Favorite(db.Model):
             "user_id": self.user_id,
             "team_name": self.team_name
         }
-
-
-class Partido(db.Model):
-    __tablename__ = 'partido'
-    id = db.Column(db.Integer, primary_key=True)
-    liga = db.Column(db.String(10))
-    temporada = db.Column(db.String(20))
-    jornada = db.Column(db.Integer)
-    home_team = db.Column(db.String(100))
-    away_team = db.Column(db.String(100))
-    score_home = db.Column(db.Integer)
-    score_away = db.Column(db.Integer)
-    fecha = db.Column(db.String(20))
-    hora = db.Column(db.String(10))
-    estadio = db.Column(db.String(100))
-    eventos = db.relationship('Evento', backref='partido', lazy=True)
-
-
-class Evento(db.Model):
-    __tablename__ = 'evento'
-    id = db.Column(db.Integer, primary_key=True)
-    tipo = db.Column(db.String(20))
-    jugador = db.Column(db.String(100))
-    minuto = db.Column(db.String(10))
-    partido_id = db.Column(db.Integer, db.ForeignKey(
-        'partido.id'), nullable=False)
