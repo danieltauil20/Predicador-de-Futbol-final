@@ -280,11 +280,15 @@ def signup():
     password = body.get("password", None)
 
     if not email or not password or not username:
-        return jsonify({"msg": "Missing email, username or password"}), 400
+        return jsonify({"msg": "Faltan datos: email, usuario o contraseña"}), 400
 
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
-        return jsonify({"msg": "Email already exists"}), 400
+        return jsonify({"msg": "Este correo electrónico ya está registrado"}), 400
+        
+    existing_username = User.query.filter_by(username=username).first()
+    if existing_username:
+        return jsonify({"msg": "El nombre de usuario ya está en uso"}), 400
 
     hashed_password = generate_password_hash(password)
     new_user = User(email=email, username=username, password=hashed_password, is_active=True)
@@ -301,12 +305,12 @@ def login():
     password = body.get("password", None)
 
     if not email or not password:
-        return jsonify({"msg": "Missing email or password"}), 400
+        return jsonify({"msg": "Faltan datos: email o contraseña"}), 400
 
     user = User.query.filter_by(email=email).first()
 
     if not user or not check_password_hash(user.password, password):
-        return jsonify({"msg": "Bad email or password"}), 401
+        return jsonify({"msg": "Email o contraseña incorrectos"}), 401
 
     access_token = create_access_token(identity=str(user.id))
     return jsonify(access_token=access_token, user=user.serialize()), 200

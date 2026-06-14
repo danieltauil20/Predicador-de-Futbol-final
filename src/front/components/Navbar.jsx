@@ -15,8 +15,8 @@ export const Navbar = ({ openModal }) => {
     };
 
     const checkSession = () => {
-      const session = localStorage.getItem("session");
-      setIsLogged(!!session);
+      const token = localStorage.getItem("token");
+      setIsLogged(!!token);
     };
 
     checkSession();

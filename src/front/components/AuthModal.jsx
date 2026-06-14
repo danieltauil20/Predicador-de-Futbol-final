@@ -1,109 +1,106 @@
 import { useState } from "react";
-
+import { useGlobalReducer } from "../hooks/useGlobalReducer.jsx";
 export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
+  // 🔥 Traemos el despachador de acciones (store global)
+  const { dispatch } = useGlobalReducer();
+  
   const [isLogin, setIsLogin] = useState(true);
-
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  
   const [error, setError] = useState("");
-
+  const [loading, setLoading] = useState(false);
   if (!isOpen) return null;
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setError("");
-
-    if (!password || (!isLogin && (!username || !email)) || (isLogin && !email)) {
+    if (!password || (!isLogin && (!username || !email))) {
       setError("Completa todos los campos");
       return;
     }
-
     if (password.length < 6) {
       setError("La contraseña debe tener mínimo 6 caracteres");
       return;
     }
-
-    if (!isLogin) {
-      // Lógica de Registro
-      const newUser = {
-        username,
-        email,
-        password,
-        teams: [],
-        points: 30,
-        predictions: []
-      };
-
-      localStorage.setItem("user", JSON.stringify(newUser));
-      localStorage.setItem("session", "true");
-
-      let users = JSON.parse(localStorage.getItem("users")) || [];
-      const index = users.findIndex(u => u.username === newUser.username);
-
-      if (index !== -1) {
-        users[index] = newUser;
+    setLoading(true);
+    // 🔥 URL Dinámica del Backend
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
+    try {
+      if (!isLogin) {
+        // ==========================================
+        // 🔥 PETICIÓN DE REGISTRO (SIGNUP)
+        // ==========================================
+        const response = await fetch(`${backendUrl}/api/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, username })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          setError(data.msg || "Error en el registro");
+          setLoading(false);
+          return;
+        }
+        // ¡Éxito! Lo mandamos a la pestaña de Iniciar Sesión automáticamente
+        setIsLogin(true);
+        setError("✅ ¡Cuenta creada! Ahora inicia sesión.");
+        setUsername("");
+        setPassword("");
+        setLoading(false);
       } else {
-        users.push(newUser);
-      }
-
-      localStorage.setItem("users", JSON.stringify(users));
-      localStorage.setItem("justRegistered", "true");
-
-      onClose();
-      if (onLoginSuccess) onLoginSuccess();
-
-    } else {
-      // Lógica de Inicio de Sesión
-      const savedUser = JSON.parse(localStorage.getItem("user"));
-
-      if (
-        savedUser &&
-        savedUser.email === email &&
-        savedUser.password === password
-      ) {
-        localStorage.setItem("session", "true");
+        // ==========================================
+        // 🔥 PETICIÓN DE LOGIN (INICIAR SESIÓN)
+        // ==========================================
+        const response = await fetch(`${backendUrl}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          setError(data.msg || "Error al iniciar sesión");
+          setLoading(false);
+          return;
+        }
+        // ¡Éxito! Inyectamos el Token JWT y el Usuario a tu Bóveda Central (store.js)
+        dispatch({
+          type: "login",
+          payload: {
+            token: data.access_token,
+            user: data.user
+          }
+        });
         onClose();
         if (onLoginSuccess) onLoginSuccess();
-      } else {
-        setError("Email o contraseña incorrectos");
-        return;
+        
+        setEmail("");
+        setPassword("");
+        setLoading(false);
       }
+    } catch (err) {
+      setError("Error de conexión con el servidor");
+      setLoading(false);
     }
-
-    setUsername("");
-    setEmail("");
-    setPassword("");
   };
-
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-
-        {/* Pestañas Superiores (Controlan exclusivamente la vista) */}
         <div className="tabs">
           <button
             className={!isLogin ? "active" : ""}
-            onClick={() => {
-              setIsLogin(false);
-              setError("");
-            }}
+            onClick={() => { setIsLogin(false); setError(""); }}
           >
             Registro
           </button>
-
           <button
             className={isLogin ? "active" : ""}
-            onClick={() => {
-              setIsLogin(true);
-              setError("");
-            }}
+            onClick={() => { setIsLogin(true); setError(""); }}
           >
             Iniciar sesión
           </button>
         </div>
-
-        {/* Inputs del Formulario */}
         <div className="form">
           {!isLogin && (
             <input
@@ -111,47 +108,47 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
               placeholder="Nombre de usuario"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              disabled={loading}
             />
           )}
-
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
           />
-
           <input
             type="password"
             placeholder="Contraseña (6+ caracteres)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
           />
-
-          {error && <p className="error" style={{ color: "#ef4444", fontSize: "13px", margin: "5px 0 0" }}>{error}</p>}
+          {error && (
+            <p className="error" style={{ color: error.includes("✅") ? "var(--neon-green)" : "var(--error-red)", fontSize: "13px", margin: "5px 0 0" }}>
+              {error}
+            </p>
+          )}
         </div>
-
-        {/* 🟢 BOTONES INFERIORES: Cancelar y Continuar en Paralelo y con Libertad */}
-        <div className="modal-actions-grid">
+        <div className="modal-actions-grid" style={{ marginTop: "20px" }}>
           <button 
-            type="button" 
             className="btn-auth" 
-            onClick={onClose}
-            style={{ background: "#1e293b", color: "#94a3b8" }} // Tono oscuro neutro por defecto
+            onClick={onClose} 
+            disabled={loading}
+            style={{ background: "#1e293b", color: "#94a3b8" }}
           >
             Cancelar
           </button>
-
           <button 
-            type="button" 
             className="btn-auth" 
-            onClick={handleSubmit}
-            style={{ background: "#22c55e", color: "#020617", fontWeight: "800" }} // El botón de acción principal resalta en verde
+            onClick={handleSubmit} 
+            disabled={loading}
+            style={{ background: "#22c55e", color: "#020617", fontWeight: "800" }}
           >
-            Continuar
+            {loading ? "Procesando..." : "Continuar"}
           </button>
         </div>
-
       </div>
     </div>
   );

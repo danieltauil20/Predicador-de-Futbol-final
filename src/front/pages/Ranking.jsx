@@ -14,7 +14,8 @@ export const Ranking = () => {
   const fetchRanking = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/ranking?t=${new Date().getTime()}`);
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
+      const response = await fetch(`${backendUrl}/api/ranking?t=${new Date().getTime()}`);
       if (!response.ok) throw new Error("Error al cargar el ranking desde el servidor");
       const data = await response.json();
 
@@ -36,7 +37,8 @@ export const Ranking = () => {
   const handleEvaluate = async () => {
     setEvaluating(true);
     try {
-      const response = await fetch('/api/evaluate', { method: 'POST' });
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
+      const response = await fetch(`${backendUrl}/api/evaluate`, { method: 'POST' });
       const result = await response.json();
       alert(result.msg); // Mostramos el mensaje (ej. "Se evaluaron 5 predicciones nuevas")
       await fetchRanking(); // Recargamos el ranking para ver los nuevos puntos
