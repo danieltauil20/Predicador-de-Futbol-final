@@ -1,3 +1,44 @@
+# ⚽ Predicador de Fútbol
+
+Aplicación web full stack desarrollada como proyecto grupal durante el bootcamp de 4Geeks Academy. La plataforma permite la gestión de partidos de fútbol y la generación de predicciones basadas en los datos almacenados.
+
+El proyecto está construido con una arquitectura separada frontend/backend, utilizando React en el cliente y Flask en la API, integrando autenticación de usuarios, consumo de APIs REST y gestión de base de datos.
+
+---
+
+## 🎯 Objetivo del proyecto
+
+Desarrollar una aplicación web funcional que simule un entorno real de producto, aplicando tecnologías full stack modernas y buenas prácticas de desarrollo colaborativo.
+
+---
+
+## 🧩 Funcionalidades principales
+
+* Registro e inicio de sesión de usuarios
+* Gestión de partidos de fútbol
+* Sistema de predicción de resultados
+* Consumo de API REST
+* Persistencia de datos en base de datos SQL
+
+---
+
+## 🛠️ Tecnologías principales
+
+* React.js
+* JavaScript
+* Python (Flask)
+* SQLAlchemy
+* PostgreSQL / MySQL
+* JWT Authentication
+* REST API
+
+---
+
+## 👥 Proyecto en equipo
+
+Desarrollado en colaboración con otros estudiantes del bootcamp, simulando un entorno de trabajo real con control de versiones mediante Git y GitHub.
+
+
 # Plantilla de WebApp con React JS y Flask API
 
 Construye aplicaciones web usando React.js para el front end y python/flask para tu API backend.
