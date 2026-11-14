@@ -1,122 +1,64 @@
-# ⚽ Predicador de Fútbol
+⚽ Predicador de Fútbol (Full Stack App)
 
-Aplicación web full stack desarrollada como proyecto grupal durante el bootcamp de 4Geeks Academy. La plataforma permite la gestión de partidos de fútbol y la generación de predicciones basadas en los datos almacenados.
+Aplicación web Full Stack desarrollada como proyecto colaborativo en el bootcamp de 4Geeks Academy. Permite la gestión de temporadas, partidos y pronósticos de fútbol mediante una arquitectura robusta con backend en Python/Flask y frontend interactivo en React.
 
-El proyecto está construido con una arquitectura separada frontend/backend, utilizando React en el cliente y Flask en la API, integrando autenticación de usuarios, consumo de APIs REST y gestión de base de datos.
+🛠️ Stack Tecnológico
 
----
+Frontend:   
 
-## 🎯 Objetivo del proyecto
+Backend:  
 
-Desarrollar una aplicación web funcional que simule un entorno real de producto, aplicando tecnologías full stack modernas y buenas prácticas de desarrollo colaborativo.
+Base de Datos & ORM:  
 
----
+Herramientas & Despliegue:   
 
-## 🧩 Funcionalidades principales
+🎯 Características Principales
 
-* Registro e inicio de sesión de usuarios
-* Gestión de partidos de fútbol
-* Sistema de predicción de resultados
-* Consumo de API REST
-* Persistencia de datos en base de datos SQL
+Arquitectura Full Stack: API RESTful en Flask conectada a una base de datos relacional PostgreSQL mediante SQLAlchemy.
 
----
+Gestión de Datos Deportivos: Scripts automatizados en Python para la carga y migración de datos de temporadas y partidos (cargar_temporada.py, load_data.py).
 
-## 🛠️ Tecnologías principales
+Interfaz Dinámica en React: Vistas interactivas para el usuario, consultas de jornadas y visualización de pronósticos de fútbol.
 
-* React.js
-* JavaScript
-* Python (Flask)
-* SQLAlchemy
-* PostgreSQL / MySQL
-* JWT Authentication
-* REST API
+Control de Versiones y Trabajo en Equipo: Desarrollo colaborativo utilizando Git bajo un flujo estructurado de ramas.
 
----
+👥 Contribuciones del Equipo
 
-## 👥 Proyecto en equipo
+Proyecto desarrollado en equipo en 4Geeks Academy. Mi aportación principal incluyó el desarrollo de componentes del frontend, la lógica de interacción en JavaScript y la colaboración en la integración con el backend.
 
-Desarrollado en colaboración con otros estudiantes del bootcamp, simulando un entorno de trabajo real con control de versiones mediante Git y GitHub.
+🚀 Instalación y Ejecución Local
+
+Si deseas clonar y probar el proyecto en tu entorno local:
+
+1. Clonar el repositorio
+
+git clone https://github.com/danieltauil20/Predicador-de-Futbol-final.git
+cd Predicador-de-Futbol-final
 
 
-# Plantilla de WebApp con React JS y Flask API
+2. Configurar el Backend (Python / Flask)
 
-Construye aplicaciones web usando React.js para el front end y python/flask para tu API backend.
+Asegúrate de tener Python 3.10 y Pipenv instalados:
 
-- La documentación se puede encontrar aquí: https://4geeks.com/docs/start/react-flask-template
-- Aquí hay un video sobre [cómo usar esta plantilla](https://www.youtube.com/watch?v=qBz6Ddd2m38)
-- Integrado con Pipenv para la gestión de paquetes.
-- Despliegue rápido a Render [en solo unos pocos pasos aquí](https://4geeks.com/es/docs/start/despliega-con-render-com).
-- Uso del archivo .env.
-- Integración de SQLAlchemy para la abstracción de bases de datos.
+# Instalar dependencias de Python
+pipenv install
 
-### 1) Instalación:
+# Crear archivo de entorno a partir del ejemplo
+cp .env.example .env
 
-> Si usas Github Codespaces (recomendado) o Gitpod, esta plantilla ya vendrá con Python, Node y la base de datos Posgres instalados. Si estás trabajando localmente, asegúrate de instalar Python 3.10, Node.
+# Ejecutar las migraciones de base de datos
+pipenv run upgrade
 
-Se recomienda instalar el backend primero, asegúrate de tener Python 3.10, Pipenv y un motor de base de datos (se recomienda Posgres).
+# Iniciar el servidor backend
+pipenv run start
 
-1. Instala los paquetes de python: `$ pipenv install`
-2. Crea un archivo .env basado en el .env.example: `$ cp .env.example .env`
-3. Instala tu motor de base de datos y crea tu base de datos, dependiendo de tu base de datos, debes crear una variable DATABASE_URL con uno de los valores posibles, asegúrate de reemplazar los valores con la información de tu base de datos:
 
-| Motor     | DATABASE_URL                                        |
-| --------- | --------------------------------------------------- |
-| SQLite    | sqlite:////test.db                                  |
-| MySQL     | mysql://username:password@localhost:port/example    |
-| Postgres  | postgres://username:password@localhost:5432/example |
+3. Configurar el Frontend (React)
 
-4. Migra las migraciones: `$ pipenv run migrate` (omite si no has hecho cambios en los modelos en `./src/api/models.py`)
-5. Ejecuta las migraciones: `$ pipenv run upgrade`
-6. Ejecuta la aplicación: `$ pipenv run start`
+En otra pestaña de la terminal, asegúrate de tener Node.js (versión 20 recomendada):
 
-> Nota: Los usuarios de Codespaces pueden conectarse a psql escribiendo: `psql -h localhost -U gitpod example`
+# Instalar dependencias de Node
+npm install
 
-### Deshacer una migración
-
-También puedes deshacer una migración ejecutando
-
-```sh
-$ pipenv run downgrade
-```
-
-### Población de la tabla de usuarios en el backend
-
-Para insertar usuarios de prueba en la base de datos, ejecuta el siguiente comando:
-
-```sh
-$ flask insert-test-users 5
-```
-
-Y verás el siguiente mensaje:
-
-```
-    Creating test users
-    test_user1@test.com created.
-    test_user2@test.com created.
-    test_user3@test.com created.
-    test_user4@test.com created.
-    test_user5@test.com created.
-    Users created successfully!
-```
-
-### **Nota importante para la base de datos y los datos dentro de ella**
-
-Cada entorno de Github Codespace tendrá **su propia base de datos**, por lo que si estás trabajando con más personas, cada uno tendrá una base de datos diferente y diferentes registros dentro de ella. Estos datos **se perderán**, así que no pases demasiado tiempo creando registros manualmente para pruebas, en su lugar, puedes automatizar la adición de registros a tu base de datos editando el archivo ```commands.py``` dentro de la carpeta ```/src/api```. Edita la línea 32 de la función ```insert_test_data``` para insertar los datos según tu modelo (usa la función ```insert_test_users``` anterior como ejemplo). Luego, todo lo que necesitas hacer es ejecutar ```pipenv run insert-test-data```.
-
-### Instalación manual del Front-End:
-
--   Asegúrate de estar usando la versión 20 de node y de que ya hayas instalado y ejecutado correctamente el backend.
-
-1. Instala los paquetes: `$ npm install`
-2. ¡Empieza a codificar! inicia el servidor de desarrollo de webpack `$ npm run start`
-
-## ¡Publica tu sitio web!
-
-Esta plantilla está 100% lista para desplegarse con Render.com y Heroku en cuestión de minutos. Por favor, lee la [documentación oficial al respecto](https://4geeks.com/docs/start/deploy-to-render-com).
-
-### Contribuyentes
-
-Esta plantilla fue construida como parte del [Coding Bootcamp](https://4geeksacademy.com/us/coding-bootcamp) de 4Geeks Academy por [Alejandro Sanchez](https://twitter.com/alesanchezr) y muchos otros contribuyentes. Descubre más sobre nuestro [Curso de Desarrollador Full Stack](https://4geeksacademy.com/us/coding-bootcamps/part-time-full-stack-developer) y [Bootcamp de Ciencia de Datos](https://4geeksacademy.com/us/coding-bootcamps/datascience-machine-learning).
-
-Puedes encontrar otras plantillas y recursos como este en la [página de github de la escuela](https://github.com/4geeksacademy/).
+# Iniciar el servidor de desarrollo de frontend
+npm run start
